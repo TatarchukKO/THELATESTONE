@@ -1,17 +1,19 @@
 const express = require('express');
 const mysql = require('mysql');
+const metaData = require('./server/routes/meta-data.js');
+
 const app = express();
 
-
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123789',
-    database: 'pick_brains_db'
+  host: 'localhost',
+  user: 'root',
+  password: '123789',
+  database: 'pick_brains_db',
+});
+connection.connect((error) => {
+  error ? console.log('error') : console.log('Successfull connection to the server');
 });
 
-connection.connect((error) => {
-    error ? console.log('Error') : console.log('Successfull connection to data base');
-})
+app.use('/api/meta-data/', metaData);
 
-app.listen(3000);
+app.listen(1337);
