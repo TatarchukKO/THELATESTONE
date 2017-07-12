@@ -16,6 +16,7 @@ connection.connect((error) => {
   console.log('Db connected');
 });
 
+
 exports.getEnglishLevels = (callback) => {
   connection.query(metaDataQuery.englishLevelsQuery, callback);
 };
