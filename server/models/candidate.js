@@ -10,6 +10,7 @@ exports.getCandidateById = (id, callback) => {
   async.parallel([
     call => connection.query(candidateQuery.getCandidateById(id), call),
     call => connection.query(candidateQuery.getCandidateEmails(id), call),
-  ], callback
-  );
+    call => connection.query(candidateQuery.getCandidateSecondarySkills(id), call),
+    call => connection.query(candidateQuery.getCandidateOtherSkills(id), call),
+  ], callback);
 };

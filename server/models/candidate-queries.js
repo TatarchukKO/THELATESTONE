@@ -21,3 +21,13 @@ exports.getCandidateById = id => `SELECT candidate.id, candidate.eng_first_name,
 
 exports.getCandidateEmails = id => `SELECT candidate_emails.email FROM candidate_emails
   WHERE candidate_emails.candidate_id = ${id}`;
+
+exports.getCandidateSecondarySkills = id => `SELECT skills.skill_name, candidate_secondary_skills.lvl 
+  FROM candidate_secondary_skills
+  LEFT JOIN skills ON candidate_secondary_skills.skill_id = skills.id
+  WHERE candidate_secondary_skills.candidate_id = ${id}`;
+
+exports.getCandidateOtherSkills = id => `SELECT other_skills.skill 
+  FROM other_skills_has_candidate
+  LEFT JOIN other_skills ON other_skills_has_candidate.other_skills_id = other_skills.id
+  WHERE other_skills_has_candidate.candidate_id = ${id}`;

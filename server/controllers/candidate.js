@@ -14,6 +14,6 @@ exports.getCandidateById = (req, res) => {
     if (error) {
       throw error;
     }
-    return res.status(200).send(result);
+    return res.status(200).send(result.map(item => item[0]));
   });
 };
