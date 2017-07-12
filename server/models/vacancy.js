@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const metaDataQuery = require('./meta-data-queries.js');
+const vacancyQueries = require('./vacancy-queries.js');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -8,15 +8,16 @@ const connection = mysql.createConnection({
   database: 'pick_brains_db',
 });
 
+
 connection.connect((error) => {
   if (error) {
-    console.log('No connection!');
+    console.log('Db connection error');
     throw error;
   }
-  console.log('Db connected');
+  console.log('Connected to db');
 });
 
 
-exports.getEnglishLevels = (callback) => {
-  connection.query(metaDataQuery.englishLevelsQuery, callback);
+exports.getVacancies = (config, callback) => {
+  connection.query(vacancyQueries.getVacancies(config), callback);
 };
