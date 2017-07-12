@@ -2,6 +2,7 @@
   "name": "pick_brains",
   "version": "1.0.0",
   "dependencies": {
+    "async": "^2.5.0",
     "express": "^4.15.3",
     "mysql": "^2.13.0"
   },
