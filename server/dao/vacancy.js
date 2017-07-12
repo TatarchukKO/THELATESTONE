@@ -1,10 +1,10 @@
 const mysql = require('mysql');
-const vacancyQueries = require('./vacancy-queries.js');
+const vacancyQueries = require('../queries/vacancy-queries.js');
 
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'qweasdzxc',
+  password: '123789',
   database: 'pick_brains_db',
 });
 

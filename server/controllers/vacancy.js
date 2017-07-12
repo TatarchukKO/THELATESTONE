@@ -1,4 +1,4 @@
-const vacancyModel = require('../models/vacancy.js');
+const vacancyModel = require('../dao/vacancy.js');
 
 const config = {
   limit: null,

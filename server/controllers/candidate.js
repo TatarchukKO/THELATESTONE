@@ -1,4 +1,4 @@
-const candidateModel = require('../models/candidate.js');
+const candidateModel = require('../dao/candidate.js');
 
 exports.getCandidates = (req, res) => {
   candidateModel.getCandidates(req.skip, req.filter, (error, result) => {
