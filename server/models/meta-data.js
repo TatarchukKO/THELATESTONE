@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const sqlQueries = require('./sqlQueries.js');
+const metaDataQuery = require('./meta-data-queries.js');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -9,9 +9,13 @@ const connection = mysql.createConnection({
 });
 
 connection.connect((error) => {
-  error ? console.log('Models connection error') : console.log('Meta-data model is connected');
+  if (error) {
+    console.log('Models connection error');
+    throw error;
+  }
+  console.log('Meta-data model is connected');
 });
 
 exports.getEnglishLevels = (callback) => {
-  connection.query(sqlQueries.englishLevelsQuery, callback);
+  connection.query(metaDataQuery.englishLevelsQuery, callback);
 };

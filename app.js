@@ -11,7 +11,11 @@ const connection = mysql.createConnection({
   database: 'pick_brains_db',
 });
 connection.connect((error) => {
-  error ? console.log('error') : console.log('Successfull connection to the server');
+  if (error) {
+    console.log('error');
+    throw error;
+  }
+  console.log('Successfull connection to the server');
 });
 
 app.use('/api/meta-data/', metaData);
