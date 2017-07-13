@@ -12,3 +12,7 @@ exports.getVacancy = (id, callback) => {
     callback(error, finalResult);
   });
 };
+
+exports.updateVacancy = (config, callback) => {
+  vacancyModel.updateVacancy(config, callback);
+};

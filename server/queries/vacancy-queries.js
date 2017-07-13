@@ -20,3 +20,30 @@ exports.getVacancyOtherSkills = id => `SELECT skills.skill_name, vacancy_seconda
   FROM vacancy_secondary_skills
   LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
+
+exports.updateVacancy = (config) => {
+  let result = [];
+  result.push('UPDATE vacancy SET ');
+  if (config.name) {
+    result.push(` name = ${config.name}`);
+  }
+  if (config.startDate) {
+    result.push(` start_date = ${config.date}`);
+  }
+  if (config.primarySkill) {
+    result.push(` primary_skill = ${config.primarySkill}`);
+  }
+  if (config.primarySkillLvl) {
+    result.push(` primary_skill_lvl = ${config.primarySkillLvl}`);
+  }
+  if (config.city) {
+    result.push(` city = ${config.city}`);
+  }
+  if (config.status) {
+    result.push(` status = ${config.status}`);
+  }
+  result.push(result = ` WHERE id = ${config.id}`);
+  console.log(result);
+  return result;
+};
+

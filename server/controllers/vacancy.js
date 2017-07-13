@@ -1,12 +1,22 @@
 const vacancyServices = require('../services/vacancy.js');
 
-const config = {
+const getConfig = {
   limit: null,
 };
 
+const updateConfig = {
+  id: null,
+  name: null,
+  startDate: null,
+  primarySkill: null,
+  primarySkillLvl: null,
+  city: null,
+  status: null,
+};
+
 exports.getVacancies = (req, res) => {
-  config.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
-  vacancyServices.getVacancies(config, (error, result) => {
+  getConfig.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
+  vacancyServices.getVacancies(getConfig, (error, result) => {
     if (error) {
       console.log(error);
       throw error;
@@ -16,7 +26,6 @@ exports.getVacancies = (req, res) => {
 };
 
 exports.getVacancy = (req, res) => {
-  console.log(req.params.id);
   vacancyServices.getVacancy(req.params.id, (error, result) => {
     if (error) {
       console.log(error);
@@ -26,3 +35,13 @@ exports.getVacancy = (req, res) => {
   });
 };
 
+exports.updateVacancy = (req, res) => {
+  updateConfig.status = req.query.status;
+  updateConfig.id = req.params.id;
+  vacancyServices.updateVacancy(updateConfig, (error, result) => {
+    if (error) {
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+};
