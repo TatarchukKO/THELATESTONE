@@ -1,6 +1,6 @@
 const express = require('express');
 const metaData = require('./server/routes/meta-data.js');
-const candidate = require('./server/routes/candidate.js');
+const candidate = require('./server/routes/candidates.js');
 
 const app = express();
 
