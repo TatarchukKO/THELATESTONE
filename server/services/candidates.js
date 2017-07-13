@@ -1,7 +1,19 @@
 const candidatesModel = require('../models/candidates.js');
 
 function get(skip, filter, callback) {
-  candidatesModel.get(skip, filter, callback);
+  candidatesModel.get(skip, filter, (error, result) => {
+    const res = result.map((value) => {
+      const tmp = {};
+      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      tmp.email = value.email;
+      tmp.status = value.status;
+      tmp.city = value.city;
+      tmp.contact_date = value.contact_date;
+      tmp.skill_name = value.skill_name;
+      return tmp;
+    });
+    callback(error, res);
+  });
 }
 
 function getById(id, callback) {

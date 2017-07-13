@@ -11,6 +11,6 @@ app.use('/api/meta-data/', metaData);
 app.use('/api/candidates/', candidate);
 
 
-process.on('uncaughtException', error => console.log(`Caught exception: ${error.message}`));
+process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
 
 app.listen(app.get('port'), () => console.log('Server is running on port', app.get('port')));

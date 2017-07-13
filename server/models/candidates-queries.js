@@ -42,41 +42,9 @@ function getOtherSkills(id) {
   WHERE other_skills_has_candidate.candidate_id = ${id}`;
 }
 
-function insert(candidate) {
-  let options = '';
-  let values = '';
-  if (candidate.rus_first_name) {
-    options = options.concat(' , rus_first_name, rus_second_name');
-    values = values.concat(` , "${candidate.rus_first_name}", "${candidate.rus_second_name}"`);
-  }
-  if (candidate.linkedin) {
-    options = options.concat(' , linkedin');
-    values = values.concat(` , "${candidate.linkedin}"`);
-  }
-  if (candidate.skype) {
-    options = options.concat(' , skype');
-    values = values.concat(` , "${candidate.skype}"`);
-  }
-  if (candidate.phone) {
-    options = options.concat(' , phone');
-    values = values.concat(` , "${candidate.phone}"`);
-  }
-  if (candidate.salary_wish) {
-    options = options.concat(' , salary_wish');
-    values = values.concat(` , ${candidate.salary_wish}`);
-  }
-  if (candidate.contact_date) {
-    options = options.concat(' , contact_date');
-    values = values.concat(` , ${candidate.contact_date}`);
-  }
-  console.log(`INSERT INTO candidate (eng_first_name, eng_second_name, city, exp_year,
-    primary_skill, primary_skill_lvl, status${options})
-    VALUES (${candidate.eng_first_name}, ${candidate.eng_second_name}, ${candidate.city}, 
-    ${candidate.exp_year}, ${candidate.primary_skill}, ${candidate.primary_skill_lvl}, 1${values})`);
-  return `INSERT INTO candidate (eng_first_name, eng_second_name, city, exp_year,
-    primary_skill, primary_skill_lvl, status${options})
-    VALUES ("${candidate.eng_first_name}", "${candidate.eng_second_name}", "${candidate.city}", 
-    ${candidate.exp_year}, ${candidate.primary_skill}, ${candidate.primary_skill_lvl}, 1${values})`;
+function insert() {
+  return `INSERT INTO candidate SET ?;
+    SELECT LAST_INSERT_ID()`;
 }
 
 function insertEmails(id, email) {

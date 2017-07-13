@@ -16,36 +16,42 @@ function getById(id, callback) {
 }
 
 function insert(candidate, callback) {
-  const id = candidate.id;
-  const emails = candidate.emails;
-  const secSkills = candidate.sec_skills;
-  const oSkills = candidate.other_skills;
+  const emails = candidate.emails || [];
+  const secSkills = candidate.sec_skills || [];
+  const oSkills = candidate.other_skills || [];
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    async.parallel([
-      call => connection.query(query.insert(candidate), call),
-      call => connection.query(query.insertOtherSkills(id, candidate.other_skills), call),
-    ].concat(
-      emails.map(email => call => connection.query(query.insertEmails(id, email), call)),
-      secSkills.map(skill => call => connection.query(query.insertSecSkills(id, skill), call)),
-      oSkills.map(skill => call => connection.query(query.insertOtherSkills(id, skill), call))), 
-    (error, result) => {
+    connection.query(query.insert(candidate), candidate, (error, id) => {
+      console.log(id);
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
       }
-      connection.commit((commitError) => {
-        if (commitError) {
+      async.parallel(Array.prototype.concat(
+        emails.map(email => call => connection.query(query.insertEmails(id, email), call)),
+        secSkills.map(skill => call => connection.query(query.insertSecSkills(id, skill), call)),
+        oSkills.map(skill => call => connection.query(query.insertOtherSkills(id, skill), call))),
+      (parError, result) => {
+        if (parError) {
           return connection.rollback(() => {
-            throw commitError;
+            throw parError;
           });
         }
+        connection.commit((commitError) => {
+          if (commitError) {
+            return connection.rollback(() => {
+              throw commitError;
+            });
+          }
+          return undefined;
+        });
+        callback(error, result);
+        return console.log('Transaction has been commited');
       });
-      callback(error, result);
-      console.log('Transaction has been commited');
+      return undefined;
     });
   });
 }
