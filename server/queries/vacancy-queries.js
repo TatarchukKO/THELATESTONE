@@ -23,27 +23,26 @@ exports.getVacancyOtherSkills = id => `SELECT skills.skill_name, vacancy_seconda
 
 exports.updateVacancy = (config) => {
   let result = [];
-  result.push('UPDATE vacancy SET ');
+  result += 'UPDATE vacancy SET ';
   if (config.name) {
-    result.push(` name = ${config.name}`);
+    result += ` name = ${config.name}`;
   }
   if (config.startDate) {
-    result.push(` start_date = ${config.date}`);
+    result += ` start_date = ${config.date}`;
   }
   if (config.primarySkill) {
-    result.push(` primary_skill = ${config.primarySkill}`);
+    result.push += ` primary_skill = ${config.primarySkill}`;
   }
   if (config.primarySkillLvl) {
-    result.push(` primary_skill_lvl = ${config.primarySkillLvl}`);
+    result.push += ` primary_skill_lvl = ${config.primarySkillLvl}`;
   }
   if (config.city) {
-    result.push(` city = ${config.city}`);
+    result += ` city = ${config.city}`;
   }
   if (config.status) {
-    result.push(` status = ${config.status}`);
+    result += ` status = ${config.status}`;
   }
-  result.push(result = ` WHERE id = ${config.id}`);
-  console.log(result);
+  result += ` WHERE id = ${config.id}`;
   return result;
 };
 

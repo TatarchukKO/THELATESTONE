@@ -26,6 +26,10 @@ exports.getVacancies = (req, res) => {
 };
 
 exports.getVacancy = (req, res) => {
+  let a = [];
+  a.push('asd');
+  a.push('asdasd');
+  console.log(a);
   vacancyServices.getVacancy(req.params.id, (error, result) => {
     if (error) {
       console.log(error);
