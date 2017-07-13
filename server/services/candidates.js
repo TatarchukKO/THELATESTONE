@@ -1,11 +1,11 @@
 const candidatesModel = require('../models/candidates.js');
 
-function getCandidates(skip, filter, callback) {
-  candidatesModel.getCandidates(skip, filter, callback);
+function get(skip, filter, callback) {
+  candidatesModel.get(skip, filter, callback);
 }
 
-function getCandidateById(id, callback) {
-  candidatesModel.getCandidateById(id, (error, result) => {
+function getById(id, callback) {
+  candidatesModel.getById(id, (error, result) => {
     const item = result.map(val => val[0]);
     const res = item[0][0];
     res.emails = item[1].map(val => val.email);
@@ -15,7 +15,12 @@ function getCandidateById(id, callback) {
   });
 }
 
+function insert(candidate, callback) {
+  candidatesModel.insert(candidate, callback);
+}
+
 module.exports = {
-  getCandidates,
-  getCandidateById,
+  get,
+  getById,
+  insert,
 };
