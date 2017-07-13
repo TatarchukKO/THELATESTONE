@@ -30,3 +30,7 @@ exports.getVacancy = (id, callback) => {
     call => connection.query(vacancyQueries.getVacancyOtherSkills(id), call),
   ], callback);
 };
+
+exports.updateVacancy = (config, callback) => {
+  connection.query(vacancyQueries.updateVacancy(config), callback);
+};
