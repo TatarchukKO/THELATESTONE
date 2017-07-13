@@ -4,7 +4,7 @@ const metaDataQueries = require('../queries/meta-data-queries.js');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '123789',
+  password: 'qweasdzxc',
   database: 'pick_brains_db',
 });
 
