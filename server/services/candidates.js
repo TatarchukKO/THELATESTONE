@@ -10,6 +10,7 @@ function get(skip, filter, callback) {
       tmp.city = value.city;
       tmp.contact_date = value.contact_date;
       tmp.skill_name = value.skill_name;
+      tmp.id = value.id;
       return tmp;
     });
     callback(error, res);
