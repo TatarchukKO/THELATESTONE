@@ -53,7 +53,7 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
   });
 }
 
-function update(id, candidate, emails, secSkills, oSkills, callback) {
+function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
@@ -94,7 +94,9 @@ function update(id, candidate, emails, secSkills, oSkills, callback) {
           async.parallel(
             oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
             call);
-        })],
+        }),
+        call => connection.query(query.commitChanges(), changes, call),
+        call => connection.query(query.generalHistory(id, changes.change_date), call)],
       (parError, result) => {
         if (parError) {
           return connection.rollback(() => {

@@ -82,6 +82,15 @@ function deleteOtherSkills(id) {
     WHERE candidate_id = ${id};`;
 }
 
+function commitChanges() {
+  return 'INSERT INTO candidate_changes SET ?';
+}
+
+function generalHistory(id, date) {
+  return `INSERT INTO general_history (candidate_change_id, change_date)
+    VALUES (${id}, "${date}");`;
+}
+
 module.exports = {
   get,
   getById,
@@ -96,4 +105,6 @@ module.exports = {
   deleteEmails,
   deleteSecSkills,
   deleteOtherSkills,
+  commitChanges,
+  generalHistory,
 };
