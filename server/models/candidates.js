@@ -15,16 +15,13 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, callback) {
-  const emails = candidate.emails || [];
-  const secSkills = candidate.sec_skills || [];
-  const oSkills = candidate.other_skills || [];
+function insert(candidate, emails, secSkills, oSkills, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    connection.query(query.insert(candidate), candidate, (error, id) => {
-      console.log(id);
+    connection.query(query.insert(), candidate, (error, res) => {
+      const id = res.insertId;
       if (error) {
         return connection.rollback(() => {
           throw error;

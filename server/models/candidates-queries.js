@@ -43,23 +43,22 @@ function getOtherSkills(id) {
 }
 
 function insert() {
-  return `INSERT INTO candidate SET ?;
-    SELECT LAST_INSERT_ID()`;
+  return 'INSERT INTO candidate SET ?;';
 }
 
 function insertEmails(id, email) {
   return `INSERT INTO candidate_emails (candidate_id, email)
-    VALUES ${id}, ${email}`;
+    VALUES (${id}, "${email}");`;
 }
 
 function insertSecSkills(id, skill) {
   return `INSERT INTO candidate_secondary_skills (candidate_id, skill_id, lvl)
-    VALUES ${id}, ${skill.id}, ${skill.lvl}`;
+    VALUES (${id}, ${skill.skill_name}, ${skill.lvl});`;
 }
 
 function insertOtherSkills(id, skill) {
   return `INSERT INTO other_skills_has_candidate (candidate_id, other_skill_id)
-    VALUES ${id}, ${skill}`;
+    VALUES (${id}, ${skill});`;
 }
 
 module.exports = {

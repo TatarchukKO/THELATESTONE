@@ -29,7 +29,14 @@ function getById(id, callback) {
 }
 
 function insert(candidate, callback) {
-  candidatesModel.insert(candidate, callback);
+  const emails = candidate.emails || [];
+  const secSkills = candidate.sec_skills || [];
+  const oSkills = candidate.other_skills || [];
+  const item = candidate;
+  delete item.emails;
+  delete item.sec_skills;
+  delete item.other_skills;
+  candidatesModel.insert(candidate, emails, secSkills, oSkills, callback);
 }
 
 module.exports = {
