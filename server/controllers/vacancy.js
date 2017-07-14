@@ -6,11 +6,6 @@ const getConfig = {
 
 const updateConfig = {
   id: null,
-  name: null,
-  startDate: null,
-  primarySkill: null,
-  primarySkillLvl: null,
-  city: null,
   status: null,
 };
 
@@ -26,10 +21,6 @@ exports.getVacancies = (req, res) => {
 };
 
 exports.getVacancy = (req, res) => {
-  let a = [];
-  a.push('asd');
-  a.push('asdasd');
-  console.log(a);
   vacancyServices.getVacancy(req.params.id, (error, result) => {
     if (error) {
       console.log(error);
@@ -42,6 +33,7 @@ exports.getVacancy = (req, res) => {
 exports.updateVacancy = (req, res) => {
   updateConfig.status = req.query.status;
   updateConfig.id = req.params.id;
+  updateConfig.city = req.query.city;
   vacancyServices.updateVacancy(updateConfig, (error, result) => {
     if (error) {
       throw error;
