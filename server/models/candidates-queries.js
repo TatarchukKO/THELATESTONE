@@ -8,7 +8,7 @@ function get(skip = 0, filter = '') {
   LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
   ${filter}
   GROUP BY candidate.id
-  LIMIT ${skip}, 5`;
+  LIMIT ${skip}, 7`;
 }
 
 function getById(id) {
@@ -57,8 +57,29 @@ function insertSecSkills(id, skill) {
 }
 
 function insertOtherSkills(id, skill) {
-  return `INSERT INTO other_skills_has_candidate (candidate_id, other_skill_id)
+  return `INSERT INTO other_skills_has_candidate (candidate_id, other_skills_id)
     VALUES (${id}, ${skill});`;
+}
+
+function update(id) {
+  return `UPDATE candidate
+    SET ?
+    WHERE id = ${id}`;
+}
+
+function deleteEmails(id) {
+  return `DELETE FROM candidate_emails
+    WHERE candidate_id = ${id};`;
+}
+
+function deleteSecSkills(id) {
+  return `DELETE FROM candidate_secondary_skills
+    WHERE candidate_id = ${id};`;
+}
+
+function deleteOtherSkills(id) {
+  return `DELETE FROM other_skills_has_candidate
+    WHERE candidate_id = ${id};`;
 }
 
 module.exports = {
@@ -71,4 +92,8 @@ module.exports = {
   insertEmails,
   insertSecSkills,
   insertOtherSkills,
+  update,
+  deleteEmails,
+  deleteSecSkills,
+  deleteOtherSkills,
 };

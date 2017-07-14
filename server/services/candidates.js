@@ -1,4 +1,5 @@
 const candidatesModel = require('../models/candidates.js');
+const translit = require('translitit-cyrillic-russian-to-latin');
 
 function get(skip, filter, callback) {
   candidatesModel.get(skip, filter, (error, result) => {
@@ -33,14 +34,40 @@ function insert(candidate, callback) {
   const secSkills = candidate.sec_skills || [];
   const oSkills = candidate.other_skills || [];
   const item = candidate;
+  const firstName = translit(item.eng_first_name);
+  if (firstName !== item.eng_first_name) {
+    item.ru_first_name = item.eng_first_name;
+    item.ru_second_name = item.eng_second_name;
+    item.eng_first_name = firstName;
+    item.eng_second_name = translit(item.eng_second_name);
+  }
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
-  candidatesModel.insert(candidate, emails, secSkills, oSkills, callback);
+  candidatesModel.insert(item, emails, secSkills, oSkills, callback);
+}
+
+function update(id, candidate, callback) {
+  const emails = candidate.emails || [];
+  const secSkills = candidate.sec_skills || [];
+  const oSkills = candidate.other_skills || [];
+  const item = candidate;
+  const firstName = translit(item.eng_first_name);
+  if (firstName !== item.eng_first_name) {
+    item.ru_first_name = item.eng_first_name;
+    item.ru_second_name = item.eng_second_name;
+    item.eng_first_name = firstName;
+    item.eng_second_name = translit(item.eng_second_name);
+  }
+  delete item.emails;
+  delete item.sec_skills;
+  delete item.other_skills;
+  candidatesModel.update(id, item, emails, secSkills, oSkills, callback);
 }
 
 module.exports = {
   get,
   getById,
   insert,
+  update,
 };

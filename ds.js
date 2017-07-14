@@ -1,37 +1,30 @@
 {
-"id": 1,
+"id": 2,
 "eng_first_name": "Ilya",
-"eng_second_name": "Shavel",
-"linkedin": "someidurl",
-"skype": "thatOMGSKYPE",
-"phone": "+375228",
-"city": "4",
+"eng_second_name": "blblblb",
+"linkedin": "surl",
+"skype": "thatYPE",
+"phone": "+375269558",
+"city": "Belarus, Minsk",
 "exp_year": "2016-08-31T21:00:00.000Z",
 "salary_wish": 500,
-"lvl": "4",
-"contact_date": "2017-07-11T12:49:00.000Z",
-"primary_skill": "13",
-"primary_skill_lvl": 7,
+"lvl": "Upper-Intermediate (B2)",
+"contact_date": "2017-07-11T12:53:38.000Z",
+"skill_name": ".NET",
+"primary_skill_lvl": 1,
+"status": "Pool",
 "emails": [
-"THATMAIL@MAIL.WOW",
-"HMMMM@dog.dot"
+"secmail@gmail.com"
 ],
 "sec_skills": [
 {
-"id": "8",
-"lvl": 5
+"skill_name": "BI",
+"lvl": 2
 },
 {
-"id": "4",
-"lvl": 6
-},
-{
-"id": "18",
+"skill_name": "HTML/CSS",
 "lvl": 3
 }
 ],
-"other_skills": [
-"3",
-"2"
-]
+"other_skills": []
 }
