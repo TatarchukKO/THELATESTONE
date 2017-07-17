@@ -13,6 +13,16 @@ exports.getVacancy = (id, callback) => {
   });
 };
 
-exports.updateVacancy = (config, callback) => {
-  vacancyModel.updateVacancy(config, callback);
+exports.updateVacancy = (id, reqBody, callback) => {
+  const config = {};
+  Object.keys(reqBody).forEach((key) => {
+    config[`${key}`] = `${reqBody[key]}`;
+  });
+  delete config.secondary_skills;
+  const secondarySkills = reqBody.secondary_skills || [];
+  /*Object.keys(config).forEach((key) => {
+    console.log(`${key} ${config[key]}`);
+  });*/
+  vacancyModel.updateVacancy(id, config, secondarySkills, callback);
 };
+

@@ -31,10 +31,8 @@ exports.getVacancy = (req, res) => {
 };
 
 exports.updateVacancy = (req, res) => {
-  updateConfig.status = req.query.status;
-  updateConfig.id = req.params.id;
-  updateConfig.city = req.query.city;
-  vacancyServices.updateVacancy(updateConfig, (error, result) => {
+  console.log(req.body);
+  vacancyServices.updateVacancy(req.params.id, req.body, (error, result) => {
     if (error) {
       throw error;
     }

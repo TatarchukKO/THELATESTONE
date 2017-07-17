@@ -9,7 +9,6 @@ const connection = mysql.createConnection({
   database: 'pick_brains_db',
 });
 
-
 connection.connect((error) => {
   if (error) {
     console.log('Db connection error');
@@ -18,19 +17,39 @@ connection.connect((error) => {
   console.log('Connected to db');
 });
 
-
 exports.getVacancies = (config, callback) => {
-  connection.query(vacancyQueries.getVacancies(config), callback);
+  connection.beginTransaction((error) => {
+    if (error) {
+      throw error;
+    }
+    connection.query(vacancyQueries.getVacancies(config), callback);
+  });
 };
-
 
 exports.getVacancy = (id, callback) => {
-  async.parallel([
-    call => connection.query(vacancyQueries.getVacancy(id), call),
-    call => connection.query(vacancyQueries.getVacancyOtherSkills(id), call),
-  ], callback);
+  connection.beginTransaction((error) => {
+    if (error) {
+      throw error;
+    }
+    async.parallel(
+      [
+        call => connection.query(vacancyQueries.getVacancy(id), call),
+        call => connection.query(vacancyQueries.getVacancyOtherSkills(id), call),
+      ],
+      callback);
+  });
 };
 
-exports.updateVacancy = (config, callback) => {
-  connection.query(vacancyQueries.updateVacancy(config), callback);
+exports.updateVacancy = (id, config, secondarySkills, callback) => {
+  console.log(config);
+  connection.beginTransaction((error) => {
+    if (error) {
+      throw error;
+    }
+    async.parallel(
+      [
+        call => connection.query(vacancyQueries.updateVacancy(id), config, call),
+      ],
+      callback);
+  });
 };
