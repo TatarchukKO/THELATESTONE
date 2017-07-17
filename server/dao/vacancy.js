@@ -29,8 +29,8 @@ exports.getVacancy = (id, callback) => {
     ],
     callback);
 };
-  
-exports.updateVacancy = (id, config, secSkills, callback) => {
+
+exports.updateVacancy = (id, config, changes, secSkills, callback) => {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
@@ -41,34 +41,43 @@ exports.updateVacancy = (id, config, secSkills, callback) => {
           throw error;
         });
       }
-      async.parallel([
-        call => connection.query(vacancyQueries.deleteSecondarySkills(id), (err) => {
-          if (err) {
+      async.parallel(
+        [
+          call =>
+            connection.query(vacancyQueries.deleteSecondarySkills(id), (err) => {
+              if (err) {
+                return connection.rollback(() => {
+                  throw error;
+                });
+              }
+              return async.parallel(
+                secSkills.map(val => eCall =>
+                  connection.query(vacancyQueries.insSecSkill(id, val), eCall)),
+                call);
+            }),
+         /* Install db update! */
+         /* call =>
+            connection.query(vacancyQueries.commitChanges(), changes, call),
+          call =>
+            connection.query(vacancyQueries.generalHistory(id, changes.change_date), call),*/
+        ],
+        (parError, result) => {
+          if (parError) {
             return connection.rollback(() => {
-              throw error;
+              throw parError;
             });
           }
-          async.parallel(
-            secSkills.map(val => eCall => connection.query(vacancyQueries.insertSecondarySkill(id, val), eCall)),
-            call);
-        })],
-      (parError, result) => {
-        if (parError) {
-          return connection.rollback(() => {
-            throw parError;
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+            return undefined;
           });
-        }
-        connection.commit((commitError) => {
-          if (commitError) {
-            return connection.rollback(() => {
-              throw commitError;
-            });
-          }
-          return undefined;
+          callback(error, result);
+          return console.log('Commited');
         });
-        callback(error, result);
-        return console.log('Update transaction has been commited');
-      });
       return undefined;
     });
   });

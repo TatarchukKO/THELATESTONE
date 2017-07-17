@@ -24,11 +24,19 @@ exports.getVacancyOtherSkills = id =>
   LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
 
-exports.updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
+exports.updateVacancy = id =>
+  `UPDATE vacancy SET ? WHERE id = ${id}`;
 
 exports.deleteSecondarySkills = id =>
   `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
 
-exports.insertSecondarySkill = (id, skill) =>
+exports.insSecSkill = (id, skill) =>
   `INSERT INTO vacancy_secondary_skills (vacancy_id, skill_id, lvl)
     VALUES (${id}, ${skill.id}, ${skill.lvl});`;
+
+exports.commitChanges = () =>
+  'INSERT INTO vacancy_changes SET ?';
+
+exports.generalHistory = (id, date) =>
+  `INSERT INTO general_history (vacancy_change_id, change_date)
+   VALUES (${id}, "${date}");`;

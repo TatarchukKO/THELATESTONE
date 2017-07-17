@@ -4,11 +4,6 @@ const getConfig = {
   limit: null,
 };
 
-const updateConfig = {
-  id: null,
-  status: null,
-};
-
 exports.getVacancies = (req, res) => {
   getConfig.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
   vacancyServices.getVacancies(getConfig, (error, result) => {
