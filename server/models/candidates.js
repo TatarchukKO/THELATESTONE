@@ -71,7 +71,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
               throw error;
             });
           }
-          async.parallel(
+          return async.parallel(
             emails.map(val => eCall => connection.query(query.insertEmails(id, val), eCall)),
             call);
         }),
@@ -81,7 +81,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
               throw error;
             });
           }
-          async.parallel(
+          return async.parallel(
             secSkills.map(val => sCall => connection.query(query.insertSecSkills(id, val), sCall)),
             call);
         }),
@@ -91,7 +91,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
               throw error;
             });
           }
-          async.parallel(
+          return async.parallel(
             oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
             call);
         }),

@@ -1,4 +1,21 @@
-function get(skip = 0, filter = '') {
+function get(skip = 0, filter) {
+  const query = [];
+  let sent = 'WHERE ';
+  Object.keys(filter).forEach((item, i) => {
+    if (i === 1) {
+      sent = ' AND ';
+    }
+    if (item === 'salary_wish') {
+      query[i] = `${sent}candidate.${item} >= ${filter[item][0]} 
+        AND candidate.${item} <= ${filter[item][1]}`;
+      return;
+    }
+    if (item === 'exp_year') {
+      query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      return;
+    }
+    query[i] = `${sent}candidate.${item} = ${filter[item]}`;
+  });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
   skills.skill_name, candidate_emails.email, candidate_status.status FROM candidate
@@ -6,7 +23,7 @@ function get(skip = 0, filter = '') {
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
-  ${filter}
+  ${query.join('')}
   GROUP BY candidate.id
   LIMIT ${skip}, 7`;
 }

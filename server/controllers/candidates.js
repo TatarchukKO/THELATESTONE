@@ -1,7 +1,7 @@
 const candidatesService = require('../services/candidates.js');
 
 function get(req, res) {
-  candidatesService.get(req.params.skip, req.body, (error, result) => {
+  candidatesService.get(req.body, (error, result) => {
     if (error) {
       throw error;
     }

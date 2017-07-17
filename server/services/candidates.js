@@ -1,7 +1,13 @@
 const candidatesModel = require('../models/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 
-function get(skip, filter, callback) {
+function get(params, callback) {
+  const skip = params.skip;
+  let filter = params;
+  delete filter.skip;
+  if (Object.keys(filter).length === 0) {
+    filter = undefined;
+  }
   candidatesModel.get(skip, filter, (error, result) => {
     const res = result.map((value) => {
       const tmp = {};
