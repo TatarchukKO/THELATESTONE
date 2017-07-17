@@ -3,6 +3,7 @@ const candidatesService = require('../services/candidates.js');
 function get(req, res) {
   candidatesService.get(req.body, (error, result) => {
     if (error) {
+      res.status(500).send();
       throw error;
     }
     return res.status(200).send(result);
@@ -12,6 +13,7 @@ function get(req, res) {
 function getById(req, res) {
   candidatesService.getById(req.params.id, (error, result) => {
     if (error) {
+      res.status(500).send();
       throw error;
     }
     return res.status(200).send(result);
@@ -21,6 +23,7 @@ function getById(req, res) {
 function insert(req, res) {
   candidatesService.insert(req.body, (error) => {
     if (error) {
+      res.status(500).send();
       throw error;
     }
     return res.status(200).send();
@@ -30,6 +33,7 @@ function insert(req, res) {
 function update(req, res) {
   candidatesService.update(req.params.id, req.body, (error) => {
     if (error) {
+      res.status(500).send();
       throw error;
     }
     return res.status(200).send();
