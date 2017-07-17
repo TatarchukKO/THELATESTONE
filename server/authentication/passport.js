@@ -3,7 +3,7 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MySQLStore = require('express-mysql-session')(session);
-const connection = require('../models/connection.js').connection;
+const connection = require('../dao/connection.js').connection;
 
 const router = express.Router();
 

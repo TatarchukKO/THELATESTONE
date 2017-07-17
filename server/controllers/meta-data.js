@@ -1,4 +1,4 @@
-const metaDataModel = require('../models/meta-data.js');
+const metaDataModel = require('../dao/meta-data.js');
 
 exports.getEnglishLevels = (req, res) => {
   metaDataModel.getEnglishLevels((error, result) => {

@@ -1,4 +1,4 @@
-const candidatesModel = require('../models/candidates.js');
+const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 
 function get(params, callback) {
