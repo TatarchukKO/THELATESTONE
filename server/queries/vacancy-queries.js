@@ -25,3 +25,10 @@ exports.getVacancyOtherSkills = id =>
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
 
 exports.updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
+
+exports.deleteSecondarySkills = id =>
+  `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
+
+exports.insertSecondarySkill = (id, skill) =>
+  `INSERT INTO vacancy_secondary_skills (vacancy_id, skill_id, lvl)
+    VALUES (${id}, ${skill.id}, ${skill.lvl});`;

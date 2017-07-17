@@ -20,9 +20,6 @@ exports.updateVacancy = (id, reqBody, callback) => {
   });
   delete config.secondary_skills;
   const secondarySkills = reqBody.secondary_skills || [];
-  /*Object.keys(config).forEach((key) => {
-    console.log(`${key} ${config[key]}`);
-  });*/
   vacancyModel.updateVacancy(id, config, secondarySkills, callback);
 };
 
