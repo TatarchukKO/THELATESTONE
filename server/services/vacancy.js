@@ -12,6 +12,7 @@ exports.getVacancy = (id, callback) => {
     callback(error, finalResult);
   });
 };
+
 /**
   * DATETIME
   * The supported range is '1000-01-01 00:00:00' to '9999-12-31 23:59:59'.
@@ -21,21 +22,44 @@ const formatDate = date =>
   `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} 
   ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-exports.updateVacancy = (id, reqBody, callback) => {
+const clearSkills = (obj) => {
+  const copy = obj;
+  delete copy.secondary_skills;
+  delete copy.other_skills;
+  return copy;
+};
+
+exports.updateVacancy = (id, req, callback) => {
   const config = {};
   const changes = {};
-  Object.keys(reqBody).forEach((key) => {
-    config[`${key}`] = `${reqBody[key]}`;
+  const secSkills = req.secondary_skills || [];
+  const otherSkills = req.other_skills || [];
+
+  Object.keys(req).forEach((key) => {
+    config[`${key}`] = `${req[key]}`;
     changes[`${key}`] = 1;
   });
+  clearSkills(config);
+  clearSkills(changes);
 
-  delete config.secondary_skills;
-  const secondarySkills = reqBody.secondary_skills || [];
-
-  delete changes.secondary_skills;
   delete changes.primary_skill_lvl;
-  changes.secondary_skills = reqBody.secondary_skills.length ? 1 : 0;
+  changes.vacancy_id = id;
+  changes.user_id = 2; // User ID
+  changes.secondary_skills = req.secondary_skills ? 1 : 0;
   changes.change_date = formatDate(new Date());
 
-  vacancyModel.updateVacancy(id, config, changes, secondarySkills, callback);
+  vacancyModel.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
+};
+
+exports.addVacancy = (req, callback) => {
+  const vacancy = {};
+// const secSkills = req.secondary_skills || [];
+// const otherSkills = req.other_skills || [];
+  Object.keys(req).forEach((key) => {
+    vacancy[`${key}`] = `${req[key]}`;
+  });
+  clearSkills(vacancy);
+  vacancy.request_date = formatDate(new Date());
+  vacancy.start_date = formatDate(new Date());
+  vacancyModel.addVacancy(vacancy, callback);
 };
