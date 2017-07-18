@@ -24,19 +24,29 @@ exports.getVacancyOtherSkills = id =>
   LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
 
-exports.updateVacancy = id =>
-  `UPDATE vacancy SET ? WHERE id = ${id}`;
+exports.updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
 
 exports.deleteSecondarySkills = id =>
   `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
 
-exports.insSecSkill = (id, skill) =>
+exports.insertSecSkill = (id, skill) =>
   `INSERT INTO vacancy_secondary_skills (vacancy_id, skill_id, lvl)
-    VALUES (${id}, ${skill.id}, ${skill.lvl});`;
+    VALUES (${id}, ${skill.id}, ${skill.lvl})`;
 
-exports.commitChanges = () =>
-  'INSERT INTO vacancy_changes SET ?';
+exports.commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
 
 exports.generalHistory = (id, date) =>
   `INSERT INTO general_history (vacancy_change_id, change_date)
-   VALUES (${id}, "${date}");`;
+  VALUES (${id},'${date}')`;
+
+exports.deleteOtherSkills = id =>
+  `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
+
+exports.insertOtherSkill = (id, skillId) =>
+  `INSERT INTO other_skills_has_vacancy (vacancy_id, other_skills_id)
+    VALUES (${id}, ${skillId})`;
+
+exports.addVacancy = vacancy =>
+`INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, status)
+VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}',
+'${vacancy.primary_skill}', ${vacancy.primary_skill_lvl}, ${vacancy.city} ,${vacancy.status})`;
