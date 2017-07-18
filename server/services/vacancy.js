@@ -12,6 +12,7 @@ exports.getVacancy = (id, callback) => {
     callback(error, finalResult);
   });
 };
+
 /**
   * DATETIME
   * The supported range is '1000-01-01 00:00:00' to '9999-12-31 23:59:59'.
@@ -30,12 +31,18 @@ exports.updateVacancy = (id, reqBody, callback) => {
   });
 
   delete config.secondary_skills;
+  delete config.other_skills;
   const secondarySkills = reqBody.secondary_skills || [];
+  const otherSkills = reqBody.other_skills || [];
+  console.log(otherSkills);
 
   delete changes.secondary_skills;
+  delete changes.other_skills;
   delete changes.primary_skill_lvl;
-  changes.secondary_skills = reqBody.secondary_skills.length ? 1 : 0;
+  changes.vacancy_id = id;
+  changes.user_id = 2; // User ID
+  changes.secondary_skills = reqBody.secondary_skills ? 1 : 0;
   changes.change_date = formatDate(new Date());
 
-  vacancyModel.updateVacancy(id, config, changes, secondarySkills, callback);
+  vacancyModel.updateVacancy(id, config, changes, secondarySkills, otherSkills, callback);
 };
