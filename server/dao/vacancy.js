@@ -1,21 +1,7 @@
 const mysql = require('mysql');
 const async = require('async');
 const vacancyQueries = require('../queries/vacancy-queries.js');
-
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'qweasdzxc',
-  database: 'pick_brains_db',
-});
-
-connection.connect((error) => {
-  if (error) {
-    console.log('Db connection error');
-    throw error;
-  }
-  console.log('Connected to db');
-});
+const connection = require('./connection.js').conenction;
 
 exports.getVacancies = (config, callback) => {
   connection.query(vacancyQueries.getVacancies(config), callback);
