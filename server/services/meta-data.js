@@ -1,20 +1,29 @@
-const metaDataModel = require('../dao/meta-data.js');
+const metaDataDao = require('../dao/meta-data.js');
 
-exports.getLocations = (callback) => {
-  metaDataModel.getLocations(callback);
-};
-exports.getEnglishLevels = (callback) => {
-  metaDataModel.getEnglishLevels(callback);
-};
-exports.getSkills = (callback) => {
-  metaDataModel.getSkills(callback);
-};
-exports.getCandidateStatuses = (callback) => {
-  metaDataModel.getCandidateStatuses(callback);
-};
-exports.getOtherSkills = (callback) => {
-  metaDataModel.getOtherSkills(callback);
-};
-exports.getVacancyStatuses = (callback) => {
-  metaDataModel.getVacancyStatuses(callback);
+function getLocations(callback) {
+  metaDataDao.getLocations(callback);
+}
+function getEnglishLevels(callback) {
+  metaDataDao.getEnglishLevels(callback);
+}
+function getSkills(callback) {
+  metaDataDao.getSkills(callback);
+}
+function getCandidateStatuses(callback) {
+  metaDataDao.getCandidateStatuses(callback);
+}
+function getOtherSkills(callback) {
+  metaDataDao.getOtherSkills(callback);
+}
+function getVacancyStatuses(callback) {
+  metaDataDao.getVacancyStatuses(callback);
+}
+
+module.exports = {
+  getEnglishLevels,
+  getLocations,
+  getSkills,
+  getCandidateStatuses,
+  getOtherSkills,
+  getVacancyStatuses,
 };

@@ -17,7 +17,7 @@ connection.connect((error) => {
   console.log('Connected to db');
 });
 
-
 exports.getVacancies = (config, callback) => {
   connection.query(vacancyQueries.getVacancies(config), callback);
 };
+

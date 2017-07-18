@@ -290,6 +290,7 @@ CREATE TABLE `hrm_feedback` (
 
 LOCK TABLES `hrm_feedback` WRITE;
 /*!40000 ALTER TABLE `hrm_feedback` DISABLE KEYS */;
+INSERT INTO `hrm_feedback` VALUES (1, 'first reason', 'ready to work', 'ready to travel 1', 'motivation 1', 1, '500', 'first feedback', 1, 2, 1 ), (2, 'second reason', 'ready to work', 'ready to travel 2', 'motivation 2', 4, '200', 'first feedback', 2, 2, 2 ), (3, 'third reason', 'ready to work 3', 'ready to travel 3', 'motivation 3', 3, '200', 'third feedback', 2, 2, 3 ), (4, 'fouth reason', 'ready to work', 'ready to travel 2', 'motivation 2', 4, '200', 'first feedback', 2, 3, 4 )
 /*!40000 ALTER TABLE `hrm_feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
