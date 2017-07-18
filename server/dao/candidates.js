@@ -1,5 +1,5 @@
 const async = require('async');
-const query = require('./candidates-queries.js');
+const query = require('../queries/candidates-queries.js');
 const connection = require('./connection.js').connection;
 
 function get(skip, filter, callback) {
