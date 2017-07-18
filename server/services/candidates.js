@@ -11,7 +11,11 @@ function get(params, callback) {
   candidatesModel.get(skip, filter, (error, result) => {
     const res = result.map((value) => {
       const tmp = {};
-      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      if (value.ru_first_name) {
+        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+      } else{
+        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      }
       tmp.email = value.email;
       tmp.status = value.status;
       tmp.city = value.city;
