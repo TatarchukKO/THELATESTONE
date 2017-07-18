@@ -30,7 +30,7 @@ function getById(id, callback) {
     const res = item[0][0];
     res.emails = item[1].map(val => val.email);
     res.sec_skills = item[2];
-    res.other_skills = item[3].map(val => val.skill);
+    res.other_skills = item[3];
     callback(error, res);
   });
 }

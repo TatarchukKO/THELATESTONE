@@ -31,23 +31,23 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
         oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
-      (parError, result) => {
-        if (parError) {
-          return connection.rollback(() => {
-            throw parError;
-          });
-        }
-        connection.commit((commitError) => {
-          if (commitError) {
+        (parError, result) => {
+          if (parError) {
             return connection.rollback(() => {
-              throw commitError;
+              throw parError;
             });
           }
-          return undefined;
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+            return undefined;
+          });
+          callback(error, result);
+          return console.log('Transaction has been commited');
         });
-        callback(error, result);
-        return console.log('Transaction has been commited');
-      });
       return undefined;
     });
   });
@@ -58,49 +58,44 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
     if (transError) {
       throw transError;
     }
-    connection.query(query.update(id), candidate, (error) => {
-      if (error) {
-        return connection.rollback(() => {
-          throw error;
-        });
-      }
-      async.parallel([
-        call => connection.query(query.deleteEmails(id), (err) => {
-          if (err) {
-            return connection.rollback(() => {
-              throw error;
-            });
-          }
-          return async.parallel(
-            emails.map(val => eCall => connection.query(query.insertEmails(id, val), eCall)),
-            call);
-        }),
-        call => connection.query(query.deleteSecSkills(id), (err) => {
-          if (err) {
-            return connection.rollback(() => {
-              throw error;
-            });
-          }
-          return async.parallel(
-            secSkills.map(val => sCall => connection.query(query.insertSecSkills(id, val), sCall)),
-            call);
-        }),
-        call => connection.query(query.deleteOtherSkills(id), (err) => {
-          if (err) {
-            return connection.rollback(() => {
-              throw error;
-            });
-          }
-          return async.parallel(
-            oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
-            call);
-        }),
-        call => connection.query(query.commitChanges(), changes, call),
-        call => connection.query(query.generalHistory(id, changes.change_date), call)],
-      (parError, result) => {
-        if (parError) {
+    async.parallel([
+      call => connection.query(query.update(id), candidate, call),
+      call => connection.query(query.deleteEmails(id), (err) => {
+        if (err) {
           return connection.rollback(() => {
-            throw parError;
+            throw err;
+          });
+        }
+        return async.parallel(
+          emails.map(val => eCall => connection.query(query.insertEmails(id, val), eCall)),
+          call);
+      }),
+      call => connection.query(query.deleteSecSkills(id), (err) => {
+        if (err) {
+          return connection.rollback(() => {
+            throw err;
+          });
+        }
+        return async.parallel(
+          secSkills.map(val => sCall => connection.query(query.insertSecSkills(id, val), sCall)),
+          call);
+      }),
+      call => connection.query(query.deleteOtherSkills(id), (err) => {
+        if (err) {
+          return connection.rollback(() => {
+            throw err;
+          });
+        }
+        return async.parallel(
+          oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
+          call);
+      }),
+      call => connection.query(query.commitChanges(), changes, call),
+      call => connection.query(query.generalHistory(id, changes.change_date), call)],
+      (error, result) => {
+        if (error) {
+          return connection.rollback(() => {
+            throw error;
           });
         }
         connection.commit((commitError) => {
@@ -114,8 +109,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
         callback(error, result);
         return console.log('Update transaction has been commited');
       });
-      return undefined;
-    });
+    return undefined;
   });
 }
 

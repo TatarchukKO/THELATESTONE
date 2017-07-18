@@ -15,4 +15,6 @@ connection.connect((error) => {
   console.log('Models is connected');
 });
 
-exports.connection = connection;
+module.exports = {
+  connection,
+};

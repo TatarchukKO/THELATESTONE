@@ -1,4 +1,4 @@
-function get(skip = 0, filter) {
+function get(skip = 0, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
   Object.keys(filter).forEach((item, i) => {
@@ -46,14 +46,14 @@ function getEmails(id) {
 }
 
 function getSecondarySkills(id) {
-  return `SELECT skills.skill_name, candidate_secondary_skills.lvl 
+  return `SELECT skills.id, skills.skill_name, candidate_secondary_skills.lvl 
   FROM candidate_secondary_skills
   LEFT JOIN skills ON candidate_secondary_skills.skill_id = skills.id
   WHERE candidate_secondary_skills.candidate_id = ${id}`;
 }
 
 function getOtherSkills(id) {
-  return `SELECT other_skills.skill 
+  return `SELECT other_skills.skill, other_skills.id 
   FROM other_skills_has_candidate
   LEFT JOIN other_skills ON other_skills_has_candidate.other_skills_id = other_skills.id
   WHERE other_skills_has_candidate.candidate_id = ${id}`;
