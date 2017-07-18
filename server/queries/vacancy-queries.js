@@ -37,7 +37,7 @@ exports.commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
 
 exports.generalHistory = (id, date) =>
   `INSERT INTO general_history (vacancy_change_id, change_date)
-  VALUES (${id},"${date}")`;
+  VALUES (${id},'${date}')`;
 
 exports.deleteOtherSkills = id =>
   `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
@@ -45,3 +45,8 @@ exports.deleteOtherSkills = id =>
 exports.insertOtherSkill = (id, skillId) =>
   `INSERT INTO other_skills_has_vacancy (vacancy_id, other_skills_id)
     VALUES (${id}, ${skillId})`;
+
+exports.addVacancy = vacancy =>
+`INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, status)
+VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}',
+'${vacancy.primary_skill}', ${vacancy.primary_skill_lvl}, ${vacancy.city} ,${vacancy.status})`;

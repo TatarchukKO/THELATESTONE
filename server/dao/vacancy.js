@@ -32,9 +32,7 @@ exports.getVacancy = (id, callback) => {
 
 exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
-    if (transError) {
-      throw transError;
-    }
+    if (transError) throw transError;
     connection.query(vacancyQueries.updateVacancy(id), config, (error) => {
       if (error) {
         return connection.rollback(() => {
@@ -90,12 +88,14 @@ exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) 
                 throw commitError;
               });
             }
-            return undefined;
           });
           callback(error, result);
           return console.log('Commited');
         });
-      return undefined;
     });
   });
+};
+
+exports.addVacancy = (vacancy, callback) => {
+  connection.query(vacancyQueries.addVacancy(vacancy), callback);
 };

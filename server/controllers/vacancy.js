@@ -17,10 +17,7 @@ exports.getVacancies = (req, res) => {
 
 exports.getVacancy = (req, res) => {
   vacancyServices.getVacancy(req.params.id, (error, result) => {
-    if (error) {
-      console.log(error);
-      throw error;
-    }
+    if (error) throw error;
     return res.status(200).send(result);
   });
 };
@@ -28,9 +25,15 @@ exports.getVacancy = (req, res) => {
 exports.updateVacancy = (req, res) => {
   console.log(req.body);
   vacancyServices.updateVacancy(req.params.id, req.body, (error, result) => {
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+exports.addVacancy = (req, res) => {
+  console.log(req.body);
+  vacancyServices.addVacancy(req.body, (error, result) => {
+    if (error) throw error;
     return res.status(200).send(result);
   });
 };
