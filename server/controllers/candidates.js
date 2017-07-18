@@ -31,7 +31,7 @@ function insert(req, res) {
 }
 
 function update(req, res) {
-  candidatesService.update(req.params.id, req.body, (error) => {
+  candidatesService.update(req.params.id, req.body, req.user.id, (error) => {
     if (error) {
       res.status(500).send();
       throw error;

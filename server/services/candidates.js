@@ -53,7 +53,7 @@ function insert(candidate, callback) {
   candidatesModel.insert(item, emails, secSkills, oSkills, callback);
 }
 
-function update(id, candidate, callback) {
+function update(id, candidate, user, callback) {
   const changes = {};
   Object.keys(candidate).forEach((key) => {
     changes[`${key}`] = 1;
@@ -64,7 +64,7 @@ function update(id, candidate, callback) {
   }
   changes.change_date = candidate.change_date;
   changes.candidate_id = id;
-  changes.user_id = candidate.user_id;
+  changes.user_id = user;
   const emails = candidate.emails || [];
   const secSkills = candidate.sec_skills || [];
   const oSkills = candidate.other_skills || [];
@@ -79,7 +79,6 @@ function update(id, candidate, callback) {
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
-  delete item.user_id;
   delete item.change_date;
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, callback);
 }

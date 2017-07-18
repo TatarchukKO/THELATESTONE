@@ -7,20 +7,6 @@ const connection = require('../dao/connection.js').connection;
 
 const router = express.Router();
 
-router.post('/exit', (req, res) => {
-  if (!req.user) {
-    res.status(401).end();
-    return;
-  }
-  req.session.destroy((err) => {
-    if (err) {
-      res.send(err.message);
-      throw err;
-    }
-    res.end();
-  });
-});
-
 const options = {
   host: 'localhost',
   port: 3306,
@@ -76,7 +62,7 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-  connection.query(`SELECT login, password, type, first_name, second_name FROM users
+  connection.query(`SELECT id, login, password, type, first_name, second_name FROM users
   WHERE users.id = ${id}`, (error, res) => {
     done(error, res[0]);
   });
@@ -101,6 +87,20 @@ router.post('/login', (req, res) => {
       res.end();
     });
   })(req, res);
+});
+
+router.post('/exit', (req, res) => {
+  if (!req.user) {
+    res.status(401).end();
+    return;
+  }
+  req.session.destroy((err) => {
+    if (err) {
+      res.send(err.message);
+      throw err;
+    }
+    res.end();
+  });
 });
 
 module.exports = {

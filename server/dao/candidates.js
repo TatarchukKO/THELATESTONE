@@ -21,12 +21,12 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
       throw transError;
     }
     connection.query(query.insert(), candidate, (error, res) => {
-      const id = res.insertId;
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
       }
+      const id = res.insertId;
       async.parallel(Array.prototype.concat(
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
@@ -53,6 +53,54 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
   });
 }
 
+function updateSecSkill(secSkills, id, call) {
+  if (secSkills.length !== 0) {
+    return connection.query(query.deleteSecSkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        secSkills.map(val => sCall => connection.query(query.insertSecSkills(id, val), sCall)),
+        call);
+    });
+  }
+  return call(null, null);
+}
+
+function updateEmails(emails, id, call) {
+  if (emails.length !== 0) {
+    return connection.query(query.deleteEmails(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        emails.map(val => eCall => connection.query(query.insertEmails(id, val), eCall)),
+        call);
+    });
+  }
+  return call(null, null);
+}
+
+function updateOtherSkills(oSkills, id, call) {
+  if (oSkills.length !== 0) {
+    return connection.query(query.deleteOtherSkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
+        call);
+    });
+  }
+  return call(null, null);
+}
+
 function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -60,36 +108,9 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
     }
     async.parallel([
       call => connection.query(query.update(id), candidate, call),
-      call => connection.query(query.deleteEmails(id), (err) => {
-        if (err) {
-          return connection.rollback(() => {
-            throw err;
-          });
-        }
-        return async.parallel(
-          emails.map(val => eCall => connection.query(query.insertEmails(id, val), eCall)),
-          call);
-      }),
-      call => connection.query(query.deleteSecSkills(id), (err) => {
-        if (err) {
-          return connection.rollback(() => {
-            throw err;
-          });
-        }
-        return async.parallel(
-          secSkills.map(val => sCall => connection.query(query.insertSecSkills(id, val), sCall)),
-          call);
-      }),
-      call => connection.query(query.deleteOtherSkills(id), (err) => {
-        if (err) {
-          return connection.rollback(() => {
-            throw err;
-          });
-        }
-        return async.parallel(
-          oSkills.map(val => oCall => connection.query(query.insertOtherSkills(id, val), oCall)),
-          call);
-      }),
+      call => updateEmails(emails, id, call),
+      call => updateSecSkill(secSkills, id, call),
+      call => updateOtherSkills(oSkills, id, call),
       call => connection.query(query.commitChanges(), changes, call),
       call => connection.query(query.generalHistory(id, changes.change_date), call)],
       (error, result) => {
