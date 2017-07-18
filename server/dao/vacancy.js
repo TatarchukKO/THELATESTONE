@@ -23,7 +23,7 @@ exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) 
         return connection.rollback(() => {
           throw error;
         });
-      }
+       }
         async.parallel(
           [
             (call) => {
