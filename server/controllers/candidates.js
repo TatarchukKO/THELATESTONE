@@ -40,9 +40,20 @@ function update(req, res) {
   });
 }
 
+function search(req, res) {
+  candidatesService.search(req.body.candidate, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
+  search,
 };

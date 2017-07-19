@@ -14,5 +14,6 @@ router.put('/', candidatesCantroller.get);
 router.get('/:id', candidatesCantroller.getById);
 router.post('/new', candidatesCantroller.insert);
 router.patch('/edit/:id', candidatesCantroller.update);
+router.put('/search/', candidatesCantroller.search);
 
 module.exports = router;

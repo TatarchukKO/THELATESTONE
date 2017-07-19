@@ -15,7 +15,7 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, emails, secSkills, oSkills, callback) {
+function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
@@ -27,7 +27,10 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
         });
       }
       const id = res.insertId;
+      const meta = metaphone;
+      meta.candidate_id = id;
       async.parallel(Array.prototype.concat(
+        call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
         oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
@@ -134,9 +137,14 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
   });
 }
 
+function search(params, callback) {
+  return connection.query(query.search(params), callback);
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
+  search,
 };

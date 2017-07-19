@@ -1,5 +1,6 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
+const metaphone = require('metaphone');
 
 function get(params, callback) {
   const skip = params.skip;
@@ -62,10 +63,14 @@ function insert(candidate, callback) {
     item.eng_first_name = firstName;
     item.eng_second_name = translit(item.eng_second_name);
   }
+  const meta = {
+    first: metaphone(item.eng_first_name),
+    second: metaphone(item.eng_second_name),
+  };
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
-  candidatesModel.insert(item, emails, secSkills, oSkills, callback);
+  candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
 }
 
 function update(id, candidate, user, callback) {
@@ -98,9 +103,19 @@ function update(id, candidate, user, callback) {
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, callback);
 }
 
+function search(candidate, callback) {
+  let params = candidate.split(' ');
+  if (params.length > 2) {
+    params = params.slice(1, 3);
+  }
+  params = params.map(val => metaphone(val));
+  candidatesModel.search(params, callback);
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
+  search,
 };

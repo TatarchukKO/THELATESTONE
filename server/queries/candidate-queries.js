@@ -82,6 +82,10 @@ function insertOtherSkills(id, skill) {
     VALUES (${id}, ${skill});`;
 }
 
+function insertMeta() {
+  return 'INSERT INTO metaphone SET ?';
+}
+
 function update(id) {
   return `UPDATE candidate
     SET ?
@@ -112,6 +116,30 @@ function generalHistory(id, date) {
     VALUES (${id}, "${date}");`;
 }
 
+function search(params) {
+  const filter = [];
+  let i = 1;
+  filter[0] = `metaphone.first = "${params[0]}"`;
+  if (params[1]) {
+    filter[1] = ` AND metaphone.second = "${params[1]}"`;
+    filter[3] = ` AND metaphone.first = "${params[1]}"`;
+    i = 2;
+  }
+  filter[i] = ` OR metaphone.second = "${params[0]}"`;
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
+  candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
+  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
+  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, 
+  candidate_status.status 
+  FROM metaphone
+  LEFT JOIN candidate ON metaphone.candidate_id = candidate.id
+  LEFT JOIN location ON candidate.city = location.id
+  LEFT JOIN skills ON candidate.primary_skill = skills.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  WHERE ${filter.join('')}`;
+}
+
 module.exports = {
   get,
   getById,
@@ -122,10 +150,12 @@ module.exports = {
   insertEmails,
   insertSecSkills,
   insertOtherSkills,
+  insertMeta,
   update,
   deleteEmails,
   deleteSecSkills,
   deleteOtherSkills,
   commitChanges,
   generalHistory,
+  search,
 };
