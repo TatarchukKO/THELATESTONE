@@ -8,7 +8,7 @@ function getTsFeedbacksByCandidateId(id) {
 }
 function getSecondarySkillsByTsFeedbackId(id) {
   return `SELECT skills.skill_name, ts_secondary_skills.skill_lvl FROM ts_secondary_skills
-  LEFT JOIN skills ON ts_secondary_skills.skill_id = skills.id
+  INNER JOIN skills ON ts_secondary_skills.skill_id = skills.id
   WHERE ${id} = ts_secondary_skills.ts_feedback_id`;
 }
 function addTsFeedback(object) {

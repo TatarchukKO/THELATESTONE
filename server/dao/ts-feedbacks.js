@@ -3,9 +3,11 @@ const connection = require('./connection.js').connection;
 const tsFeedbackQueries = require('../queries/ts-feedback-queries.js');
 
 function uniteGetResults(feedbacks, otherSkills) {
+  let i = 0;
   return feedbacks.map((item) => {
     const cItem = item;
-    cItem.other_skills = otherSkills[1][0];
+    cItem.other_skills = otherSkills[i];
+    i += 1;
     return cItem;
   });
 }
@@ -21,8 +23,14 @@ function getTsFeedbacksByCandidateId(id, callback) {
         });
       }
       async.parallel(result.map(
-        item => cb => connection.query(
-          tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
+        item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), (e, r) => {
+          if (e) {
+            return connection.rollback(() => {
+              throw e;
+            });
+          }
+          cb(e, r);
+        })),
         (err, res) => {
           if (err) {
             return connection.rollback(() => {
@@ -35,11 +43,9 @@ function getTsFeedbacksByCandidateId(id, callback) {
                 throw commitError;
               });
             }
-            return undefined;
           });
-          return callback(err, uniteGetResults(result, res));
+          callback(err, uniteGetResults(result, res));
         });
-      return undefined;
     });
   });
 }

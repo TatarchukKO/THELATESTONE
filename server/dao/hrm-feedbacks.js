@@ -28,11 +28,9 @@ function addHrmFeedback(object, callback) {
               throw commitError;
             });
           }
-          return undefined;
         });
         return callback(err, res);
       });
-      return undefined;
     });
   });
 }
