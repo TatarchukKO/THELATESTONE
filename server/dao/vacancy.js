@@ -1,6 +1,6 @@
 const async = require('async');
 const vacancyQueries = require('../queries/vacancy-queries.js');
-const connection = require('./connection.js').conenction;
+const connection = require('./connection.js').connection;
 
 exports.getVacancies = (config, callback) => {
   connection.query(vacancyQueries.getVacancies(config), callback);

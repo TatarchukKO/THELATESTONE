@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const metaDataQueries = require('../queries/meta-data-queries.js');
-const connection = require('./connection.js').conenction;
+const connection = require('./connection.js').connection;
 
 exports.getEnglishLevels = (callback) => {
   connection.query(metaDataQueries.englishLevelsQuery, callback);

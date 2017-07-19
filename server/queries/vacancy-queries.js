@@ -6,7 +6,7 @@ exports.getVacancies = config =>
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  LIMIT ${config.limit}, 2`;
+  LIMIT ${config.limit}, 5`;
 
 /** Single Vacancy */
 

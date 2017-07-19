@@ -4,21 +4,14 @@
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
-<<<<<<< HEAD
-=======
     "cors": "^2.8.4",
     "eslint-config-airbnb": "^15.0.2",
->>>>>>> da8d29624e9ab58303835ea2e65f88be5560923e
     "express": "^4.15.3",
     "express-mysql-session": "^1.2.1",
     "express-session": "^1.15.3",
     "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-<<<<<<< HEAD
-    "eslint-config-airbnb": "^15.0.2",
-=======
->>>>>>> da8d29624e9ab58303835ea2e65f88be5560923e
     "translitit-cyrillic-russian-to-latin": "^0.1.1"
   },
   "devDependencies": {

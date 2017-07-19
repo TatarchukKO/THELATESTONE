@@ -3,24 +3,24 @@ const bodyParser = require('body-parser');
 const metaData = require('./server/routes/meta-data.js');
 const vacancy = require('./server/routes/vacancy.js');
 const candidate = require('./server/routes/candidates.js');
-const authentication = require('./server/authentication/passport.js');
+// const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
 
 const app = express();
-authentication.init(app);
+// authentication.init(app);
 app.set('port', (process.env.PORT || 1337));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use('/api/authentication/', authentication.router);
+// app.use('/api/authentication/', authentication.router);
 
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   if (!req.user) {
     res.status(401).send();
   } else {
     next();
   }
-});
+});*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
