@@ -9,6 +9,7 @@ const getVacancy = (id, callback) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
+    finalResult.other_skills = vacancyInfo[2];
     callback(error, finalResult);
   });
 };
