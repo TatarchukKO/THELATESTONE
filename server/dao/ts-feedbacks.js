@@ -11,6 +11,7 @@ function uniteResults(feedbacks, otherSkills) {
     return cItem;
   });
 }
+
 function getByCandidateId(id, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -54,12 +55,14 @@ function insert(object, callback) {
     if (transError) {
       throw transError;
     }
+
     connection.query(tsFeedbackQueries.insert(object), (fError, fResult) => {
       if (fError) {
         return connection.rollback(() => {
           throw fError;
         });
       }
+
       const id = fResult.insertId;
       async.parallel(object.secondary_skills.map(
         item => cb => connection.query(tsFeedbackQueries.insertTsSecondarySkills(item, id), cb)),
@@ -69,12 +72,14 @@ function insert(object, callback) {
               throw sError;
             });
           }
+
           connection.query(tsFeedbackQueries.insertEventToGeneralHistory(id), (hError, hResult) => {
             if (hError) {
               return connection.rollback(() => {
                 throw hError;
               });
             }
+
             connection.commit((commitError) => {
               if (commitError) {
                 return connection.rollback(() => {
@@ -82,6 +87,7 @@ function insert(object, callback) {
                 });
               }
             });
+
             return callback(hError, hResult);
           });
         });
