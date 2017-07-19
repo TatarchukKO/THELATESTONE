@@ -1,10 +1,10 @@
 const vacancyModel = require('../dao/vacancy.js');
 
-exports.getVacancies = (config, callback) => {
+const getVacancies = (config, callback) => {
   vacancyModel.getVacancies(config, callback);
 };
 
-exports.getVacancy = (id, callback) => {
+const getVacancy = (id, callback) => {
   vacancyModel.getVacancy(id, (error, result) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
@@ -12,11 +12,6 @@ exports.getVacancy = (id, callback) => {
     callback(error, finalResult);
   });
 };
-
-/**
-  * DATETIME
-  * The supported range is '1000-01-01 00:00:00' to '9999-12-31 23:59:59'.
-  */
 
 const formatDate = date =>
   `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} 
@@ -29,7 +24,7 @@ const clearSkills = (obj) => {
   return copy;
 };
 
-exports.updateVacancy = (id, req, callback) => {
+const updateVacancy = (id, req, callback) => {
   const config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
@@ -51,7 +46,7 @@ exports.updateVacancy = (id, req, callback) => {
   vacancyModel.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 };
 
-exports.addVacancy = (req, callback) => {
+const addVacancy = (req, callback) => {
   const vacancy = {};
 // const secSkills = req.secondary_skills || [];
 // const otherSkills = req.other_skills || [];
@@ -63,3 +58,11 @@ exports.addVacancy = (req, callback) => {
   vacancy.start_date = formatDate(new Date());
   vacancyModel.addVacancy(vacancy, callback);
 };
+
+module.exports = {
+  getVacancies,
+  getVacancy,
+  addVacancy,
+  updateVacancy,
+};
+

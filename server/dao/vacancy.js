@@ -1,66 +1,76 @@
 const async = require('async');
+<<<<<<< HEAD
 const vacancyQueries = require('../queries/vacancy-queries.js');
 const connection = require('./connection.js').connenction;
+=======
+const query = require('../queries/vacancy-queries.js');
+const connection = require('./connection.js').connection;
+>>>>>>> bf9bd0ceb295aa57ae9512d071321f9f14d573a0
 
-exports.getVacancies = (config, callback) => {
-  connection.query(vacancyQueries.getVacancies(config), callback);
+const getVacancies = (config, callback) => {
+  connection.query(query.getVacancies(config), callback);
 };
 
-exports.getVacancy = (id, callback) => {
+const getVacancy = (id, callback) => {
   async.parallel(
     [
-      call => connection.query(vacancyQueries.getVacancy(id), call),
-      call => connection.query(vacancyQueries.getVacancyOtherSkills(id), call),
+      call => connection.query(query.getVacancy(id), call),
+      call => connection.query(query.getVacancyOtherSkills(id), call),
     ],
     callback);
 };
 
-exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
+const updateSecondarySkills = (secSkills, id, call) => {
+  if (secSkills) {
+    connection.query(query.deleteSecondarySkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        secSkills.map(val => eCall =>
+          connection.query(query.insertSecSkill(id, val), eCall)),
+        call);
+    });
+  }
+};
+
+const updateOtherSkills = (otherSkills, id, call) => {
+  if (otherSkills) {
+    connection.query(query.deleteOtherSkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        otherSkills.map(val => eCall =>
+          connection.query(query.insertOtherSkill(id, val), eCall)),
+        call);
+    });
+  }
+};
+
+const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
-    connection.query(vacancyQueries.updateVacancy(id), config, (error) => {
+    connection.query(query.updateVacancy(id), config, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
-       }
-        async.parallel(
-          [
-            (call) => {
-              if (secSkills) {
-                connection.query(vacancyQueries.deleteSecondarySkills(id), (err) => {
-                  if (err) {
-                    return connection.rollback(() => {
-                      throw error;
-                    });
-                  }
-                  return async.parallel(
-                    secSkills.map(val => eCall =>
-                      connection.query(vacancyQueries.insertSecSkill(id, val), eCall)),
-                    call);
-                });
-              }
-            },
-            (call) => {
-              if (otherSkills) {
-                connection.query(vacancyQueries.deleteOtherSkills(id), (err) => {
-                  if (err) {
-                    return connection.rollback(() => {
-                      throw error;
-                    });
-                  }
-                  return async.parallel(
-                    otherSkills.map(val => eCall =>
-                      connection.query(vacancyQueries.insertOtherSkill(id, val), eCall)),
-                    call);
-                });
-              }
-            },
-            call =>
-              connection.query(vacancyQueries.commitChanges(), changes, call),
-            call =>
-              connection.query(vacancyQueries.generalHistory(id, changes.change_date), call),
-          ],
+      }
+      async.parallel(
+        [
+          call => updateSecondarySkills(secSkills, id, call),
+          call => updateOtherSkills(otherSkills, id, call),
+          call => connection.query(query.commitChanges(), changes, call),
+          call =>
+            connection.query(
+              query.generalHistory(id, changes.change_date),
+              call),
+        ],
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {
@@ -81,6 +91,13 @@ exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) 
   });
 };
 
-exports.addVacancy = (vacancy, callback) => {
-  connection.query(vacancyQueries.addVacancy(vacancy), callback);
+const addVacancy = (vacancy, callback) => {
+  connection.query(query.addVacancy(vacancy), callback);
+};
+
+module.exports = {
+  getVacancies,
+  getVacancy,
+  updateVacancy,
+  addVacancy,
 };
