@@ -1,15 +1,15 @@
 const hrmFeedbackService = require('../services/hrm-feedbacks.js');
 
-function getHrmFeedbacksByCandidateId(req, res) {
-  hrmFeedbackService.getHrmFeedbacksByCandidateId(req.params.id, (error, result) => {
+function getByCandidateId(req, res) {
+  hrmFeedbackService.getByCandidateId(req.params.id, (error, result) => {
     if (error) {
       throw error;
     }
     return res.status(200).send(result);
   });
 }
-function addHrmFeedback(req, res) {
-  hrmFeedbackService.addHrmFeedback(req.body, (error) => {
+function insert(req, res) {
+  hrmFeedbackService.insert(req.body, (error) => {
     if (error) {
       throw error;
     }
@@ -18,6 +18,6 @@ function addHrmFeedback(req, res) {
 }
 
 module.exports = {
-  getHrmFeedbacksByCandidateId,
-  addHrmFeedback,
+  getByCandidateId,
+  insert,
 };

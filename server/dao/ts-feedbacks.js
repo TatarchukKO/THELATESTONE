@@ -2,7 +2,7 @@ const async = require('async');
 const connection = require('./connection.js').connection;
 const tsFeedbackQueries = require('../queries/ts-feedback-queries.js');
 
-function uniteGetResults(feedbacks, otherSkills) {
+function uniteResults(feedbacks, otherSkills) {
   let i = 0;
   return feedbacks.map((item) => {
     const cItem = item;
@@ -11,12 +11,12 @@ function uniteGetResults(feedbacks, otherSkills) {
     return cItem;
   });
 }
-function getTsFeedbacksByCandidateId(id, callback) {
+function getByCandidateId(id, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    connection.query(tsFeedbackQueries.getTsFeedbacksByCandidateId(id), (error, result) => {
+    connection.query(tsFeedbackQueries.getByCandidateId(id), (error, result) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
@@ -44,17 +44,17 @@ function getTsFeedbacksByCandidateId(id, callback) {
               });
             }
           });
-          callback(err, uniteGetResults(result, res));
+          callback(err, uniteResults(result, res));
         });
     });
   });
 }
-function addTsFeedback(object, callback) {
+function insert(object, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    connection.query(tsFeedbackQueries.addTsFeedback(object), (fError, fResult) => {
+    connection.query(tsFeedbackQueries.insert(object), (fError, fResult) => {
       if (fError) {
         return connection.rollback(() => {
           throw fError;
@@ -62,14 +62,14 @@ function addTsFeedback(object, callback) {
       }
       const id = fResult.insertId;
       async.parallel(object.secondary_skills.map(
-        item => cb => connection.query(tsFeedbackQueries.addTsSecondarySkills(item, id), cb)),
+        item => cb => connection.query(tsFeedbackQueries.insertTsSecondarySkills(item, id), cb)),
         (sError) => {
           if (sError) {
             return connection.rollback(() => {
               throw sError;
             });
           }
-          connection.query(tsFeedbackQueries.addEventToGeneralHistory(id), (hError, hResult) => {
+          connection.query(tsFeedbackQueries.insertEventToGeneralHistory(id), (hError, hResult) => {
             if (hError) {
               return connection.rollback(() => {
                 throw hError;
@@ -81,18 +81,15 @@ function addTsFeedback(object, callback) {
                   throw commitError;
                 });
               }
-              return undefined;
             });
             return callback(hError, hResult);
           });
-          return undefined;
         });
-      return undefined;
     });
   });
 }
 
 module.exports = {
-  getTsFeedbacksByCandidateId,
-  addTsFeedback,
+  getByCandidateId,
+  insert,
 };

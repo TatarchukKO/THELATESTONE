@@ -1,22 +1,22 @@
 const connection = require('./connection.js').connection;
 const hrmFeedbackQueries = require('../queries/hrm-feedback-queries.js');
 
-function getHrmFeedbacksByCandidateId(id, callback) {
-  connection.query(hrmFeedbackQueries.getHrmFeedbacksByIdQuery(id), callback);
+function getByCandidateId(id, callback) {
+  connection.query(hrmFeedbackQueries.getByCandidateId(id), callback);
 }
-function addHrmFeedback(object, callback) {
+function insert(object, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    connection.query(hrmFeedbackQueries.addHrmFeedbackQuery(object), (error, result) => {
+    connection.query(hrmFeedbackQueries.insert(object), (error, result) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
       }
       const id = result.insertId;
-      connection.query(hrmFeedbackQueries.addEventToGeneralHistory(id), (err, res) => {
+      connection.query(hrmFeedbackQueries.insertEventToGeneralHistory(id), (err, res) => {
         if (err) {
           return connection.rollback(() => {
             throw err;
@@ -36,6 +36,6 @@ function addHrmFeedback(object, callback) {
 }
 
 module.exports = {
-  getHrmFeedbacksByCandidateId,
-  addHrmFeedback,
+  getByCandidateId,
+  insert,
 };

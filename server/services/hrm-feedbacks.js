@@ -1,13 +1,13 @@
 const hrmFeedbackDao = require('../dao/hrm-feedbacks.js');
 
-function getHrmFeedbacksByCandidateId(id, callback) {
-  hrmFeedbackDao.getHrmFeedbacksByCandidateId(id, callback);
+function getByCandidateId(id, callback) {
+  hrmFeedbackDao.getByCandidateId(id, callback);
 }
-function addHrmFeedback(object, callback) {
-  hrmFeedbackDao.addHrmFeedback(object, callback);
+function insert(object, callback) {
+  hrmFeedbackDao.insert(object, callback);
 }
 
 module.exports = {
-  getHrmFeedbacksByCandidateId,
-  addHrmFeedback,
+  getByCandidateId,
+  insert,
 };
