@@ -11,6 +11,7 @@ app.set('port', (process.env.PORT || 1337));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/authentication/', authentication.router);
+
 app.use((req, res, next) => {
   if (!req.user) {
     res.status(401).send();
