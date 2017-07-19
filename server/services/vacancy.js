@@ -9,6 +9,7 @@ const getVacancy = (id, callback) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
+    finalResult.other_skills = vacancyInfo[2];
     callback(error, finalResult);
   });
 };
@@ -48,15 +49,17 @@ const updateVacancy = (id, req, callback) => {
 
 const addVacancy = (req, callback) => {
   const vacancy = {};
-// const secSkills = req.secondary_skills || [];
-// const otherSkills = req.other_skills || [];
+  const secSkills = req.secondary_skills || [];
+  const otherSkills = req.other_skills || [];
   Object.keys(req).forEach((key) => {
     vacancy[`${key}`] = `${req[key]}`;
   });
   clearSkills(vacancy);
   vacancy.request_date = formatDate(new Date());
   vacancy.start_date = formatDate(new Date());
-  vacancyModel.addVacancy(vacancy, callback);
+  console.log(`SecSkills : ${secSkills}`);
+  console.log(`SecSkills : ${otherSkills}`);
+  vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 
 module.exports = {
