@@ -13,7 +13,7 @@ function get(params, callback) {
       const tmp = {};
       if (value.ru_first_name) {
         tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
-      } else{
+      } else {
         tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
       }
       tmp.email = value.email;
@@ -32,6 +32,17 @@ function getById(id, callback) {
   candidatesModel.getById(id, (error, result) => {
     const item = result.map(val => val[0]);
     const res = item[0][0];
+    if (res.ru_first_name) {
+      res.first_name = res.ru_first_name;
+      res.second_name = res.ru_second_name;
+      delete res.ru_first_name;
+      delete res.ru_second_name;
+    } else {
+      res.first_name = res.eng_first_name;
+      res.second_name = res.eng_second_name;
+    }
+    delete res.eng_first_name;
+    delete res.eng_second_name;
     res.emails = item[1].map(val => val.email);
     res.sec_skills = item[2];
     res.other_skills = item[3];
