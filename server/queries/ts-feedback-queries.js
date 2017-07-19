@@ -1,9 +1,10 @@
 function getByCandidateId(id) {
-  return `SELECT t_f.id, u.first_name, u.second_name, v.name, s.skill_name, t_f.primary_skill_lvl FROM ts_feedback t_f
+  return `SELECT t_f.id, u.first_name, u.second_name, v.name, i.date, s.skill_name, t_f.primary_skill_lvl FROM ts_feedback t_f
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
   LEFT JOIN candidate c ON t_f.candidate_id = c.id
   LEFT JOIN users u ON t_f.user_id = u.id
   LEFT JOIN vacancy v ON v.id = t_f.vacancy_id
+  LEFT JOIN interview i ON i.id = t_f.interview_id
   WHERE ${id} = t_f.candidate_id`;
 }
 function getSecondarySkillsByTsFeedbackId(id) {
@@ -13,9 +14,9 @@ function getSecondarySkillsByTsFeedbackId(id) {
 }
 function insert(object) {
   return `INSERT INTO ts_feedback
-  (primary_skill_id, primary_skill_lvl, candidate_id, vacancy_id, user_id)
+  (primary_skill_id, primary_skill_lvl, candidate_id, vacancy_id, user_id, interview_id)
   VALUES ('${object.primary_skill_id}', '${object.primary_skill_lvl}',
-  '${object.candidate_id}', '${object.vacancy_id}', '${object.user_id}')`;
+  '${object.candidate_id}', '${object.vacancy_id}', '${object.user_id}', '${object.id}')`;
 }
 function insertTsSecondarySkills(item, id) {
   console.log(item);
