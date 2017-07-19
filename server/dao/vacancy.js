@@ -90,22 +90,16 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
 const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
-     connection.query(query.addVacancy(vacancy), (error) => {
+    connection.query(query.addVacancy(vacancy), (error, res) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
       }
-      async.parallel(
-        [
-          call => updateSecondarySkills(secSkills, id, call),
-          call => updateOtherSkills(otherSkills, id, call),
-          call => connection.query(query.commitChanges(), changes, call),
-          call =>
-            connection.query(
-              query.generalHistory(id, changes.change_date),
-              call),
-        ],
+      const id = res.insertId;
+      async.parallel(Array.prototype.concat(
+          secSkills.map(val => call => connection.query(query.insertSecSkill(id, val), call)),
+          otherSkills.map(val => call => connection.query(query.insertOtherSkill(id, val), call))),
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {
