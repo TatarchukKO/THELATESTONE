@@ -18,7 +18,8 @@ function get(skip = 0, filter = {}) {
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
-  skills.skill_name, candidate_emails.email, candidate_status.status FROM candidate
+  skills.skill_name, candidate_emails.email, candidate_status.status
+  FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
@@ -29,10 +30,12 @@ function get(skip = 0, filter = {}) {
 }
 
 function getById(id) {
-  return `SELECT candidate.id, candidate.eng_first_name, 
-  candidate.eng_second_name, candidate.linkedin, candidate.skype, candidate.phone,  location.city, 
-  candidate.exp_year, candidate.salary_wish, english_lvl.lvl, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status FROM candidate
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
+  candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
+  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
+  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, 
+  candidate_status.status 
+  FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
@@ -41,7 +44,8 @@ function getById(id) {
 }
 
 function getEmails(id) {
-  return `SELECT candidate_emails.email FROM candidate_emails
+  return `SELECT candidate_emails.email
+  FROM candidate_emails
   WHERE candidate_emails.candidate_id = ${id}`;
 }
 
