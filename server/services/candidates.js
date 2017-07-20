@@ -96,11 +96,16 @@ function update(id, candidate, user, callback) {
     item.eng_first_name = firstName;
     item.eng_second_name = translit(item.eng_second_name);
   }
+  const meta = {
+    first: metaphone(item.eng_first_name),
+    second: metaphone(item.eng_second_name),
+    candidate_id: id,
+  };
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
   delete item.change_date;
-  candidatesModel.update(id, item, emails, secSkills, oSkills, changes, callback);
+  candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
 function search(candidate, callback) {

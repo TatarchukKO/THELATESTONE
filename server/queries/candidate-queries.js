@@ -91,6 +91,11 @@ function update(id) {
     SET ?
     WHERE id = ${id}`;
 }
+function deleteRuName(id) {
+  return `UPDATE candidate
+    SET ru_first_name = NULL, ru_second_name = NULL
+    WHERE candidate.id = ${id}`;
+}
 
 function deleteEmails(id) {
   return `DELETE FROM candidate_emails
@@ -104,6 +109,11 @@ function deleteSecSkills(id) {
 
 function deleteOtherSkills(id) {
   return `DELETE FROM other_skills_has_candidate
+    WHERE candidate_id = ${id};`;
+}
+
+function deleteMeta(id) {
+  return `DELETE FROM metaphone
     WHERE candidate_id = ${id};`;
 }
 
@@ -152,9 +162,11 @@ module.exports = {
   insertOtherSkills,
   insertMeta,
   update,
+  deleteRuName,
   deleteEmails,
   deleteSecSkills,
   deleteOtherSkills,
+  deleteMeta,
   commitChanges,
   generalHistory,
   search,
