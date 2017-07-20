@@ -91,6 +91,7 @@ function update(id) {
     SET ?
     WHERE id = ${id}`;
 }
+
 function deleteRuName(id) {
   return `UPDATE candidate
     SET ru_first_name = NULL, ru_second_name = NULL
@@ -126,28 +127,39 @@ function generalHistory(id, date) {
     VALUES (${id}, "${date}");`;
 }
 
-function search(params) {
-  const filter = [];
-  let i = 1;
-  filter[0] = `metaphone.first = "${params[0]}"`;
+function search(params, filter) {
+  const query = [];
+  let index = 1;
+  query[0] = `metaphone.first = "${params[0]}"`;
   if (params[1]) {
-    filter[1] = ` AND metaphone.second = "${params[1]}"`;
-    filter[3] = ` AND metaphone.first = "${params[1]}"`;
-    i = 2;
+    query[1] = ` AND metaphone.second = "${params[1]}"`;
+    query[3] = ` AND metaphone.first = "${params[1]}"`;
+    index = 2;
   }
-  filter[i] = ` OR metaphone.second = "${params[0]}"`;
+  query[index] = ` OR metaphone.second = "${params[0]}"`;
+  index += 1;
+  Object.keys(filter).forEach((item, i) => {
+    if (item === 'salary_wish') {
+      query[i + index] = ` AND candidate.${item} >= ${filter[item][0]} 
+        AND candidate.${item} <= ${filter[item][1]}`;
+      return;
+    }
+    if (item === 'exp_year') {
+      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      return;
+    }
+    query[i + index] = ` AND candidate.${item} = ${filter[item]}`;
+  });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
-  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
-  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, 
-  candidate_status.status 
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
+  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
   FROM metaphone
   LEFT JOIN candidate ON metaphone.candidate_id = candidate.id
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
-  WHERE ${filter.join('')}`;
+  WHERE ${query.join('')}`;
 }
 
 module.exports = {

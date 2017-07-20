@@ -1,4 +1,5 @@
 const candidatesService = require('../services/candidates.js');
+const trie = require('../services/trie-search.js');
 
 function get(req, res) {
   candidatesService.get(req.body, (error, result) => {
@@ -41,7 +42,7 @@ function update(req, res) {
 }
 
 function search(req, res) {
-  candidatesService.search(req.body.candidate, (error, result) => {
+  candidatesService.search(req.body, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;
@@ -50,10 +51,23 @@ function search(req, res) {
   });
 }
 
+function trieSearch(req, res) {
+  const params = req.params.candidate.split('+');
+  if (params.lenght > 2) {
+    return res.status(404).send();
+  }
+  const answer = trie.search(params.join(' '));
+  if (answer) {
+    return res.status(200).send(answer);
+  }
+  return res.status(404).send();
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
   search,
+  trieSearch,
 };

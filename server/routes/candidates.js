@@ -15,5 +15,6 @@ router.get('/:id', candidatesCantroller.getById);
 router.post('/new', candidatesCantroller.insert);
 router.patch('/edit/:id', candidatesCantroller.update);
 router.put('/search/', candidatesCantroller.search);
+router.get('/trie-search/:candidate', candidatesCantroller.trieSearch);
 
 module.exports = router;

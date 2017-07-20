@@ -13,7 +13,8 @@
     "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "translitit-cyrillic-russian-to-latin": "^0.1.1"
+    "translitit-cyrillic-russian-to-latin": "^0.1.1",
+    "trie-search": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

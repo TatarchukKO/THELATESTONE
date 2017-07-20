@@ -108,13 +108,32 @@ function update(id, candidate, user, callback) {
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
-function search(candidate, callback) {
-  let params = candidate.split(' ');
+function search(body, callback) {
+  let params = body.candidate.split(' ');
+  const filter = body;
+  delete filter.candidate;
   if (params.length > 2) {
     params = params.slice(1, 3);
   }
-  params = params.map(val => metaphone(val));
-  candidatesModel.search(params, callback);
+  params = params.map(val => metaphone(translit(val)));
+  candidatesModel.search(params, filter, (error, result) => {
+    const res = result.map((value) => {
+      const tmp = {};
+      if (value.ru_first_name) {
+        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+      } else {
+        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      }
+      tmp.email = value.email;
+      tmp.status = value.status;
+      tmp.city = value.city;
+      tmp.contact_date = value.contact_date;
+      tmp.skill_name = value.skill_name;
+      tmp.id = value.id;
+      return tmp;
+    });
+    callback(error, res);
+  });
 }
 
 module.exports = {

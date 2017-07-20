@@ -30,8 +30,8 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
       const meta = metaphone;
       meta.candidate_id = id;
       async.parallel(
-        call => connection.query(query.insertMeta(), meta, call),
         Array.prototype.concat(
+        call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
         oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
@@ -50,7 +50,7 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
             return undefined;
           });
           callback(error, result);
-          return console.log('Transaction has been commited');
+          return console.log('Insert transaction has been commited');
         });
       return undefined;
     });
@@ -161,8 +161,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
   });
 }
 
-function search(params, callback) {
-  return connection.query(query.search(params), callback);
+function search(params, filter, callback) {
+  return connection.query(query.search(params, filter), callback);
 }
 
 module.exports = {
