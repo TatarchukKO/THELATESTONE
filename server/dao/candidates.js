@@ -1,6 +1,7 @@
 const async = require('async');
 const query = require('../queries/candidate-queries.js');
 const connection = require('./connection.js').connection;
+const ts = require('../services/trie-search').ts;
 
 function get(skip, filter, callback) {
   connection.query(query.get(skip, filter), callback);
@@ -47,7 +48,10 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
-            return undefined;
+            return ts.add({
+              id,
+              name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
+            });
           });
           callback(error, result);
           return console.log('Insert transaction has been commited');

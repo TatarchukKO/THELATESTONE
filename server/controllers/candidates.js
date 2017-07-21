@@ -52,12 +52,12 @@ function search(req, res) {
 }
 
 function trieSearch(req, res) {
-  const params = req.params.candidate.split('+');
+  const params = req.query.candidate.split(' ');
   if (params.lenght > 2) {
     return res.status(404).send();
   }
   const answer = trie.search(params.join(' '));
-  if (answer) {
+  if (answer.length) {
     return res.status(200).send(answer);
   }
   return res.status(404).send();

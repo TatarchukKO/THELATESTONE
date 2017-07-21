@@ -49,7 +49,10 @@ passport.use(new LocalStrategy({
     WHERE login = "${login}"`, (error, res) => {
       const user = res[0];
       if (error) {
-        throw error;
+        return done(error);
+      }
+      if (!user) {
+        return done(null, false, { message: 'No such user.' });
       }
       if (user.password !== password) {
         return done(null, false, { message: 'Incorrect password.' });
@@ -69,22 +72,19 @@ passport.deserializeUser((id, done) => {
 });
 
 router.post('/login', (req, res) => {
-  passport.authenticate('local', (autError, user) => {
+  passport.authenticate('local', (autError, user, result) => {
     if (autError) {
-      res.send(autError.message);
-      throw autError;
+      return res.status(500).send(autError.message);
     }
     if (!user) {
-      res.send('Authorization Error');
-      return;
+      return res.status(400).send(result.message);
     }
 
     req.logIn(user, (logError) => {
       if (logError) {
-        res.send(logError.message);
-        throw logError;
+        return res.status(403).send(logError.message);
       }
-      res.end();
+      res.status(202).end();
     });
   })(req, res);
 });
