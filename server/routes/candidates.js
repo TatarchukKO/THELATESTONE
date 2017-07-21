@@ -1,5 +1,7 @@
 const express = require('express');
 const candidatesCantroller = require('../controllers/candidates.js');
+const validate = require('express-validation');
+const validation = require('../validation/candidates.js');
 
 const router = express.Router();
 
@@ -10,11 +12,11 @@ router.use((req, res, next) => {
     next();
   }
 });
-router.put('/', candidatesCantroller.get);
-router.get('/trie-search', candidatesCantroller.trieSearch);
-router.get('/:id', candidatesCantroller.getById);
-router.post('/new', candidatesCantroller.insert);
-router.patch('/edit/:id', candidatesCantroller.update);
-router.put('/search/', candidatesCantroller.search);
+router.put('/', validate(validation.get), candidatesCantroller.get);
+router.get('/trie-search', validate(validation.trieSearch), candidatesCantroller.trieSearch);
+router.get('/search/', validate(validation.search), candidatesCantroller.search);
+router.get('/:id', validate(validation.getById), candidatesCantroller.getById);
+router.post('/new', validate(validation.insert), candidatesCantroller.insert);
+router.patch('/edit/:id', validate(validation.update), candidatesCantroller.update);
 
 module.exports = router;

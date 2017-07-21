@@ -42,7 +42,7 @@ function update(req, res) {
 }
 
 function search(req, res) {
-  candidatesService.search(req.body, (error, result) => {
+  candidatesService.search(req.query, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;

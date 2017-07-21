@@ -4,6 +4,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MySQLStore = require('express-mysql-session')(session);
 const connection = require('../dao/connection.js').connection;
+const validate = require('express-validation');
+const validation = require('../validation/authentication.js');
 
 const router = express.Router();
 
@@ -71,7 +73,7 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', validate(validation.login), (req, res) => {
   passport.authenticate('local', (autError, user, result) => {
     if (autError) {
       return res.status(500).send(autError.message);
@@ -89,7 +91,7 @@ router.post('/login', (req, res) => {
   })(req, res);
 });
 
-router.post('/exit', (req, res) => {
+router.post('/exit', validate(validation.exit), (req, res) => {
   if (!req.user) {
     res.status(401).end();
     return;
