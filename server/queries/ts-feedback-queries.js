@@ -19,7 +19,6 @@ function insert(object) {
   '${object.candidate_id}', '${object.vacancy_id}', '${object.user_id}', '${object.id}')`;
 }
 function insertTsSecondarySkills(item, id) {
-  console.log(item);
   return `INSERT INTO ts_secondary_skills
   (ts_feedback_id, skill_lvl, skill_id)
   VALUES ('${id}', '${item.skill_lvl}', '${item.skill_id}')`;

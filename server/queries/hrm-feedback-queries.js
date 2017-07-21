@@ -13,7 +13,7 @@ function insert(object) {
   motivation, english_lvl, salary_wish, other, vacancy_id, user_id, candidate_id, interview_id)
   VALUES ('${object.change_reason}', '${object.ready_to_work}', '${object.ready_to_travell}',
     '${object.motivation}', '${object.english_lvl}', '${object.salary_wish}',
-    '${object.other}', '${object.vacancy_id}', '${object.user_id}', '${object.candidate_id}', '${object.id}')`;
+    '${object.other}', '${object.vacancy_id}', '${object.user_id}', '${object.candidate_id}', '${object.interview_id}')`;
 }
 function insertEventToGeneralHistory(id) {
   return `INSERT INTO general_history (hrm_feedback_id, change_date)
