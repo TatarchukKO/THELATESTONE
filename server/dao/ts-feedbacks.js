@@ -51,7 +51,7 @@ function getByCandidateId(id, callback) {
           throw error;
         });
       }
-      async.parallel(result.map(
+      /* async.parallel(result.map(
         item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), (e, r) => {
           if (e) {
             return connection.rollback(() => {
@@ -74,7 +74,15 @@ function getByCandidateId(id, callback) {
             }
           });
           callback(err, uniteResults(result, res));
-        });
+        });*/
+      connection.commit((commitError) => {
+        if (commitError) {
+          return connection.rollback(() => {
+            throw commitError;
+          });
+        }
+        callback(error, result);
+      });
     });
   });
 }

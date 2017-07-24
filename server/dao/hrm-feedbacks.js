@@ -26,8 +26,10 @@ function insert(object, callback) {
       throw transError;
     }
     async
-      .waterfall([async.apply(insertFeedback, object),
-        insertEventToGeneralHistory],
+      .waterfall([
+        async.apply(insertFeedback, object),
+        insertEventToGeneralHistory,
+      ],
       (err, res) => {
         if (err) {
           return connection.rollback(() => {
