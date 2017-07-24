@@ -107,6 +107,15 @@ const search = {
   query: {
     candidate: Joi.string().required(),
   },
+  body: {
+    skip: Joi.number().integer(),
+    city: Joi.number().integer(),
+    salary_wish: Joi.array(),
+    primary_skill: Joi.number().integer(),
+    status: Joi.number().integer(),
+    english_lvl: Joi.number().integer(),
+    exp_year: Joi.number().integer(),
+  },
 };
 
 module.exports = {

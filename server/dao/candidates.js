@@ -142,8 +142,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
       call => updateSecSkill(secSkills, id, call),
       call => updateOtherSkills(oSkills, id, call),
       call => updateMeta(meta, call),
-      call => connection.query(query.commitChanges(), changes, call),
-      call => connection.query(query.generalHistory(id, changes.change_date), call)],
+      call => connection.query(query.commitChanges(), changes, (error, result) =>
+        connection.query(query.generalHistory(result.insertId, changes.change_date), call))],
       (error, result) => {
         if (error) {
           return connection.rollback(() => {
@@ -156,7 +156,12 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
               throw commitError;
             });
           }
-          return undefined;
+          if (candidate.eng_first_name) {
+            return ts.add({
+              id,
+              name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
+            });
+          }
         });
         callback(error, result);
         return console.log('Update transaction has been commited');
@@ -165,8 +170,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
   });
 }
 
-function search(params, filter, callback) {
-  return connection.query(query.search(params, filter), callback);
+function search(params, skip, filter, callback) {
+  return connection.query(query.search(params, skip, filter), callback);
 }
 
 module.exports = {

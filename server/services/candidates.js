@@ -108,15 +108,19 @@ function update(id, candidate, user, callback) {
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
-function search(body, callback) {
-  let params = body.candidate.split(' ');
-  const filter = body;
-  delete filter.candidate;
+function search(query, body, callback) {
+  let params = query.candidate.split(' ');
+  const skip = body.skip;
+  let filter = body;
+  delete filter.skip;
+  if (Object.keys(filter).length === 0) {
+    filter = undefined;
+  }
   if (params.length > 2) {
     params = params.slice(1, 3);
   }
   params = params.map(val => metaphone(translit(val)));
-  candidatesModel.search(params, filter, (error, result) => {
+  candidatesModel.search(params, skip, filter, (error, result) => {
     const res = result.map((value) => {
       const tmp = {};
       if (value.ru_first_name) {

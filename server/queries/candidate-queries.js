@@ -127,17 +127,18 @@ function generalHistory(id, date) {
     VALUES (${id}, "${date}");`;
 }
 
-function search(params, filter) {
+function search(params, skip = 0, filter = {}) {
   const query = [];
-  let index = 1;
+  let index = 2;
   query[0] = `metaphone.first = "${params[0]}"`;
   if (params[1]) {
     query[1] = ` AND metaphone.second = "${params[1]}"`;
     query[3] = ` AND metaphone.first = "${params[1]}"`;
-    index = 2;
+    query[2] = ` OR metaphone.second = "${params[0]}"`;
+    index = 4;
+  } else {
+    query[1] = ` OR metaphone.second = "${params[0]}"`;
   }
-  query[index] = ` OR metaphone.second = "${params[0]}"`;
-  index += 1;
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
       query[i + index] = ` AND candidate.${item} >= ${filter[item][0]} 
@@ -159,7 +160,8 @@ function search(params, filter) {
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
-  WHERE ${query.join('')}`;
+  WHERE ${query.join('')}
+  LIMIT ${skip}, 7`;
 }
 
 module.exports = {
