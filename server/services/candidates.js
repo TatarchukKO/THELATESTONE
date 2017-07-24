@@ -1,6 +1,7 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
+const convKeys = require('convert-keys');
 
 function get(params, callback) {
   const skip = params.skip;
@@ -25,7 +26,7 @@ function get(params, callback) {
       tmp.id = value.id;
       return tmp;
     });
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 
@@ -47,15 +48,16 @@ function getById(id, callback) {
     res.emails = item[1].map(val => val.email);
     res.sec_skills = item[2];
     res.other_skills = item[3];
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 
 function insert(candidate, callback) {
-  const emails = candidate.emails || [];
-  const secSkills = candidate.sec_skills || [];
-  const oSkills = candidate.other_skills || [];
-  const item = candidate;
+  const cond = convKeys.toSnake(candidate);
+  const emails = cond.emails || [];
+  const secSkills = cond.sec_skills || [];
+  const oSkills = cond.other_skills || [];
+  const item = cond;
   const firstName = translit(item.eng_first_name);
   if (firstName !== item.eng_first_name) {
     item.ru_first_name = item.eng_first_name;
@@ -136,7 +138,7 @@ function search(query, body, callback) {
       tmp.id = value.id;
       return tmp;
     });
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 
