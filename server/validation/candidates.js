@@ -23,7 +23,7 @@ const getById = {
     allowUnknownQuery: false,
     allowUnknownParams: false,
   },
-  params: {
+  query: {
     id: Joi.number().integer(),
   },
 };
@@ -51,14 +51,14 @@ const insert = {
     primary_skill: Joi.number().integer().required(),
     primary_skill_lvl: Joi.number().integer().required(),
     english_lvl: Joi.number().integer().required(),
-    exp_year: Joi.number().integer().required(),
+    exp_year: Joi.string().required(),
     emails: Joi.array(),
     sec_skills: Joi.array(),
     other_skills: Joi.array(),
     linkedin: Joi.string(),
     phone: Joi.string(),
     skype: Joi.string(),
-    contact_date: Joi.string().required(),
+    contact_date: Joi.string(),
     eng_first_name: Joi.string(),
     eng_second_name: Joi.string(),
     ru_first_name: Joi.string(),
@@ -72,7 +72,7 @@ const update = {
     allowUnknownQuery: false,
     allowUnknownParams: false,
   },
-  params: {
+  query: {
     id: Joi.number().integer().required(),
   },
   body: {
