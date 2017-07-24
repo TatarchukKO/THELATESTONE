@@ -1,12 +1,14 @@
 /** All Vacancies */
 
+const capacity = 5;
+
 exports.getVacancies = config =>
   `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
   skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  LIMIT ${config.limit}, 5`;
+  LIMIT ${config.limit}, ${capacity}`;
 
 /** Single Vacancy */
 
@@ -18,11 +20,18 @@ exports.getVacancy = id =>
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
   WHERE vacancy.id = ${id}`;
 
-exports.getVacancyOtherSkills = id =>
+exports.getSecondarySkills = id =>
   `SELECT skills.skill_name, vacancy_secondary_skills.lvl
   FROM vacancy_secondary_skills
   LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
+
+
+exports.getOtherSkills = id =>
+  `SELECT other_skills.skill, other_skills.id 
+  FROM other_skills_has_vacancy
+  LEFT JOIN other_skills ON other_skills_has_vacancy.other_skills_id = other_skills.id
+  WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
 
 exports.updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
 

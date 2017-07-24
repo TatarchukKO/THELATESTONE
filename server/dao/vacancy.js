@@ -10,7 +10,8 @@ const getVacancy = (id, callback) => {
   async.parallel(
     [
       call => connection.query(query.getVacancy(id), call),
-      call => connection.query(query.getVacancyOtherSkills(id), call),
+      call => connection.query(query.getSecondarySkills(id), call),
+      call => connection.query(query.getOtherSkills(id), call),
     ],
     callback);
 };
@@ -86,8 +87,37 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
   });
 };
 
-const addVacancy = (vacancy, callback) => {
-  connection.query(query.addVacancy(vacancy), callback);
+const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
+  connection.beginTransaction((transError) => {
+    if (transError) throw transError;
+    connection.query(query.addVacancy(vacancy), (error, res) => {
+      if (error) {
+        return connection.rollback(() => {
+          throw error;
+        });
+      }
+      const id = res.insertId;
+      async.parallel(Array.prototype.concat(
+          secSkills.map(val => call => connection.query(query.insertSecSkill(id, val), call)),
+          otherSkills.map(val => call => connection.query(query.insertOtherSkill(id, val), call))),
+        (parError, result) => {
+          if (parError) {
+            return connection.rollback(() => {
+              throw parError;
+            });
+          }
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+          });
+          callback(error, result);
+          return console.log('Commited');
+        });
+    });
+  });
 };
 
 module.exports = {
@@ -96,3 +126,4 @@ module.exports = {
   updateVacancy,
   addVacancy,
 };
+
