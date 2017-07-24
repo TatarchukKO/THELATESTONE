@@ -26,8 +26,8 @@ DROP TABLE IF EXISTS `candidate`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `candidate` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ru_first_name` varchar(45) NOT NULL,
-  `ru_second_name` varchar(45) NOT NULL,
+  `ru_first_name` varchar(45) DEFAULT NULL,
+  `ru_second_name` varchar(45) DEFAULT NULL,
   `eng_first_name` varchar(45) NOT NULL,
   `eng_second_name` varchar(45) NOT NULL,
   `linkedin` varchar(45) DEFAULT NULL,
@@ -46,11 +46,12 @@ CREATE TABLE `candidate` (
   KEY `fk_english_lvl_id_idx` (`english_lvl`),
   KEY `fk_primary_skill_id_idx` (`primary_skill`),
   KEY `fk_condidate_con_status_idx` (`status`),
+  FULLTEXT KEY `ft_index` (`eng_first_name`,`eng_second_name`),
   CONSTRAINT `fk_condidate_con_status` FOREIGN KEY (`status`) REFERENCES `candidate_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_condidate_english_lvl` FOREIGN KEY (`english_lvl`) REFERENCES `english_lvl` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_condidate_location` FOREIGN KEY (`city`) REFERENCES `location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_condidate_primary_skill` FOREIGN KEY (`primary_skill`) REFERENCES `skills` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +60,7 @@ CREATE TABLE `candidate` (
 
 LOCK TABLES `candidate` WRITE;
 /*!40000 ALTER TABLE `candidate` DISABLE KEYS */;
-INSERT INTO `candidate` VALUES (1,'Илья','Шавель','Ilya','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-09-01 00:00:00',500,4,'2017-07-11 15:49:00',12,7,1),(2,'Илья','ЫЫЫы','Ilya','blblblb','surl','thatYPE','+375269558',4,'2016-09-01 00:00:00',500,4,'2017-07-11 15:53:38',1,1,1),(3,'Андрей','322','Andrew','322','someurl','KYPE','+375322',8,'2017-06-01 00:00:00',100,1,'2017-07-11 15:53:38',12,4,1),(4,'Что','Я','TYT','DELAU','POMOGITE','PLES','SPASEBA',1,'2076-09-01 00:00:00',0,5,'2017-07-11 15:53:38',5,9,1);
+INSERT INTO `candidate` VALUES (1,'Илья','Шавель','Ilya','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-09-01 00:00:00',500,4,'2017-07-11 15:49:00',12,7,1),(2,NULL,NULL,'dsfds','cvocvidvudsvbsdvsdv','someidurl','61132165ddsfd','+375222554928',4,'2016-09-01 00:00:00',500,4,'2017-07-11 15:53:38',1,1,8),(3,'Андрей','322','Andrew','322','someurl','KYPE','+375322',8,'2017-06-01 00:00:00',100,1,'2017-07-11 15:53:38',12,4,1),(4,'Что','Я','TYT','DELAU','POMOGITE','PLES','SPASEBA',1,'2076-09-01 00:00:00',0,5,'2017-07-11 15:53:38',5,9,1),(18,NULL,NULL,'Ilya','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-08-31 00:00:00',500,4,'2017-07-11 00:00:00',13,7,1),(19,NULL,NULL,'Ilya','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-08-31 00:00:00',500,4,'2017-07-11 00:00:00',13,7,1),(20,NULL,NULL,'Ilya','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-08-31 00:00:00',500,4,'2017-07-11 00:00:00',13,7,1),(21,'Илья','Шавель','Ylia','Shavel','someidurl','thatOMGSKYPE','+375228',4,'2016-08-31 00:00:00',500,4,'2017-07-11 00:00:00',13,7,1),(24,NULL,NULL,'Gi','blblbblblblblblblbl','someidurl','61132165ddsfd','+375222554928',1,'2017-07-07 00:00:00',NULL,2,'2017-07-07 00:00:00',1,1,1),(26,NULL,NULL,'Gi','TATArchuk','someidurl','61132165ddsfd','+375222554928',1,'2017-07-07 00:00:00',NULL,2,'2017-07-07 00:00:00',1,1,1);
 /*!40000 ALTER TABLE `candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,7 +80,7 @@ CREATE TABLE `candidate_changes` (
   `ru_second_name` tinyint(4) DEFAULT NULL,
   `eng_first_name` tinyint(4) DEFAULT NULL,
   `eng_second_name` tinyint(4) DEFAULT NULL,
-  `email_id` tinyint(4) DEFAULT NULL,
+  `emails` tinyint(4) DEFAULT NULL,
   `linkedin` tinyint(4) DEFAULT NULL,
   `skype` tinyint(4) DEFAULT NULL,
   `phone` tinyint(4) DEFAULT NULL,
@@ -89,21 +90,14 @@ CREATE TABLE `candidate_changes` (
   `exp_year` tinyint(4) DEFAULT NULL,
   `salary_wish` tinyint(4) DEFAULT NULL,
   `english_lvl` tinyint(4) DEFAULT NULL,
-  `contact_date` tinyint(4) DEFAULT NULL,
-  `hrm_name` tinyint(4) DEFAULT NULL,
-  `candidate_status` tinyint(4) DEFAULT NULL,
-  `vacansy` tinyint(4) DEFAULT NULL,
-  `interview_date` tinyint(4) DEFAULT NULL,
-  `hrm_feedback` tinyint(4) DEFAULT NULL,
-  `ts_feedback` tinyint(4) DEFAULT NULL,
-  `resume` tinyint(4) DEFAULT NULL,
-  `notify_date` tinyint(4) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `sec_skills` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_candidate_id_idx` (`candidate_id`),
   KEY `fk_user_id_idx` (`user_id`),
   CONSTRAINT `fk_candidate_change_candidate` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_candidate_change_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,6 +106,7 @@ CREATE TABLE `candidate_changes` (
 
 LOCK TABLES `candidate_changes` WRITE;
 /*!40000 ALTER TABLE `candidate_changes` DISABLE KEYS */;
+INSERT INTO `candidate_changes` VALUES (1,2,2,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(2,2,2,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(4,2,2,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(5,2,2,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(8,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(9,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(10,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(11,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(12,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(13,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1),(15,2,1,'2017-07-07 00:00:00',NULL,NULL,1,1,1,1,1,1,NULL,1,1,NULL,NULL,NULL,1,1);
 /*!40000 ALTER TABLE `candidate_changes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +124,7 @@ CREATE TABLE `candidate_emails` (
   PRIMARY KEY (`id`),
   KEY `fk_candidate_id_idx` (`candidate_id`),
   CONSTRAINT `fk_emails_candidate` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +133,7 @@ CREATE TABLE `candidate_emails` (
 
 LOCK TABLES `candidate_emails` WRITE;
 /*!40000 ALTER TABLE `candidate_emails` DISABLE KEYS */;
-INSERT INTO `candidate_emails` VALUES (1,1,'THATMAIL@MAIL.WOW'),(2,1,'HMMMM@dog.dot'),(3,2,'secmail@gmail.com'),(4,3,'dunno@g.m'),(5,4,'m@k.c');
+INSERT INTO `candidate_emails` VALUES (1,1,'THATMAIL@MAIL.WOW'),(2,1,'HMMMM@dog.dot'),(4,3,'dunno@g.m'),(5,4,'m@k.c'),(7,18,'secmail@gmail.com'),(8,19,'secmail@gmail.com'),(9,20,'secmail@gmail.com'),(10,21,'secmail@gmail.com'),(25,24,'secTHATMAILmail@gmail.com'),(35,2,'secTHATMAILmail@gmail.com'),(36,26,'secTHATMAILmail@gmail.com');
 /*!40000 ALTER TABLE `candidate_emails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,7 +154,7 @@ CREATE TABLE `candidate_secondary_skills` (
   KEY `skill_is_idx` (`skill_id`),
   CONSTRAINT `fk_can_skills_candidate_` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_can_skils_skill` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,7 +163,7 @@ CREATE TABLE `candidate_secondary_skills` (
 
 LOCK TABLES `candidate_secondary_skills` WRITE;
 /*!40000 ALTER TABLE `candidate_secondary_skills` DISABLE KEYS */;
-INSERT INTO `candidate_secondary_skills` VALUES (1,1,5,5),(2,1,6,4),(3,1,3,15),(4,2,2,3),(5,2,3,9),(6,3,5,5),(7,3,6,4),(8,3,3,15),(9,4,5,5),(10,4,6,4);
+INSERT INTO `candidate_secondary_skills` VALUES (1,1,5,5),(2,1,6,4),(3,1,3,15),(6,3,5,5),(7,3,6,4),(8,3,3,15),(9,4,5,5),(10,4,6,4),(11,18,2,3),(12,18,3,15),(13,19,2,3),(14,19,3,15),(15,20,2,3),(16,20,3,15),(17,21,2,3),(18,21,3,15),(85,24,2,3),(86,24,3,15),(105,2,2,3),(106,2,3,15),(107,26,2,3),(108,26,3,15);
 /*!40000 ALTER TABLE `candidate_secondary_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,8 +227,9 @@ CREATE TABLE `general_history` (
   `vacancy_change_id` int(11) DEFAULT NULL,
   `candidate_change_id` int(11) DEFAULT NULL,
   `hrm_feedback_id` int(11) DEFAULT NULL,
-  `change_date` datetime NOT NULL,
   `ts_feedback_id` int(11) DEFAULT NULL,
+  `interview_id` int(11) DEFAULT NULL,
+  `change_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_vacancy_change_id_idx` (`vacancy_change_id`),
   KEY `fk_candidate_change_id_idx` (`candidate_change_id`),
@@ -243,7 +239,7 @@ CREATE TABLE `general_history` (
   CONSTRAINT `fk_history_hrm_feedback` FOREIGN KEY (`hrm_feedback_id`) REFERENCES `hrm_feedback` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_history_ts_feedback` FOREIGN KEY (`ts_feedback_id`) REFERENCES `ts_feedback` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_history_vacancy_change` FOREIGN KEY (`vacancy_change_id`) REFERENCES `vacancy_changes` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,6 +248,7 @@ CREATE TABLE `general_history` (
 
 LOCK TABLES `general_history` WRITE;
 /*!40000 ALTER TABLE `general_history` DISABLE KEYS */;
+INSERT INTO `general_history` VALUES (1,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(2,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(5,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(6,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(7,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(8,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(9,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(10,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00'),(12,NULL,2,NULL,NULL,NULL,'2017-07-07 00:00:00');
 /*!40000 ALTER TABLE `general_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,11 +266,12 @@ CREATE TABLE `hrm_feedback` (
   `ready_to_travell` varchar(45) NOT NULL,
   `motivation` text NOT NULL,
   `english_lvl` int(11) NOT NULL,
-  `salary_expectation` varchar(45) NOT NULL,
+  `salary_wish` int(11) NOT NULL,
   `other` text,
   `vacancy_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `candidate_id` int(11) NOT NULL,
+  `interview_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_vacncy_id_idx` (`vacancy_id`),
   KEY `fk_user_id_idx` (`user_id`),
@@ -290,8 +288,33 @@ CREATE TABLE `hrm_feedback` (
 
 LOCK TABLES `hrm_feedback` WRITE;
 /*!40000 ALTER TABLE `hrm_feedback` DISABLE KEYS */;
-INSERT INTO `hrm_feedback` VALUES (1, 'first reason', 'ready to work', 'ready to travel 1', 'motivation 1', 1, '500', 'first feedback', 1, 2, 1 ), (2, 'second reason', 'ready to work', 'ready to travel 2', 'motivation 2', 4, '200', 'first feedback', 2, 2, 2 ), (3, 'third reason', 'ready to work 3', 'ready to travel 3', 'motivation 3', 3, '200', 'third feedback', 2, 2, 3 ), (4, 'fouth reason', 'ready to work', 'ready to travel 2', 'motivation 2', 4, '200', 'first feedback', 2, 3, 4 )
 /*!40000 ALTER TABLE `hrm_feedback` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `interview`
+--
+
+DROP TABLE IF EXISTS `interview`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interview` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `candidate_id` int(11) NOT NULL,
+  `vacancy_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `interview`
+--
+
+LOCK TABLES `interview` WRITE;
+/*!40000 ALTER TABLE `interview` DISABLE KEYS */;
+/*!40000 ALTER TABLE `interview` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -316,6 +339,32 @@ LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
 INSERT INTO `location` VALUES (1,'USA, Walnut Creek'),(2,'USA, Boulder'),(3,'Belarus, Gomel'),(4,'Belarus, Minsk'),(5,'Belarus, Vitebsk'),(6,'Lithuania, Klaipėda'),(7,'Lithuania, Vilnius'),(8,'Poland, Bialystock'),(9,'Poland, Szczecin'),(10,'Poland, Warsaw'),(11,'Russia, Chelyabinsk'),(12,'Russia, Yekaterinburg'),(13,'Ukraine, Kharkov'),(14,'Ukraine, Vinnytsia');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `metaphone`
+--
+
+DROP TABLE IF EXISTS `metaphone`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `metaphone` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `candidate_id` int(11) NOT NULL,
+  `first` varchar(45) NOT NULL,
+  `second` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `metaphone`
+--
+
+LOCK TABLES `metaphone` WRITE;
+/*!40000 ALTER TABLE `metaphone` DISABLE KEYS */;
+INSERT INTO `metaphone` VALUES (1,24,'J','BLBLBLBLBLBLBLBLBL'),(6,2,'TSFTS','KFKFTFTSFBSTFSTF'),(7,26,'J','TTRXK');
+/*!40000 ALTER TABLE `metaphone` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -366,7 +415,7 @@ CREATE TABLE `other_skills_has_candidate` (
 
 LOCK TABLES `other_skills_has_candidate` WRITE;
 /*!40000 ALTER TABLE `other_skills_has_candidate` DISABLE KEYS */;
-INSERT INTO `other_skills_has_candidate` VALUES (2,1),(3,1);
+INSERT INTO `other_skills_has_candidate` VALUES (2,1),(3,1),(1,2),(2,2),(1,24),(2,24),(1,26),(2,26);
 /*!40000 ALTER TABLE `other_skills_has_candidate` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -396,6 +445,31 @@ LOCK TABLES `other_skills_has_vacancy` WRITE;
 /*!40000 ALTER TABLE `other_skills_has_vacancy` DISABLE KEYS */;
 INSERT INTO `other_skills_has_vacancy` VALUES (2,1),(3,1),(4,3);
 /*!40000 ALTER TABLE `other_skills_has_vacancy` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `expires` int(11) unsigned NOT NULL,
+  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+INSERT INTO `sessions` VALUES ('CIW-X1WNQCrDUCAjMgSU0nwI1Sv_0q1F',1500718649,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2017-07-22T10:17:28.835Z\",\"httpOnly\":true,\"path\":\"/\"},\"passport\":{\"user\":1}}');
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -431,18 +505,19 @@ DROP TABLE IF EXISTS `ts_feedback`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ts_feedback` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pirmary_skill_id` int(11) NOT NULL,
+  `primary_skill_id` int(11) NOT NULL,
   `primary_skill_lvl` int(11) NOT NULL,
-  `candidat_id` int(11) NOT NULL,
+  `candidate_id` int(11) NOT NULL,
   `vacancy_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `interview_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_candidate_id_idx` (`candidat_id`),
-  KEY `fk_primary_skill_id_idx` (`pirmary_skill_id`),
+  KEY `fk_candidate_id_idx` (`candidate_id`),
+  KEY `fk_primary_skill_id_idx` (`primary_skill_id`),
   KEY `fk_vacancy_id_idx` (`vacancy_id`),
   KEY `fk_user_id_idx` (`user_id`),
-  CONSTRAINT `fk_ts_feedback_candidate` FOREIGN KEY (`candidat_id`) REFERENCES `candidate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ts_feedback_primary_skill` FOREIGN KEY (`pirmary_skill_id`) REFERENCES `skills` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ts_feedback_candidate` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ts_feedback_primary_skill` FOREIGN KEY (`primary_skill_id`) REFERENCES `skills` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ts_feedback_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ts_feedback_vacancy` FOREIGN KEY (`vacancy_id`) REFERENCES `vacancy` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -498,6 +573,8 @@ CREATE TABLE `users` (
   `login` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
+  `first_name` varchar(45) NOT NULL,
+  `second_name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -508,7 +585,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','admin','admin'),(2,'Ilya','1488','HRM'),(3,'Kostya','228','HRM'),(4,'Andrey','1','TECH');
+INSERT INTO `users` VALUES (1,'admin','admin','admin','AAAA','POMOGITE'),(2,'Ilya','1488','HRM','MNE','PLS'),(3,'Kostya','228','HRM','KaK','ZE'),(4,'Andrey','1','TECH','SLOZNO','TUT');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -528,6 +605,10 @@ CREATE TABLE `vacancy` (
   `primary_skill_lvl` int(11) NOT NULL,
   `city` int(11) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
+  `linkedin` text,
+  `exp_year` datetime NOT NULL,
+  `english_lvl` int(11) NOT NULL,
+  `salary_wish` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_location_id_idx` (`city`),
   KEY `fk_primaryskill_id_idx` (`primary_skill`),
@@ -544,7 +625,7 @@ CREATE TABLE `vacancy` (
 
 LOCK TABLES `vacancy` WRITE;
 /*!40000 ALTER TABLE `vacancy` DISABLE KEYS */;
-INSERT INTO `vacancy` VALUES (1,'WOWSUCHVAC','2017-07-11 16:20:35','2018-09-03 00:00:00',1,3,4,1),(2,'Foooo','2017-07-11 16:20:35','2018-02-03 00:00:00',3,9,5,1),(3,'hmmmmmmmmmm','2017-07-11 16:20:35','2045-09-03 00:00:00',5,9,2,1),(4,'LOL&KEK','2017-07-11 16:20:35','2099-12-31 00:00:00',6,6,6,1);
+INSERT INTO `vacancy` VALUES (1,'work&travel','2017-07-11 16:20:35','2018-09-03 00:00:00',1,3,4,1,NULL,'0000-00-00 00:00:00',0,NULL),(2,'Foooo','2017-07-11 16:20:35','2018-02-03 00:00:00',3,9,5,1,NULL,'0000-00-00 00:00:00',0,NULL),(3,'exadel','2017-07-11 16:20:35','2045-09-03 00:00:00',5,9,2,1,NULL,'0000-00-00 00:00:00',0,NULL),(4,'Bot','2017-07-11 16:20:35','2099-12-31 00:00:00',6,6,6,1,NULL,'0000-00-00 00:00:00',0,NULL);
 /*!40000 ALTER TABLE `vacancy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,6 +648,7 @@ CREATE TABLE `vacancy_changes` (
   `primary_skill` tinyint(4) DEFAULT NULL,
   `other_skills` tinyint(4) DEFAULT NULL,
   `city` tinyint(4) DEFAULT NULL,
+  `secondary_skills` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_vacansy_id_idx` (`vacansy_id`),
   KEY `fk_user_id_idx` (`user_id`),
@@ -647,4 +729,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-11 16:28:33
+-- Dump completed on 2017-07-21 13:20:56

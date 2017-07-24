@@ -10,6 +10,7 @@ const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
 
 const app = express();
+
 authentication.init(app);
 app.set('port', (process.env.PORT || 1337));
 app.use(bodyParser.json());
@@ -18,6 +19,7 @@ app.use(cors({
   origin: true,
   credentials: true,
 }));
+
 
 app.use('/api/authentication/', authentication.router);
 
