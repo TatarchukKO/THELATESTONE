@@ -61,12 +61,8 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
         [
           call => updateSecondarySkills(secSkills, id, call),
           call => updateOtherSkills(otherSkills, id, call),
-          call => connection.query(query.commitChanges(), changes, call),
-          call =>
-            connection.query(
-              query.generalHistory(id, changes.change_date),
-              call),
-        ],
+          call => connection.query(query.commitChanges(), changes, (err, res) =>
+          connection.query(query.generalHistory(res.insertId, changes.change_date), call))],
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {

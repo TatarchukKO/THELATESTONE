@@ -1,12 +1,12 @@
 const vacancyServices = require('../services/vacancy.js');
 
-const getConfig = {
+const filter = {
   limit: null,
 };
 
 const getVacancies = (req, res) => {
-  getConfig.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
-  vacancyServices.getVacancies(getConfig, (error, result) => {
+  filter.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
+  vacancyServices.getVacancies(filter, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
