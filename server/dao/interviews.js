@@ -1,25 +1,22 @@
 const async = require('async');
 const connection = require('./connection.js').connection;
-const hrmFeedbackQueries = require('../queries/hrm-feedback-queries.js');
+const interviewQueries = require('../queries/interview-queries.js');
 
-function insertFeedback(object, cb) {
-  connection.query(hrmFeedbackQueries.insert(object), (err, res) => {
+function insertInterview(object, cb) {
+  connection.query(interviewQueries.insert(object), (err, res) => {
     if (!err) {
       cb(null, res.insertId);
     }
   });
 }
 function insertEventToGeneralHistory(id, cb) {
-  connection.query(hrmFeedbackQueries.insertEventToGeneralHistory(id), (err) => {
+  connection.query(interviewQueries.insertEventToGeneralHistory(id), (err) => {
     if (!err) {
       cb(null);
     }
   });
 }
 
-function getByCandidateId(id, callback) {
-  connection.query(hrmFeedbackQueries.getByCandidateId(id), callback);
-}
 function insert(object, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -27,7 +24,7 @@ function insert(object, callback) {
     }
     async
       .waterfall([
-        async.apply(insertFeedback, object),
+        async.apply(insertInterview, object),
         insertEventToGeneralHistory,
       ],
       (err, res) => {
@@ -47,8 +44,15 @@ function insert(object, callback) {
       });
   });
 }
+function getByUserId(id, callback) {
+  connection.query(interviewQueries.getByUserId(id), callback);
+}
+function getByCandidateId(id, callback) {
+  connection.query(interviewQueries.getByCandidateId(id), callback);
+}
 
 module.exports = {
-  getByCandidateId,
   insert,
+  getByUserId,
+  getByCandidateId,
 };
