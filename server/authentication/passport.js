@@ -67,7 +67,7 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-  connection.query(`SELECT id, login, password, type, first_name, second_name FROM users
+  connection.query(`SELECT id, login, type, first_name, second_name FROM users
   WHERE users.id = ${id}`, (error, res) => {
     done(error, res[0]);
   });

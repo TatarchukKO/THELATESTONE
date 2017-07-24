@@ -45,6 +45,9 @@ app.use('/api/candidates/', candidate);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 app.use('/api/interviews/', interview);
+app.get('/api/user', (req, res) => {
+  res.status(200).send(req.user);
+});
 
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
 
