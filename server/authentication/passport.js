@@ -13,7 +13,7 @@ const options = {
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: 'jhjkj87',
+  password: 'qweasdzxc',
   database: 'pick_brains_db',
   checkExpirationInterval: 900000,
   expiration: 86400000,
