@@ -3,7 +3,8 @@ const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
 const convKeys = require('convert-keys');
 
-function get(params, callback) {
+function get(paramsSnake, callback) {
+  const params = convKeys.toSnake(paramsSnake);
   const skip = params.skip;
   let filter = params;
   delete filter.skip;
@@ -52,12 +53,12 @@ function getById(id, callback) {
   });
 }
 
-function insert(candidate, callback) {
-  const cond = convKeys.toSnake(candidate);
-  const emails = cond.emails || [];
-  const secSkills = cond.sec_skills || [];
-  const oSkills = cond.other_skills || [];
-  const item = cond;
+function insert(candidateSnake, callback) {
+  const candidate = convKeys.toSnake(candidateSnake);
+  const emails = candidate.emails || [];
+  const secSkills = candidate.sec_skills || [];
+  const oSkills = candidate.other_skills || [];
+  const item = candidate;
   const firstName = translit(item.eng_first_name);
   if (firstName !== item.eng_first_name) {
     item.ru_first_name = item.eng_first_name;
@@ -75,7 +76,8 @@ function insert(candidate, callback) {
   candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
 }
 
-function update(id, candidate, user, callback) {
+function update(id, candidateSnake, user, callback) {
+  const candidate = convKeys.toSnake(candidateSnake);
   const changes = {};
   Object.keys(candidate).forEach((key) => {
     changes[`${key}`] = 1;
@@ -110,8 +112,9 @@ function update(id, candidate, user, callback) {
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
-function search(query, body, callback) {
+function search(query, bodySnake, callback) {
   let params = query.candidate.split(' ');
+  const body = convKeys.toSnake(bodySnake);
   const skip = body.skip;
   let filter = body;
   delete filter.skip;

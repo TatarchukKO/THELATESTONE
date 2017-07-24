@@ -18,6 +18,7 @@ function getById(id, callback) {
 
 function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   connection.beginTransaction((transError) => {
+    console.log(candidate);
     if (transError) {
       throw transError;
     }

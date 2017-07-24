@@ -14,6 +14,10 @@ function get(skip = 0, filter = {}) {
       query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
       return;
     }
+    if (item === 'english_lvl') {
+      query[i] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+      return;
+    }
     query[i] = `${sent}candidate.${item} = ${filter[item]}`;
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,

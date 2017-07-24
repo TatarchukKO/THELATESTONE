@@ -1,5 +1,6 @@
 const models = require('../dao/trie-search.js');
 const TrieSearch = require('trie-search');
+const translit = require('translitit-cyrillic-russian-to-latin');
 
 const ts = new TrieSearch('name');
 models.getCandidates((err, res) => {
@@ -12,7 +13,7 @@ models.getCandidates((err, res) => {
 });
 
 function search(name) {
-  return ts.get(name);
+  return ts.get(translit(name));
 }
 
 module.exports = {
