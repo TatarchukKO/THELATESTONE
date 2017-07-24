@@ -17,6 +17,9 @@ function insertEventToGeneralHistory(id, cb) {
   });
 }
 
+function getById(id, callback) {
+  connection.query(hrmFeedbackQueries.getById(id), callback);
+}
 function getByCandidateId(id, callback) {
   connection.query(hrmFeedbackQueries.getByCandidateId(id), callback);
 }
@@ -49,6 +52,7 @@ function insert(object, callback) {
 }
 
 module.exports = {
+  getById,
   getByCandidateId,
   insert,
 };

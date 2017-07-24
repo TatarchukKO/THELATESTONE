@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '123789',
-  database: 'pick_brains_db',
+  host: 'mysql5.gear.host',
+  user: 'pickbrainsdb',
+  password: 'Ko09GB6-o1!o',
+  database: 'pickbrainsdb',
 });
 
 connection.connect((error) => {

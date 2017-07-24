@@ -1,4 +1,9 @@
 const metaDataDao = require('../dao/meta-data.js');
+const convertKeys = require('./convert-keys.js');
+
+function toCamel(arr) {
+  return arr.map(item => convertKeys.toCamel(item));
+}
 
 function getLocations(callback) {
   metaDataDao.getLocations(callback);
@@ -7,7 +12,12 @@ function getEnglishLevels(callback) {
   metaDataDao.getEnglishLevels(callback);
 }
 function getSkills(callback) {
-  metaDataDao.getSkills(callback);
+  metaDataDao.getSkills((err, res) => {
+    if (err) {
+      throw err;
+    }
+    callback(err, toCamel(res));
+  });
 }
 function getCandidateStatuses(callback) {
   metaDataDao.getCandidateStatuses(callback);
