@@ -6,12 +6,13 @@ const hrmFeedback = require('./server/routes/hrm-feedbacks.js');
 const tsFeedback = require('./server/routes/ts-feedbacks.js');
 const candidate = require('./server/routes/candidates.js');
 const interview = require('./server/routes/interviews.js');
-const authentication = require('./server/authentication/passport.js');
+// const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
 
 const app = express();
 
 authentication.init(app);
+
 app.set('port', (process.env.PORT || 1337));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,17 +21,15 @@ app.use(cors({
   credentials: true,
 }));
 
-
 app.use('/api/authentication/', authentication.router);
 
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   if (!req.user) {
     res.status(401).send();
   } else {
     next();
   }
-});
-
+});*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,9 +40,9 @@ app.use((err, req, res, next) => {
 });
 app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
-app.use('/api/candidates/', candidate);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
+app.use('/api/candidates/', candidate);
 app.use('/api/interviews/', interview);
 
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));

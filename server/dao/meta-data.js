@@ -17,7 +17,7 @@ function getOtherSkills(callback) {
   connection.query(metaDataQueries.otherSkillsQuery(), callback);
 }
 function getVacancyStatuses(callback) {
-  connection.query(metaDataQueries.otherSkillsQuery(), callback);
+  connection.query(metaDataQueries.vacancyStatusesQuery(), callback);
 }
 
 module.exports = {
