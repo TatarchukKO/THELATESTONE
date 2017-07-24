@@ -1,5 +1,5 @@
 const vacancyModel = require('../dao/vacancy.js');
-const converter = require('convert-keys');
+const converter = require('camelcase-object');
 
 
 const getVacancies = (body, callback) => {
@@ -7,10 +7,7 @@ const getVacancies = (body, callback) => {
   const filter = body;
   delete filter.limit;
   vacancyModel.getVacancies(limit, filter, (error, result) => {
-    Object.keys(result).forEach((key) => {
-      console.log(result[key]);
-    });
-    callback(error, converter.toCamel(result));
+    callback(error, converter(result));
   });
 };
 
@@ -20,7 +17,7 @@ const getVacancy = (id, callback) => {
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
     finalResult.other_skills = vacancyInfo[2];
-    callback(error, converter.toCamel(finalResult));
+    callback(error, converter(finalResult));
   });
 };
 
