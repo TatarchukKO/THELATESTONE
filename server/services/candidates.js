@@ -1,7 +1,7 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
-const convKeys = require('convert-keys');
+const convKeys = require('../../convert-keys');
 
 function get(paramsSnake, callback) {
   const params = convKeys.toSnake(paramsSnake);
