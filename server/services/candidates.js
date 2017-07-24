@@ -1,5 +1,6 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
+const metaphone = require('metaphone');
 
 function get(params, callback) {
   const skip = params.skip;
@@ -62,10 +63,14 @@ function insert(candidate, callback) {
     item.eng_first_name = firstName;
     item.eng_second_name = translit(item.eng_second_name);
   }
+  const meta = {
+    first: metaphone(item.eng_first_name),
+    second: metaphone(item.eng_second_name),
+  };
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
-  candidatesModel.insert(item, emails, secSkills, oSkills, callback);
+  candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
 }
 
 function update(id, candidate, user, callback) {
@@ -91,11 +96,48 @@ function update(id, candidate, user, callback) {
     item.eng_first_name = firstName;
     item.eng_second_name = translit(item.eng_second_name);
   }
+  const meta = {
+    first: metaphone(item.eng_first_name),
+    second: metaphone(item.eng_second_name),
+    candidate_id: id,
+  };
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
   delete item.change_date;
-  candidatesModel.update(id, item, emails, secSkills, oSkills, changes, callback);
+  candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
+}
+
+function search(query, body, callback) {
+  let params = query.candidate.split(' ');
+  const skip = body.skip;
+  let filter = body;
+  delete filter.skip;
+  if (Object.keys(filter).length === 0) {
+    filter = undefined;
+  }
+  if (params.length > 2) {
+    params = params.slice(1, 3);
+  }
+  params = params.map(val => metaphone(translit(val)));
+  candidatesModel.search(params, skip, filter, (error, result) => {
+    const res = result.map((value) => {
+      const tmp = {};
+      if (value.ru_first_name) {
+        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+      } else {
+        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      }
+      tmp.email = value.email;
+      tmp.status = value.status;
+      tmp.city = value.city;
+      tmp.contact_date = value.contact_date;
+      tmp.skill_name = value.skill_name;
+      tmp.id = value.id;
+      return tmp;
+    });
+    callback(error, res);
+  });
 }
 
 module.exports = {
@@ -103,4 +145,5 @@ module.exports = {
   getById,
   insert,
   update,
+  search,
 };
