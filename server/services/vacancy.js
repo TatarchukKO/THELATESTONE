@@ -1,7 +1,14 @@
 const vacancyModel = require('../dao/vacancy.js');
+const converter = require('camelcase-object');
 
-const getVacancies = (config, callback) => {
-  vacancyModel.getVacancies(config, callback);
+
+const getVacancies = (body, callback) => {
+  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+  const filter = body;
+  delete filter.limit;
+  vacancyModel.getVacancies(limit, filter, (error, result) => {
+    callback(error, converter(result));
+  });
 };
 
 const getVacancy = (id, callback) => {
@@ -10,13 +17,12 @@ const getVacancy = (id, callback) => {
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
     finalResult.other_skills = vacancyInfo[2];
-    callback(error, finalResult);
+    callback(error, converter(finalResult));
   });
 };
 
 const formatDate = date =>
-  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} 
-  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
 const clearSkills = (obj) => {
   const copy = obj;
@@ -57,8 +63,10 @@ const addVacancy = (req, callback) => {
   clearSkills(vacancy);
   vacancy.request_date = formatDate(new Date());
   vacancy.start_date = formatDate(new Date());
-  console.log(`SecSkills : ${secSkills}`);
-  console.log(`SecSkills : ${otherSkills}`);
+  vacancy.exp_year = formatDate(new Date());
+  vacancy.linkedin = req.linkedin || 0;
+  vacancy.english_lvl = req.english_lvl || 0;
+  vacancy.salary_wish = req.salary_wish || 0;
   vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 

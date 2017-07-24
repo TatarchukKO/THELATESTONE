@@ -3,8 +3,8 @@ const query = require('../queries/candidate-queries.js');
 const connection = require('./connection.js').connection;
 const ts = require('../services/trie-search').ts;
 
-function get(skip, filter, callback) {
-  connection.query(query.get(skip, filter), callback);
+function get(limit, filter, callback) {
+  connection.query(query.get(limit, filter), callback);
 }
 
 function getById(id, callback) {
@@ -18,6 +18,7 @@ function getById(id, callback) {
 
 function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   connection.beginTransaction((transError) => {
+    console.log(candidate);
     if (transError) {
       throw transError;
     }

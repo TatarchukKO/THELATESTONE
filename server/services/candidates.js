@@ -1,8 +1,10 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
+const convKeys = require('convert-keys');
 
-function get(params, callback) {
+function get(paramsSnake, callback) {
+  const params = convKeys.toSnake(paramsSnake);
   const skip = params.skip;
   let filter = params;
   delete filter.skip;
@@ -25,7 +27,7 @@ function get(params, callback) {
       tmp.id = value.id;
       return tmp;
     });
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 
@@ -47,11 +49,12 @@ function getById(id, callback) {
     res.emails = item[1].map(val => val.email);
     res.sec_skills = item[2];
     res.other_skills = item[3];
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 
-function insert(candidate, callback) {
+function insert(candidateSnake, callback) {
+  const candidate = convKeys.toSnake(candidateSnake);
   const emails = candidate.emails || [];
   const secSkills = candidate.sec_skills || [];
   const oSkills = candidate.other_skills || [];
@@ -73,7 +76,8 @@ function insert(candidate, callback) {
   candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
 }
 
-function update(id, candidate, user, callback) {
+function update(id, candidateSnake, user, callback) {
+  const candidate = convKeys.toSnake(candidateSnake);
   const changes = {};
   Object.keys(candidate).forEach((key) => {
     changes[`${key}`] = 1;
@@ -108,8 +112,9 @@ function update(id, candidate, user, callback) {
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
-function search(query, body, callback) {
+function search(query, bodySnake, callback) {
   let params = query.candidate.split(' ');
+  const body = convKeys.toSnake(bodySnake);
   const skip = body.skip;
   let filter = body;
   delete filter.skip;
@@ -136,7 +141,7 @@ function search(query, body, callback) {
       tmp.id = value.id;
       return tmp;
     });
-    callback(error, res);
+    callback(error, convKeys.toCamel(res));
   });
 }
 

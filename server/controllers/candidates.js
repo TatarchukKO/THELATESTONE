@@ -12,7 +12,7 @@ function get(req, res) {
 }
 
 function getById(req, res) {
-  candidatesService.getById(req.params.id, (error, result) => {
+  candidatesService.getById(req.query.id, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;
@@ -32,7 +32,7 @@ function insert(req, res) {
 }
 
 function update(req, res) {
-  candidatesService.update(req.params.id, req.body, req.user.id, (error) => {
+  candidatesService.update(req.query.id, req.body, req.user.id, (error) => {
     if (error) {
       res.status(500).send();
       throw error;
