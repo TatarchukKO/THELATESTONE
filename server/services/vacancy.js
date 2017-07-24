@@ -1,7 +1,11 @@
 const vacancyModel = require('../dao/vacancy.js');
 
-const getVacancies = (config, callback) => {
-  vacancyModel.getVacancies(config, callback);
+
+const getVacancies = (body, callback) => {
+  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+  const filter = body;
+  delete filter.limit;
+  vacancyModel.getVacancies(limit, filter, callback);
 };
 
 const getVacancy = (id, callback) => {

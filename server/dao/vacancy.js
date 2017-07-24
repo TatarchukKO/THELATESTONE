@@ -2,8 +2,8 @@ const async = require('async');
 const query = require('../queries/vacancy-queries.js');
 const connection = require('./connection.js').connection;
 
-const getVacancies = (config, callback) => {
-  connection.query(query.getVacancies(config), callback);
+const getVacancies = (limit, filter, callback) => {
+  connection.query(query.getVacancies(limit, filter), callback);
 };
 
 const getVacancy = (id, callback) => {
@@ -62,7 +62,7 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
           call => updateSecondarySkills(secSkills, id, call),
           call => updateOtherSkills(otherSkills, id, call),
           call => connection.query(query.commitChanges(), changes, (err, res) =>
-          connection.query(query.generalHistory(res.insertId, changes.change_date), call))
+          connection.query(query.generalHistory(res.insertId, changes.change_date), call)),
         ],
         (parError, result) => {
           if (parError) {
@@ -98,6 +98,7 @@ const insertSecSkills = (secSkills, id, call) => {
           connection.query(query.insertSecSkill(id, val), eCall)), call);
   }
 };
+
 const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
     if (transError) throw transError;

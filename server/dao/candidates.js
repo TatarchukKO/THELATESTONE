@@ -2,8 +2,8 @@ const async = require('async');
 const query = require('../queries/candidate-queries.js');
 const connection = require('./connection.js').connection;
 
-function get(skip, filter, callback) {
-  connection.query(query.get(skip, filter), callback);
+function get(limit, filter, callback) {
+  connection.query(query.get(limit, filter), callback);
 }
 
 function getById(id, callback) {

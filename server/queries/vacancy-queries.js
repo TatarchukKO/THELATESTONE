@@ -2,13 +2,47 @@
 
 const capacity = 5;
 
-exports.getVacancies = config =>
-  `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
+exports.getVacancies = (limit, filter) => {
+  const query = [];
+  let sent = 'WHERE ';
+  if (filter) {
+    Object.keys(filter).forEach((key, i) => {
+      if (i === 1) {
+        sent = ' AND ';
+      }
+      if (key === 'english_lvl') {
+        query[i] = `${sent}vacancy.${key} >= ${filter[key][0]}`;
+        return;
+      }
+      if (key === 'salary_wish') {
+        query[i] = `${sent}vacancy.${key} >= ${filter[key][0]} 
+        AND vacancy.${key} <= ${filter[key][1]}`;
+        return;
+      }
+      if (key === 'exp_year') {
+        query[i] = `${sent}vacancy.${key} <= ${filter[key][0]}`;
+        return;
+      }
+      query[i] = `${sent}vacancy.${key} = ${filter[key]}`;
+    });
+  }
+  console.log(`SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
   skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  LIMIT ${config.limit}, ${capacity}`;
+  ${query.join('')}
+  GROUP BY vacancy.id
+  LIMIT ${limit}, ${capacity}`);
+  return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
+  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
+  LEFT JOIN skills ON vacancy.id = skills.id
+  LEFT JOIN location ON vacancy.city = location.id
+  LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
+  ${query.join('')}
+  GROUP BY vacancy.id
+  LIMIT ${limit}, ${capacity}`;
+};
 
 /** Single Vacancy */
 
@@ -25,7 +59,6 @@ exports.getSecondarySkills = id =>
   FROM vacancy_secondary_skills
   LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
   WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
-
 
 exports.getOtherSkills = id =>
   `SELECT other_skills.skill, other_skills.id 
