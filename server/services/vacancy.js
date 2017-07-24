@@ -15,8 +15,7 @@ const getVacancy = (id, callback) => {
 };
 
 const formatDate = date =>
-  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} 
-  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
 const clearSkills = (obj) => {
   const copy = obj;
@@ -57,8 +56,10 @@ const addVacancy = (req, callback) => {
   clearSkills(vacancy);
   vacancy.request_date = formatDate(new Date());
   vacancy.start_date = formatDate(new Date());
-  console.log(`SecSkills : ${secSkills}`);
-  console.log(`SecSkills : ${otherSkills}`);
+  vacancy.exp_year = formatDate(new Date());
+  vacancy.linkedin = req.linkedin || 0;
+  vacancy.english_lvl = req.english_lvl || 0;
+  vacancy.salary_wish = req.salary_wish || 0;
   vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 

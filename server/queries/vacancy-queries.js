@@ -56,6 +56,8 @@ exports.insertOtherSkill = (id, skillId) =>
     VALUES (${id}, ${skillId})`;
 
 exports.addVacancy = vacancy =>
-`INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, status)
-VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}',
-'${vacancy.primary_skill}', ${vacancy.primary_skill_lvl}, ${vacancy.city} ,${vacancy.status})`;
+  `INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, 
+    status, linkedin, exp_year, english_lvl, salary_wish)
+    VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}', '${vacancy.primary_skill}',
+    ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
+    '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}')`;

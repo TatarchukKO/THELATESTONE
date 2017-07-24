@@ -83,6 +83,20 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
   });
 };
 
+
+const insertOtherSkills = (otherSkills, id, call) => {
+  if (otherSkills) {
+    async.parallel(otherSkills.map(val => eCall =>
+          connection.query(query.insertOtherSkill(id, val), eCall)), call);
+  }
+};
+
+const insertSecSkills = (secSkills, id, call) => {
+  if (secSkills) {
+    async.parallel(secSkills.map(val => eCall =>
+          connection.query(query.insertSecSkill(id, val), eCall)), call);
+  }
+};
 const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
@@ -93,25 +107,27 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
         });
       }
       const id = res.insertId;
-      async.parallel(Array.prototype.concat(
-          secSkills.map(val => call => connection.query(query.insertSecSkill(id, val), call)),
-          otherSkills.map(val => call => connection.query(query.insertOtherSkill(id, val), call))),
-        (parError, result) => {
-          if (parError) {
-            return connection.rollback(() => {
-              throw parError;
-            });
-          }
-          connection.commit((commitError) => {
-            if (commitError) {
+      async.parallel(
+        [
+          call => insertSecSkills(secSkills, id, call),
+          call => insertOtherSkills(otherSkills, id, call),
+        ],
+          (parError, result) => {
+            if (parError) {
               return connection.rollback(() => {
-                throw commitError;
+                throw parError;
               });
             }
+            connection.commit((commitError) => {
+              if (commitError) {
+                return connection.rollback(() => {
+                  throw commitError;
+                });
+              }
+            });
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
-        });
     });
   });
 };
