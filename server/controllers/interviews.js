@@ -9,7 +9,7 @@ function insert(req, res) {
   });
 }
 function getByUserId(req, res) {
-  interviewService.getByUserId(req.params.id, (error, result) => {
+  interviewService.getByUserId(req.query.userid, (error, result) => {
     if (error) {
       throw error;
     }
@@ -17,7 +17,7 @@ function getByUserId(req, res) {
   });
 }
 function getByCandidateId(req, res) {
-  interviewService.getByCandidateId(req.params.id, (error, result) => {
+  interviewService.getByCandidateId(req.query.candidateid, (error, result) => {
     if (error) {
       throw error;
     }
