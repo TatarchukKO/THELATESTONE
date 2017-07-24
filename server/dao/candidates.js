@@ -1,6 +1,7 @@
 const async = require('async');
 const query = require('../queries/candidate-queries.js');
 const connection = require('./connection.js').connection;
+const ts = require('../services/trie-search').ts;
 
 function get(limit, filter, callback) {
   connection.query(query.get(limit, filter), callback);
@@ -15,7 +16,7 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, emails, secSkills, oSkills, callback) {
+function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
@@ -27,7 +28,11 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
         });
       }
       const id = res.insertId;
-      async.parallel(Array.prototype.concat(
+      const meta = metaphone;
+      meta.candidate_id = id;
+      async.parallel(
+        Array.prototype.concat(
+        call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
         oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
@@ -43,14 +48,24 @@ function insert(candidate, emails, secSkills, oSkills, callback) {
                 throw commitError;
               });
             }
-            return undefined;
+            return ts.add({
+              id,
+              name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
+            });
           });
           callback(error, result);
-          return console.log('Transaction has been commited');
+          return console.log('Insert transaction has been commited');
         });
       return undefined;
     });
   });
+}
+
+function deleteRuName(name, id, call) {
+  if (name) {
+    return call(null, null);
+  }
+  return connection.query(query.deleteRuName(id), call);
 }
 
 function updateSecSkill(secSkills, id, call) {
@@ -101,18 +116,34 @@ function updateOtherSkills(oSkills, id, call) {
   return call(null, null);
 }
 
-function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
+function updateMeta(meta, call) {
+  if (meta.candidate_id) {
+    return connection.query(query.deleteMeta(meta.candidate_id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return connection.query(query.insertMeta(), meta, call);
+    });
+  }
+  return call(null, null);
+}
+
+function update(id, candidate, emails, secSkills, oSkills, changes, meta, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
     async.parallel([
       call => connection.query(query.update(id), candidate, call),
+      call => deleteRuName(candidate.ru_first_name, id, call),
       call => updateEmails(emails, id, call),
       call => updateSecSkill(secSkills, id, call),
       call => updateOtherSkills(oSkills, id, call),
-      call => connection.query(query.commitChanges(), changes, call),
-      call => connection.query(query.generalHistory(id, changes.change_date), call)],
+      call => updateMeta(meta, call),
+      call => connection.query(query.commitChanges(), changes, (error, result) =>
+        connection.query(query.generalHistory(result.insertId, changes.change_date), call))],
       (error, result) => {
         if (error) {
           return connection.rollback(() => {
@@ -125,7 +156,12 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
               throw commitError;
             });
           }
-          return undefined;
+          if (candidate.eng_first_name) {
+            return ts.add({
+              id,
+              name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
+            });
+          }
         });
         callback(error, result);
         return console.log('Update transaction has been commited');
@@ -134,9 +170,14 @@ function update(id, candidate, emails, secSkills, oSkills, changes, callback) {
   });
 }
 
+function search(params, skip, filter, callback) {
+  return connection.query(query.search(params, skip, filter), callback);
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
+  search,
 };
