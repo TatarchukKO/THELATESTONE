@@ -175,10 +175,20 @@ function search(params, skip, filter, callback) {
   return connection.query(query.search(params, skip, filter), callback);
 }
 
+function searchByEmail(params, skip, filter, callback) {
+  return connection.query(query.searchByEmail(params, skip, filter), callback);
+}
+
+function searchBySkype(params, skip, filter, callback) {
+  return connection.query(query.searchBySkype(params, skip, filter), callback);
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
   search,
+  searchByEmail,
+  searchBySkype,
 };
