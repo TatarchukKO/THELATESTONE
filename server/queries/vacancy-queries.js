@@ -87,11 +87,25 @@ const addVacancy = vacancy =>
     ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
     '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}')`;
 
+const getSkillsId = vacancyId =>
+  `SELECT skill_id, lvl 
+  FROM vacancy_secondary_skills
+  WHERE vacancy_id = ${vacancyId}`;
+
+const getCandidatesBySkill = (skill) => {
+  console.log(skill);
+  return `SELECT candidate_id ,lvl, skill_id
+  FROM candidate_secondary_skills
+  WHERE skill_id = ${skill.skill_id}`;
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getOtherSkills,
   getSecondarySkills,
+  getSkillsId,
+  getCandidatesBySkill,
   generalHistory,
   commitChanges,
   updateVacancy,

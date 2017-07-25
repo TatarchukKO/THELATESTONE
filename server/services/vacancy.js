@@ -70,10 +70,15 @@ const addVacancy = (req, callback) => {
   vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 
+const getCandidates = (vacancyId, callback) => {
+  vacancyModel.getCandidates(vacancyId, callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
   updateVacancy,
+  getCandidates,
 };
 
