@@ -1,7 +1,7 @@
 const hrmFeedbackService = require('../services/hrm-feedbacks.js');
 
 function getById(req, res) {
-  hrmFeedbackService.getById(req.query.id, (error, result) => {
+  hrmFeedbackService.getById(req.query.feedbackid, (error, result) => {
     if (error) {
       throw error;
     }
@@ -9,7 +9,7 @@ function getById(req, res) {
   });
 }
 function getByCandidateId(req, res) {
-  hrmFeedbackService.getByCandidateId(req.params.id, (error, result) => {
+  hrmFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
     if (error) {
       throw error;
     }
