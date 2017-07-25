@@ -31,12 +31,18 @@ function insert(object) {
     '${object.motivation}', '${object.english_lvl}', '${object.salary_wish}',
     '${object.other}', '${object.vacancy_id}', '${object.user_id}', '${object.candidate_id}', '${object.interview_id}')`;
 }
-function insertEventToGeneralHistory(id) {
+function updateInterviewStatus(id) {
+  return `UPDATE interview
+  SET done = 1
+  WHERE ${id} = id`;
+}
+function insertEventToGeneralHistory(id, date) {
   return `INSERT INTO general_history (hrm_feedback_id, change_date)
-  VALUES ('${id}', NOW())`;
+  VALUES ('${id}', '${date}')`;
 }
 
 module.exports = {
+  updateInterviewStatus,
   getById,
   getByCandidateId,
   insert,
