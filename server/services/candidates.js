@@ -145,10 +145,44 @@ function search(query, bodySnake, callback) {
   });
 }
 
+function searchByEmail(query, bodySnake, callback) {
+  let params = query.candidate.split(' ');
+  const body = convKeys.toSnake(bodySnake);
+  const skip = body.skip;
+  let filter = body;
+  delete filter.skip;
+  if (Object.keys(filter).length === 0) {
+    filter = undefined;
+  }
+  if (params.length > 1) {
+    params = params.slice(1, 2);
+  }
+  params = params.map(val => metaphone(translit(val)));
+  candidatesModel.search(params, skip, filter, (error, result) => {
+    const res = result.map((value) => {
+      const tmp = {};
+      if (value.ru_first_name) {
+        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+      } else {
+        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+      }
+      tmp.email = value.email;
+      tmp.status = value.status;
+      tmp.city = value.city;
+      tmp.contact_date = value.contact_date;
+      tmp.skill_name = value.skill_name;
+      tmp.id = value.id;
+      return tmp;
+    });
+    callback(error, convKeys.toCamel(res));
+  });
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
   search,
+  searchByEmail,
 };
