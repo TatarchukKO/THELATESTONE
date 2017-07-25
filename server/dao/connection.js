@@ -1,18 +1,18 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'jhjkj87',
-  database: 'pick_brains_db',
+  host: 'mysql5.gear.host',
+  user: 'pickbrainsdb',
+  password: 'Ko09GB6-o1!o',
+  database: 'pickbrainsdb',
 });
 
 connection.connect((error) => {
   if (error) {
-    console.log('Models connection error');
+    console.log('Database connection error');
     throw error;
   }
-  console.log('Models is connected');
+  console.log('Connected to database');
 });
 
 module.exports = {

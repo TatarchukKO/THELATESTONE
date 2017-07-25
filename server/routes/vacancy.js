@@ -1,12 +1,17 @@
-const express = require('express');
 const vacancyController = require('../controllers/vacancy.js');
+const router = require('express').Router();
 
-const router = express.Router();
+router.use((req, res, next) => {
+  if (req.user.type === 'TECH') {
+    res.status(403).send();
+  } else {
+    next();
+  }
+});
 
-router.get('/', vacancyController.getVacancies);
+router.put('/', vacancyController.getVacancies);
 router.get('/:id', vacancyController.getVacancy);
 router.put('/:id', vacancyController.updateVacancy);
 router.post('/', vacancyController.addVacancy);
-
 
 module.exports = router;
