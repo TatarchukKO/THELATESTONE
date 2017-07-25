@@ -1,11 +1,42 @@
 const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
-const convKeys = require('convert-keys');
+const convKeys = require('./convert-keys');
+const dateFormat = require('dateformat');
+
+function formatDate(object) {
+  const tmp = object;
+  if (tmp.exp_year) {
+    tmp.exp_year = dateFormat(tmp.exp_year, 'yyyy-dd-mm HH:MM:ss');
+  }
+  if (tmp.change_date) {
+    tmp.change_date = dateFormat(tmp.change_date, 'yyyy-dd-mm HH:MM:ss');
+  }
+  return tmp;
+}
+
+function mapRes(error, result, callback) {
+  const res = result.map((value) => {
+    const tmp = {};
+    if (value.ru_first_name) {
+      tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+    } else {
+      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+    }
+    tmp.email = value.email;
+    tmp.status = value.status;
+    tmp.city = value.city;
+    tmp.contact_date = value.contact_date;
+    tmp.skill_name = value.skill_name;
+    tmp.id = value.id;
+    return tmp;
+  });
+  callback(error, convKeys.toCamel(res));
+}
 
 function get(paramsSnake, callback) {
-  const params = convKeys.toSnake(paramsSnake);
-  const skip = params.skip;
+  const params = formatDate(convKeys.toSnake(paramsSnake));
+  const skip = paramsSnake.skip;
   let filter = params;
   delete filter.skip;
   if (Object.keys(filter).length === 0) {
@@ -54,7 +85,7 @@ function getById(id, callback) {
 }
 
 function insert(candidateSnake, callback) {
-  const candidate = convKeys.toSnake(candidateSnake);
+  const candidate = formatDate(convKeys.toSnake(candidateSnake));
   const emails = candidate.emails || [];
   const secSkills = candidate.sec_skills || [];
   const oSkills = candidate.other_skills || [];
@@ -77,7 +108,7 @@ function insert(candidateSnake, callback) {
 }
 
 function update(id, candidateSnake, user, callback) {
-  const candidate = convKeys.toSnake(candidateSnake);
+  const candidate = formatDate(convKeys.toSnake(candidateSnake));
   const changes = {};
   Object.keys(candidate).forEach((key) => {
     changes[`${key}`] = 1;
@@ -113,36 +144,32 @@ function update(id, candidateSnake, user, callback) {
 }
 
 function search(query, bodySnake, callback) {
-  let params = query.candidate.split(' ');
-  const body = convKeys.toSnake(bodySnake);
+  const body = formatDate(convKeys.toSnake(bodySnake));
   const skip = body.skip;
   let filter = body;
   delete filter.skip;
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
-  if (params.length > 2) {
-    params = params.slice(1, 3);
+  if (query.candidate) {
+    let params = query.candidate.split(' ');
+    if (params.length > 2) {
+      params = params.slice(1, 3);
+    }
+    params = params.map(val => metaphone(translit(val)));
+    return candidatesModel.search(params, skip, filter, (err, res) => mapRes(err, res, callback));
   }
-  params = params.map(val => metaphone(translit(val)));
-  candidatesModel.search(params, skip, filter, (error, result) => {
-    const res = result.map((value) => {
-      const tmp = {};
-      if (value.ru_first_name) {
-        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
-      } else {
-        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
-      }
-      tmp.email = value.email;
-      tmp.status = value.status;
-      tmp.city = value.city;
-      tmp.contact_date = value.contact_date;
-      tmp.skill_name = value.skill_name;
-      tmp.id = value.id;
-      return tmp;
-    });
-    callback(error, convKeys.toCamel(res));
-  });
+  if (query.email) {
+    const params = query.email.split(' ')[0];
+    return candidatesModel.searchByEmail(params, skip, filter, (err, res) =>
+      mapRes(err, res, callback));
+  }
+  if (query.skype) {
+    const params = query.skype.split(' ')[0];
+    return candidatesModel.searchBySkype(params, skip, filter, (err, res) =>
+      mapRes(err, res, callback));
+  }
+  return callback();
 }
 
 module.exports = {

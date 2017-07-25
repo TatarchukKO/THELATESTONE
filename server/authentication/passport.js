@@ -10,11 +10,10 @@ const validation = require('../validation/authentication.js');
 const router = express.Router();
 
 const options = {
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'qweasdzxc',
-  database: 'pick_brains_db',
+  host: 'mysql5.gear.host',
+  user: 'pickbrainsdb',
+  password: 'Ko09GB6-o1!o',
+  database: 'pickbrainsdb',
   checkExpirationInterval: 900000,
   expiration: 86400000,
   createDatabaseTable: true,
@@ -67,7 +66,7 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-  connection.query(`SELECT id, login, password, type, first_name, second_name FROM users
+  connection.query(`SELECT id, login, type, first_name, second_name FROM users
   WHERE users.id = ${id}`, (error, res) => {
     done(error, res[0]);
   });

@@ -1,10 +1,12 @@
 const express = require('express');
 const tsFeedbackController = require('../controllers/ts-feedbacks.js');
+const validate = require('express-validation');
+const validation = require('../validation/hrm-feedbacks.js');
 
 const router = express.Router();
 
-router.get('/detailed-view', tsFeedbackController.getById);
-router.get('/:id', tsFeedbackController.getByCandidateId);
-router.post('/new', tsFeedbackController.insert);
+router.post('/new', validate(validation.insert), tsFeedbackController.insert);
+router.get('/detailed-view', validate(validation.getById), tsFeedbackController.getById);
+router.get('/', validate(validation.getByCandidateId), tsFeedbackController.getByCandidateId);
 
 module.exports = router;
