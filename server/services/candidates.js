@@ -31,30 +31,17 @@ function get(paramsSnake, callback) {
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
-  candidatesModel.get(skip, filter, (error, result) => {
-    const res = result.map((value) => {
-      const tmp = {};
-      if (value.ru_first_name) {
-        tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
-      } else {
-        tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
-      }
-      tmp.email = value.email;
-      tmp.status = value.status;
-      tmp.city = value.city;
-      tmp.contact_date = value.contact_date;
-      tmp.skill_name = value.skill_name;
-      tmp.id = value.id;
-      return tmp;
-    });
-    callback(error, convKeys.toCamel(res));
-  });
+  candidatesModel.get(skip, filter, (err, res) => mapRes(err, res, callback));
 }
 
 function getById(id, callback) {
   candidatesModel.getById(id, (error, result) => {
     const item = result.map(val => val[0]);
     const res = item[0][0];
+    if (!res) {
+      result = 'No such candidate';
+      return callback(error, result);
+    }
     if (res.ru_first_name) {
       res.first_name = res.ru_first_name;
       res.second_name = res.ru_second_name;

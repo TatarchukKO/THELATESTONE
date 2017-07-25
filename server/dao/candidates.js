@@ -18,7 +18,6 @@ function getById(id, callback) {
 
 function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   connection.beginTransaction((transError) => {
-    console.log(candidate);
     if (transError) {
       throw transError;
     }
@@ -57,7 +56,6 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
           callback(error, result);
           return console.log('Insert transaction has been commited');
         });
-      return undefined;
     });
   });
 }
