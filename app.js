@@ -6,7 +6,7 @@ const hrmFeedback = require('./server/routes/hrm-feedbacks.js');
 const tsFeedback = require('./server/routes/ts-feedbacks.js');
 const candidate = require('./server/routes/candidates.js');
 const interview = require('./server/routes/interviews.js');
-// const authentication = require('./server/authentication/passport.js');
+const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
 
 const app = express();
