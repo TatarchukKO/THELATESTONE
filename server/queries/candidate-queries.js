@@ -14,6 +14,10 @@ function get(skip = 0, filter = {}) {
       query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
       return;
     }
+    if (item === 'english_lvl') {
+      query[i] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+      return;
+    }
     query[i] = `${sent}candidate.${item} = ${filter[item]}`;
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
@@ -82,10 +86,20 @@ function insertOtherSkills(id, skill) {
     VALUES (${id}, ${skill});`;
 }
 
+function insertMeta() {
+  return 'INSERT INTO metaphone SET ?';
+}
+
 function update(id) {
   return `UPDATE candidate
     SET ?
     WHERE id = ${id}`;
+}
+
+function deleteRuName(id) {
+  return `UPDATE candidate
+    SET ru_first_name = NULL, ru_second_name = NULL
+    WHERE candidate.id = ${id}`;
 }
 
 function deleteEmails(id) {
@@ -103,6 +117,11 @@ function deleteOtherSkills(id) {
     WHERE candidate_id = ${id};`;
 }
 
+function deleteMeta(id) {
+  return `DELETE FROM metaphone
+    WHERE candidate_id = ${id};`;
+}
+
 function commitChanges() {
   return 'INSERT INTO candidate_changes SET ?';
 }
@@ -110,6 +129,43 @@ function commitChanges() {
 function generalHistory(id, date) {
   return `INSERT INTO general_history (candidate_change_id, change_date)
     VALUES (${id}, "${date}");`;
+}
+
+function search(params, skip = 0, filter = {}) {
+  const query = [];
+  let index = 2;
+  query[0] = `metaphone.first = "${params[0]}"`;
+  if (params[1]) {
+    query[1] = ` AND metaphone.second = "${params[1]}"`;
+    query[3] = ` AND metaphone.first = "${params[1]}"`;
+    query[2] = ` OR metaphone.second = "${params[0]}"`;
+    index = 4;
+  } else {
+    query[1] = ` OR metaphone.second = "${params[0]}"`;
+  }
+  Object.keys(filter).forEach((item, i) => {
+    if (item === 'salary_wish') {
+      query[i + index] = ` AND candidate.${item} >= ${filter[item][0]} 
+        AND candidate.${item} <= ${filter[item][1]}`;
+      return;
+    }
+    if (item === 'exp_year') {
+      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      return;
+    }
+    query[i + index] = ` AND candidate.${item} = ${filter[item]}`;
+  });
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
+  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  FROM metaphone
+  LEFT JOIN candidate ON metaphone.candidate_id = candidate.id
+  LEFT JOIN location ON candidate.city = location.id
+  LEFT JOIN skills ON candidate.primary_skill = skills.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  WHERE ${query.join('')}
+  LIMIT ${skip}, 7`;
 }
 
 module.exports = {
@@ -122,10 +178,14 @@ module.exports = {
   insertEmails,
   insertSecSkills,
   insertOtherSkills,
+  insertMeta,
   update,
+  deleteRuName,
   deleteEmails,
   deleteSecSkills,
   deleteOtherSkills,
+  deleteMeta,
   commitChanges,
   generalHistory,
+  search,
 };

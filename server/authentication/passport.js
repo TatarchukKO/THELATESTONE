@@ -4,6 +4,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MySQLStore = require('express-mysql-session')(session);
 const connection = require('../dao/connection.js').connection;
+const validate = require('express-validation');
+const validation = require('../validation/authentication.js');
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ const options = {
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: 'jhjkj87',
+  password: 'qweasdzxc',
   database: 'pick_brains_db',
   checkExpirationInterval: 900000,
   expiration: 86400000,
@@ -49,7 +51,10 @@ passport.use(new LocalStrategy({
     WHERE login = "${login}"`, (error, res) => {
       const user = res[0];
       if (error) {
-        throw error;
+        return done(error);
+      }
+      if (!user) {
+        return done(null, false, { message: 'No such user.' });
       }
       if (user.password !== password) {
         return done(null, false, { message: 'Incorrect password.' });
@@ -68,28 +73,25 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-router.post('/login', (req, res) => {
-  passport.authenticate('local', (autError, user) => {
+router.post('/login', validate(validation.login), (req, res) => {
+  passport.authenticate('local', (autError, user, result) => {
     if (autError) {
-      res.send(autError.message);
-      throw autError;
+      return res.status(500).send(autError.message);
     }
     if (!user) {
-      res.send('Authorization Error');
-      return;
+      return res.status(400).send(result.message);
     }
 
     req.logIn(user, (logError) => {
       if (logError) {
-        res.send(logError.message);
-        throw logError;
+        return res.status(403).send(logError.message);
       }
-      res.end();
+      res.status(202).end();
     });
   })(req, res);
 });
 
-router.post('/exit', (req, res) => {
+router.post('/exit', validate(validation.exit), (req, res) => {
   if (!req.user) {
     res.status(401).end();
     return;

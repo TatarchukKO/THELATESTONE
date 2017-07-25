@@ -1,22 +1,30 @@
-const mysql = require('mysql');
-const metaDataQueries = require('../queries/meta-data-queries.js');
 const connection = require('./connection.js').connection;
+const metaDataQueries = require('../queries/meta-data-queries.js');
 
-exports.getEnglishLevels = (callback) => {
-  connection.query(metaDataQueries.englishLevelsQuery, callback);
-};
-exports.getLocations = (callback) => {
-  connection.query(metaDataQueries.locationQuery, callback);
-};
-exports.getSkills = (callback) => {
-  connection.query(metaDataQueries.skillsQuery, callback);
-};
-exports.getCandidateStatuses = (callback) => {
-  connection.query(metaDataQueries.candidateStatusesQuery, callback);
-};
-exports.getOtherSkills = (callback) => {
-  connection.query(metaDataQueries.otherSkillsQuery, callback);
-};
-exports.getVacancyStatuses = (callback) => {
-  connection.query(metaDataQueries.otherSkillsQuery, callback);
+function getEnglishLevels(callback) {
+  connection.query(metaDataQueries.englishLevelsQuery(), callback);
+}
+function getLocations(callback) {
+  connection.query(metaDataQueries.locationQuery(), callback);
+}
+function getSkills(callback) {
+  connection.query(metaDataQueries.skillsQuery(), callback);
+}
+function getCandidateStatuses(callback) {
+  connection.query(metaDataQueries.candidateStatusesQuery(), callback);
+}
+function getOtherSkills(callback) {
+  connection.query(metaDataQueries.otherSkillsQuery(), callback);
+}
+function getVacancyStatuses(callback) {
+  connection.query(metaDataQueries.vacancyStatusesQuery(), callback);
+}
+
+module.exports = {
+  getEnglishLevels,
+  getLocations,
+  getSkills,
+  getCandidateStatuses,
+  getOtherSkills,
+  getVacancyStatuses,
 };
