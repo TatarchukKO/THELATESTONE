@@ -5,7 +5,14 @@ const convKeys = require('./convert-keys');
 const dateFormat = require('dateformat');
 
 function formatDate(object) {
-  object.exp_year = dateFormat(object.exp_year, 'yyyy-dd-mm HH:MM:ss');
+  const tmp = object;
+  if (tmp.exp_year) {
+    tmp.exp_year = dateFormat(tmp.exp_year, 'yyyy-dd-mm HH:MM:ss');
+  }
+  if (tmp.change_date) {
+    tmp.change_date = dateFormat(tmp.change_date, 'yyyy-dd-mm HH:MM:ss');
+  }
+  return tmp;
 }
 
 function mapRes(error, result, callback) {
@@ -27,10 +34,9 @@ function mapRes(error, result, callback) {
   callback(error, convKeys.toCamel(res));
 }
 
-
 function get(paramsSnake, callback) {
-  const params = convKeys.toSnake(paramsSnake);
-  const skip = params.skip;
+  const params = formatDate(convKeys.toSnake(paramsSnake));
+  const skip = paramsSnake.skip;
   let filter = params;
   delete filter.skip;
   if (Object.keys(filter).length === 0) {
@@ -138,7 +144,7 @@ function update(id, candidateSnake, user, callback) {
 }
 
 function search(query, bodySnake, callback) {
-  const body = convKeys.toSnake(bodySnake);
+  const body = formatDate(convKeys.toSnake(bodySnake));
   const skip = body.skip;
   let filter = body;
   delete filter.skip;

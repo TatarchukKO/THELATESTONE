@@ -35,10 +35,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((err, req, res, next) => {
-  res.status(err.status).json(err);
-  next();
-});
+
 app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
 app.use('/api/candidates/', candidate);
@@ -51,7 +48,10 @@ app.get('/api/user', (req, res) => {
   delete user.login;
   res.status(200).send(user);
 });
-
+app.use((err, req, res, next) => {
+  res.status(err.status).json(err);
+  next();
+});
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
 
 app.listen(app.get('port'), () => console.log('Server is running on port', app.get('port')));

@@ -14,7 +14,7 @@ function get(skip = 0, filter = {}) {
       query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    item.forEach((val, j) => {
+    filter[item].forEach((val, j) => {
       query[i + j] = `${sent}candidate.${item} = ${filter[item]}`;
     });
   });

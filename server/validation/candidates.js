@@ -13,7 +13,7 @@ const get = {
     primarySkill: Joi.array(),
     status: Joi.array(),
     englishLvl: Joi.array(),
-    expYear: Joi.string(),
+    expYear: Joi.date(),
   },
 };
 
@@ -51,14 +51,14 @@ const insert = {
     primarySkill: Joi.number().integer().required(),
     primarySkillLvl: Joi.number().integer().required(),
     englishLvl: Joi.number().integer().required(),
-    expYear: Joi.string().required(),
+    expYear: Joi.date().required(),
     emails: Joi.array().required(),
     secSkills: Joi.array(),
     otherSkills: Joi.array(),
     linkedin: Joi.string(),
     phone: Joi.string(),
     skype: Joi.string(),
-    contactDate: Joi.string(),
+    contactDate: Joi.date(),
     engFirstName: Joi.string(),
     engSecondName: Joi.string(),
     ruFirstName: Joi.string(),
@@ -81,7 +81,7 @@ const update = {
     primarySkill: Joi.number().integer(),
     primarySkillLvl: Joi.number().integer(),
     englishLvl: Joi.number().integer(),
-    expYear: Joi.number().integer(),
+    expYear: Joi.date(),
     emails: Joi.array(),
     secSkills: Joi.array(),
     otherSkills: Joi.array(),
@@ -114,7 +114,7 @@ const search = {
     primarySkill: Joi.array(),
     status: Joi.array(),
     englishLvl: Joi.array(),
-    expYear: Joi.string(),
+    expYear: Joi.date(),
   },
 };
 
