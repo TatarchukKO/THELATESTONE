@@ -51,16 +51,6 @@ function search(req, res) {
   });
 }
 
-function searchByEmail(req, res) {
-  candidatesService.search(req.query, req.body, (error, result) => {
-    if (error) {
-      res.status(500).send();
-      throw error;
-    }
-    return res.status(200).send(result);
-  });
-}
-
 function trieSearch(req, res) {
   const params = req.query.candidate.split(' ');
   if (params.lenght > 2) {
@@ -79,6 +69,5 @@ module.exports = {
   insert,
   update,
   search,
-  searchByEmail,
   trieSearch,
 };

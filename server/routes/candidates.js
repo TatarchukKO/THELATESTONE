@@ -15,7 +15,6 @@ router.use((req, res, next) => {
 router.post('/', validate(validation.get), candidatesCantroller.get);
 router.get('/trie-search', validate(validation.trieSearch), candidatesCantroller.trieSearch);
 router.post('/search', validate(validation.search), candidatesCantroller.search);
-router.post('/search-by-email', validate(validation.search), candidatesCantroller.searchByEmail);
 router.get('', validate(validation.getById), candidatesCantroller.getById);
 router.post('/new', validate(validation.insert), candidatesCantroller.insert);
 router.patch('/edit', validate(validation.update), candidatesCantroller.update);
