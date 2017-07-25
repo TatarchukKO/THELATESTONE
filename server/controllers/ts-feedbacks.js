@@ -1,7 +1,15 @@
 const tsFeedbackService = require('../services/ts-feedbacks.js');
 
+function getById(req, res) {
+  tsFeedbackService.getById(req.query.feedbackid, (error, result) => {
+    if (error) {
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
 function getByCandidateId(req, res) {
-  tsFeedbackService.getByCandidateId(req.params.id, (error, result) => {
+  tsFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
     if (error) {
       throw error;
     }
@@ -18,6 +26,7 @@ function insert(req, res) {
 }
 
 module.exports = {
+  getById,
   getByCandidateId,
   insert,
 };

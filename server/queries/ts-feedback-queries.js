@@ -1,12 +1,12 @@
-/* function getByCandidateId(id) {
+function getById(id) {
   return `SELECT t_f.id, u.first_name, u.second_name, v.name, i.date, s.skill_name, t_f.primary_skill_lvl FROM ts_feedback t_f
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
   LEFT JOIN candidate c ON t_f.candidate_id = c.id
   LEFT JOIN users u ON t_f.user_id = u.id
   LEFT JOIN vacancy v ON v.id = t_f.vacancy_id
   LEFT JOIN interview i ON i.id = t_f.interview_id
-  WHERE ${id} = t_f.candidate_id`;
-} */
+  WHERE ${id} = t_f.id`;
+}
 function getByCandidateId(id) {
   return `SELECT t_f.id, u.first_name, u.second_name, i.date, v.name, s.skill_name FROM ts_feedback t_f
   LEFT JOIN users u ON t_f.user_id = u.id
@@ -38,6 +38,7 @@ function insertEventToGeneralHistory(id) {
 
 
 module.exports = {
+  getById,
   getByCandidateId,
   insert,
   insertTsSecondarySkills,

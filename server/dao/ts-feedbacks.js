@@ -3,11 +3,9 @@ const connection = require('./connection.js').connection;
 const tsFeedbackQueries = require('../queries/ts-feedback-queries.js');
 
 function uniteResults(feedbacks, otherSkills) {
-  let i = 0;
   return feedbacks.map((item) => {
     const cItem = item;
-    cItem.other_skills = otherSkills[i];
-    i += 1;
+    cItem.other_skills = otherSkills[0][0];
     return cItem;
   });
 }
@@ -38,6 +36,39 @@ function insertEventToGeneralHistory(id, cb) {
       throw err;
     }
     cb(null);
+  });
+}
+
+function getById(id, callback) {
+  connection.beginTransaction((transError) => {
+    if (transError) {
+      throw transError;
+    }
+    connection.query(tsFeedbackQueries.getById(id), (error, result) => {
+      if (error) {
+        return connection.rollback(() => {
+          throw error;
+        });
+      }
+      async
+        .parallel(result
+          .map(item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
+        (err, res) => {
+          if (err) {
+            return connection.rollback(() => {
+              throw err;
+            });
+          }
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+            callback(err, uniteResults(result, res));
+          });
+        });
+    });
   });
 }
 function getByCandidateId(id, callback) {
@@ -116,6 +147,7 @@ function insert(object, callback) {
 }
 
 module.exports = {
+  getById,
   getByCandidateId,
   insert,
 };

@@ -4,7 +4,7 @@
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
-    "convert-keys": "^1.2.0",
+    "camelcase-object": "^1.0.0",
     "cors": "^2.8.4",
     "dateformat": "^2.0.0",
     "eslint-config-airbnb": "^15.0.2",

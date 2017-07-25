@@ -11,7 +11,8 @@ const cors = require('cors');
 
 const app = express();
 
-authentication.init(app);
+// authentication.init(app);
+
 app.set('port', (process.env.PORT || 1337));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,17 +21,15 @@ app.use(cors({
   credentials: true,
 }));
 
+// app.use('/api/authentication/', authentication.router);
 
-app.use('/api/authentication/', authentication.router);
-
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   if (!req.user) {
     res.status(401).send();
   } else {
     next();
   }
-});
-
+});*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,9 +37,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
-app.use('/api/candidates/', candidate);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
+app.use('/api/candidates/', candidate);
 app.use('/api/interviews/', interview);
 app.get('/api/user', (req, res) => {
   const user = req.user;

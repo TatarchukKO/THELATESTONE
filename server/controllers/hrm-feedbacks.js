@@ -1,7 +1,15 @@
 const hrmFeedbackService = require('../services/hrm-feedbacks.js');
 
+function getById(req, res) {
+  hrmFeedbackService.getById(req.query.feedbackid, (error, result) => {
+    if (error) {
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
 function getByCandidateId(req, res) {
-  hrmFeedbackService.getByCandidateId(req.params.id, (error, result) => {
+  hrmFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
     if (error) {
       throw error;
     }
@@ -18,6 +26,7 @@ function insert(req, res) {
 }
 
 module.exports = {
+  getById,
   getByCandidateId,
   insert,
 };
