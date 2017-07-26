@@ -38,7 +38,7 @@ function insertFeedbackAndHistory(object, cb) {
 }
 function updateInterviewStatus(object, cb) {
   connection
-    .query(hrmFeedbackQueries.updateInterviewStatus(object.interview_id),
+    .query(hrmFeedbackQueries.updateInterviewStatus(object),
     (err) => {
       if (err) {
         throw err;

@@ -13,14 +13,16 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
 });
+
 function greetings(obj) {
-  return `Здравствуйте, ${obj.firstName} ${obj.secondName},`;
+  return `Здравствуйте, ${obj.userName}.`;
 }
 function interviewee(obj) {
-  return `Вам назначено собеседование кандидата ${obj.ruFirstName} ${obj.ruSecondName}`;
+  return `Вам назначено собеседование кандидата
+    ${obj.candidateName}`;
 }
 function vacancy(obj) {
-  return `на вакансию ${obj.name}`;
+  return `на вакансию ${obj.vacancyName}`;
 }
 function technology(obj) {
   return `по технологии ${obj.skillName}`;

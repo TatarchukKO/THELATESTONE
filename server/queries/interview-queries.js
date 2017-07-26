@@ -19,8 +19,8 @@ function getEmailNotificationData(id) {
 }
 function insertEventToGeneralHistory(id) {
   return `INSERT INTO general_history
-  (interview_id, change_date)
-  VALUES ('${id}', NOW())`;
+  (interview_id)
+  VALUES ('${id}')`;
 }
 function getByUserId(id) {
   return `SELECT i.candidate_id, c.ru_first_name, c.ru_second_name,
