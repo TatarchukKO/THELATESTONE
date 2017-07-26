@@ -134,10 +134,22 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   });
 };
 
+const getCandidates = (skip, vacancyId, callback) => {
+  console.log(`Vacancy id is  : ${vacancyId}`);
+  connection.query(query.getCandidates(skip, vacancyId), (callback));
+};
+  /*
+
+  To services :
+  1)candidates with corresponding primary skill
+  1)secondary skills id and lvl
+  2)candidates with corresponding secondary skills
+
+  */
 module.exports = {
   getVacancies,
   getVacancy,
+  getCandidates,
   updateVacancy,
   addVacancy,
 };
-
