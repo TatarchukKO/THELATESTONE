@@ -59,7 +59,6 @@ const getOtherSkills = id =>
   WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
 
 const updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
-
 const deleteSecondarySkills = id =>
   `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
 

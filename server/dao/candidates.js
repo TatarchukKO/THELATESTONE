@@ -57,7 +57,6 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
           callback(error, result);
           return console.log('Insert transaction has been commited');
         });
-      return undefined;
     });
   });
 }
@@ -144,7 +143,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
       call => updateOtherSkills(oSkills, id, call),
       call => updateMeta(meta, call),
       call => connection.query(query.commitChanges(), changes, (error, result) =>
-        connection.query(query.generalHistory(result.insertId, changes.change_date), call))],
+        connection.query(query.generalHistory(result.insertId), call))],
       (error, result) => {
         if (error) {
           return connection.rollback(() => {

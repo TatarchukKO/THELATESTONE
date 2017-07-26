@@ -7,12 +7,12 @@ const get = {
     allowUnknownParams: false,
   },
   body: {
-    skip: Joi.number().integer(),
-    city: Joi.array(),
-    salaryWish: Joi.array(),
-    primarySkill: Joi.array(),
-    status: Joi.array(),
-    englishLvl: Joi.array(),
+    skip: Joi.number().integer().greater(0),
+    city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
+    salaryWish: Joi.array().items(Joi.number().integer()),
+    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
+    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
+    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
     expYear: Joi.date(),
   },
 };
@@ -24,7 +24,7 @@ const getById = {
     allowUnknownParams: false,
   },
   query: {
-    id: Joi.number().integer(),
+    id: Joi.number().integer().greater(0).required(),
   },
 };
 
@@ -46,15 +46,22 @@ const insert = {
     allowUnknownParams: false,
   },
   body: {
-    city: Joi.number().integer().required(),
+    city: Joi.number().integer().greater(0).less(15)
+      .required(),
     salaryWish: Joi.number().integer(),
-    primarySkill: Joi.number().integer().required(),
-    primarySkillLvl: Joi.number().integer().required(),
-    englishLvl: Joi.number().integer().required(),
+    primarySkill: Joi.number().integer().less(21).greater(0)
+      .required(),
+    primarySkillLvl: Joi.number().integer().less(11).greater(0)
+      .required(),
+    englishLvl: Joi.number().integer().less(6).greater(0)
+      .required(),
     expYear: Joi.date().required(),
-    emails: Joi.array().required(),
-    secSkills: Joi.array(),
-    otherSkills: Joi.array(),
+    emails: Joi.array().items(Joi.string().email()).unique().required(),
+    secSkills: Joi.array().items(Joi.object().keys({
+      skillName: Joi.number().integer().greater(0).less(32),
+      lvl: Joi.number().integer().less(11).greater(0),
+    })).unique(),
+    otherSkills: Joi.array().items(Joi.number().integer().greater(0).less(7)).unique(),
     linkedin: Joi.string(),
     phone: Joi.string(),
     skype: Joi.string(),
@@ -73,18 +80,21 @@ const update = {
     allowUnknownParams: false,
   },
   query: {
-    id: Joi.number().integer().required(),
+    id: Joi.number().integer().greater(0).required(),
   },
   body: {
-    city: Joi.number().integer(),
+    city: Joi.number().integer().less(15).greater(0),
     salaryWish: Joi.number().integer(),
-    primarySkill: Joi.number().integer(),
-    primarySkillLvl: Joi.number().integer(),
-    englishLvl: Joi.number().integer(),
+    primarySkill: Joi.number().integer().less(21).greater(0),
+    primarySkillLvl: Joi.number().integer().less(11).greater(0),
+    englishLvl: Joi.number().integer().less(6).greater(0),
     expYear: Joi.date(),
-    emails: Joi.array(),
-    secSkills: Joi.array(),
-    otherSkills: Joi.array(),
+    emails: Joi.array().items(Joi.string().email()),
+    secSkills: Joi.array().items(Joi.object().keys({
+      skillName: Joi.number().integer().greater(0).less(32),
+      lvl: Joi.number().integer().less(11).greater(0),
+    })).unique(),
+    otherSkills: Joi.array().items(Joi.number().integer().greater(0).less(7)).unique(),
     linkedin: Joi.string(),
     phone: Joi.string(),
     skype: Joi.string(),
@@ -92,7 +102,7 @@ const update = {
     engSecondName: Joi.string(),
     ruFirstName: Joi.string(),
     ruSecondName: Joi.string(),
-    status: Joi.number().integer(),
+    status: Joi.number().integer().less(10).greater(0),
   },
 };
 
@@ -104,16 +114,16 @@ const search = {
   },
   query: {
     candidate: Joi.string(),
-    email: Joi.string(),
+    email: Joi.string().email(),
     skype: Joi.string(),
   },
   body: {
-    skip: Joi.number().integer(),
-    city: Joi.array(),
-    salaryWish: Joi.array(),
-    primarySkill: Joi.array(),
-    status: Joi.array(),
-    englishLvl: Joi.array(),
+    skip: Joi.number().integer().greater(0),
+    city: Joi.array().items(Joi.number().integer().less(15).greater(0)),
+    salaryWish: Joi.array().items(Joi.number().integer()),
+    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)),
+    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
+    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
     expYear: Joi.date(),
   },
 };
