@@ -2,7 +2,7 @@ function get(skip = 0, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
   Object.keys(filter).forEach((item, i) => {
-    if (i === 1) {
+    if (i >= 1) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
@@ -15,6 +15,9 @@ function get(skip = 0, filter = {}) {
       return;
     }
     filter[item].forEach((val, j) => {
+      if (j >= 1) {
+        sent = ' OR ';
+      }
       query[i + j] = `${sent}candidate.${item} = ${filter[item]}`;
     });
   });
@@ -125,9 +128,9 @@ function commitChanges() {
   return 'INSERT INTO candidate_changes SET ?';
 }
 
-function generalHistory(id, date) {
-  return `INSERT INTO general_history (candidate_change_id, change_date)
-    VALUES (${id}, "${date}");`;
+function generalHistory(id) {
+  return `INSERT INTO general_history (candidate_change_id)
+    VALUES (${id});`;
 }
 
 function search(params, skip = 0, filter = {}) {
@@ -152,7 +155,13 @@ function search(params, skip = 0, filter = {}) {
       query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    query[i + index] = ` AND candidate.${item} = ${filter[item]}`;
+    let sent = ' AND ';
+    filter[item].forEach((val, j) => {
+      if (j >= 1) {
+        sent = ' OR ';
+      }
+      query[i + index + j] = `${sent}candidate.${item} = ${filter[item]}`;
+    });
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
@@ -180,7 +189,13 @@ function searchByEmail(params, skip = 0, filter = {}) {
       query[i + 1] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    query[i + 1] = ` AND candidate.${item} = ${filter[item]}`;
+    let sent = ' AND ';
+    filter[item].forEach((val, j) => {
+      if (j >= 1) {
+        sent = ' OR ';
+      }
+      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+    });
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
@@ -208,7 +223,13 @@ function searchBySkype(params, skip = 0, filter = {}) {
       query[i + 1] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    query[i + 1] = ` AND candidate.${item} = ${filter[item]}`;
+    let sent = ' AND ';
+    filter[item].forEach((val, j) => {
+      if (j >= 1) {
+        sent = ' OR ';
+      }
+      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+    });
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 

@@ -93,7 +93,6 @@ function update(id, candidateSnake, user, callback) {
     delete changes.primary_skill_lvl;
     changes.primary_skill = 1;
   }
-  changes.change_date = candidate.change_date;
   changes.candidate_id = id;
   changes.user_id = user;
   const emails = candidate.emails || [];
