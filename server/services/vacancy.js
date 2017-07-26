@@ -1,6 +1,6 @@
 const vacancyModel = require('../dao/vacancy.js');
 const converter = require('camelcase-object');
-
+const convKeys = require('./convert-keys');
 
 const getVacancies = (body, callback) => {
   const limit = (body.limit < 0) ? 0 : (body.limit || 0);
@@ -70,8 +70,28 @@ const addVacancy = (req, callback) => {
   vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 
-const getCandidates = (vacancyId, callback) => {
-  vacancyModel.getCandidates(vacancyId, callback);
+const mapRes = (error, result, callback) => {
+  const res = result.map((value) => {
+    const tmp = {};
+    if (value.ru_first_name) {
+      tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+    } else {
+      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+    }
+    tmp.email = value.email;
+    tmp.status = value.status;
+    tmp.city = value.city;
+    tmp.contact_date = value.contact_date;
+    tmp.skill_name = value.skill_name;
+    tmp.id = value.id;
+    return tmp;
+  });
+  callback(error, convKeys.toCamel(res));
+};
+
+const getCandidates = (skip, vacancyId, callback) => {
+  skip = skip || 0;
+  vacancyModel.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
 module.exports = {

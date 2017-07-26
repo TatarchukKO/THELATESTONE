@@ -134,9 +134,9 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   });
 };
 
-const getCandidates = (vacancyId, callback) => {
+const getCandidates = (skip, vacancyId, callback) => {
   console.log(`Vacancy id is  : ${vacancyId}`);
-  connection.query(query.getCandidates(vacancyId), (callback));
+  connection.query(query.getCandidates(skip, vacancyId), (callback));
 };
   /*
 

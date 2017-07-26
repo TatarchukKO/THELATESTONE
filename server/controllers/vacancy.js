@@ -29,7 +29,7 @@ const addVacancy = (req, res) => {
 };
 
 const getCandidates = (req, res) => {
-  vacancyServices.getCandidates(req.params.id, (error, result) => {
+  vacancyServices.getCandidates(req.query.skip, req.params.id, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
