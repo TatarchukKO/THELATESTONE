@@ -45,10 +45,13 @@ const getVacancies = (limit, filter) => {
 
 const getVacancy = id =>
   `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
-  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
+  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
+  vacancy.linkedin, vacancy.exp_year, english_lvl.lvl AS vacancy_english_lvl
+  FROM vacancy 
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
+  LEFT JOIN english_lvl ON english_lvl.id = vacancy.english_lvl
   WHERE vacancy.id = ${id}`;
 
 const getSecondarySkills = id =>
