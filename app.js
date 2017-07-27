@@ -1,13 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const metaData = require('./server/routes/meta-data.js');
-const vacancy = require('./server/routes/vacancy.js');
-const hrmFeedback = require('./server/routes/hrm-feedbacks.js');
-const tsFeedback = require('./server/routes/ts-feedbacks.js');
-const candidate = require('./server/routes/candidates.js');
-const interview = require('./server/routes/interviews.js');
-const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
+
+const metaData = require('./server/routes/meta-data');
+const vacancy = require('./server/routes/vacancy');
+const hrmFeedback = require('./server/routes/hrm-feedbacks');
+const tsFeedback = require('./server/routes/ts-feedbacks');
+const candidate = require('./server/routes/candidates');
+const interview = require('./server/routes/interviews');
+const authentication = require('./server/authentication/passport');
 
 const app = express();
 
@@ -54,4 +55,3 @@ app.use((err, req, res, next) => {
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
 
 app.listen(app.get('port'), () => console.log('Server is running on port', app.get('port')));
-

@@ -1,5 +1,5 @@
-const candidatesService = require('../services/candidates.js');
-const trie = require('../services/trie-search.js');
+const candidatesService = require('../services/candidates');
+const trie = require('../services/trie-search');
 
 function get(req, res) {
   candidatesService.get(req.body, (error, result) => {

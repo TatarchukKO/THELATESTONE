@@ -1,7 +1,8 @@
 const express = require('express');
-const candidatesCantroller = require('../controllers/candidates.js');
 const validate = require('express-validation');
-const validation = require('../validation/candidates.js');
+
+const candidatesCantroller = require('../controllers/candidates');
+const validation = require('../validation/candidates');
 
 const router = express.Router();
 

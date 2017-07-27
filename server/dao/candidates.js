@@ -1,6 +1,7 @@
 const async = require('async');
-const query = require('../queries/candidate-queries.js');
-const connection = require('./connection.js').connection;
+
+const query = require('../queries/candidate-queries');
+const connection = require('./connection').connection;
 const ts = require('../services/trie-search').ts;
 
 function get(limit, filter, callback) {
