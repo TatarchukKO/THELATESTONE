@@ -6,9 +6,6 @@ const getByUserId = {
     allowUnknownQuery: false,
     allowUnknownParams: false,
   },
-  query: {
-    userid: Joi.number().integer().required(),
-  },
 };
 
 const getByCandidateId = {
@@ -32,7 +29,7 @@ const insert = {
     candidateId: Joi.number().integer().required(),
     vacancyId: Joi.number().integer().required(),
     userId: Joi.number().integer().required(),
-    date: Joi.date().required(),
+    date: Joi.number().integer().required(),
   },
 };
 

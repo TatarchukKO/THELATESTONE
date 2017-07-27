@@ -1,53 +1,62 @@
 const interviewDao = require('../dao/interviews.js');
 const convertKeys = require('./convert-keys.js');
 const dateFormat = require('dateformat');
+const gmail = require('../notification/gmail.js');
+const utils = require('../../utils.js');
 
-function isEngName(obj) {
-  if (obj.ruFirstName || obj.ruSecondName) {
-    return false;
-  }
-  return true;
-}
-function editCandidateName(obj) {
-  if (isEngName(obj)) {
-    delete obj.ruFirstName;
-    delete obj.ruSecondName;
+function editDoneField(obj) {
+  if (obj.done) {
+    obj.done = 'Closed';
   } else {
-    delete obj.engFirstName;
-    delete obj.engSecondName;
+    obj.done = 'Open';
   }
   return obj;
 }
-function editCandidatesNames(arr) {
-  return arr.map(item => editCandidateName(item));
+function editDoneFields(arr) {
+  return arr.map(item => editDoneField(item));
 }
-function toCamel(arr) {
-  return arr.map(item => convertKeys.toCamel(item));
-}
-function formatDate(object) {
-  object.date = dateFormat(object.date, 'yyyy-dd-mm HH:MM:ss');
+function editAndSendMail(obj) {
+  const camelRes = convertKeys.toCamel(obj);
+  const resp = utils.editNames(camelRes);
+  utils.formatDate(resp);
+  gmail.sendMail(resp[0]);
 }
 
 function insert(object, callback) {
-  formatDate(object);
-  interviewDao.insert(convertKeys.toSnake(object), callback);
+  utils.formatDate(object);
+  interviewDao.insert(convertKeys.toSnake(object), (error, result) => {
+    if (error) {
+      throw error;
+    }
+    interviewDao.getEmailNotificationData(result,
+      (err, res) => {
+        editAndSendMail(res);
+        callback(err);
+      });
+  });
 }
+
 function getByUserId(id, callback) {
-  interviewDao.getByUserId(id, (err, res) => {
+  const currentTime = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
+  interviewDao.getByUserId(id, currentTime, (err, res) => {
     if (err) {
       throw err;
     }
-    const result = toCamel(res);
-    callback(err, editCandidatesNames(result));
+    let result = convertKeys.toCamel(res);
+    result = utils.formatDates(result);
+    callback(err, utils.editNames(result));
   });
 }
+
 function getByCandidateId(id, callback) {
   interviewDao.getByCandidateId(id, (err, res) => {
     if (err) {
       throw err;
     }
-    const result = toCamel(res);
-    callback(err, editCandidatesNames(result));
+    let result = convertKeys.toCamel(res);
+    result = utils.formatDates(result);
+    result = editDoneFields(result);
+    callback(err, utils.editNames(result));
   });
 }
 

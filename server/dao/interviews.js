@@ -4,16 +4,18 @@ const interviewQueries = require('../queries/interview-queries.js');
 
 function insertInterview(object, cb) {
   connection.query(interviewQueries.insert(object), (err, res) => {
-    if (!err) {
-      cb(null, res.insertId);
+    if (err) {
+      throw err;
     }
+    cb(null, res.insertId);
   });
 }
 function insertEventToGeneralHistory(id, cb) {
   connection.query(interviewQueries.insertEventToGeneralHistory(id), (err) => {
-    if (!err) {
-      cb(null);
+    if (err) {
+      throw err;
     }
+    cb(null, id);
   });
 }
 
@@ -44,15 +46,19 @@ function insert(object, callback) {
       });
   });
 }
-function getByUserId(id, callback) {
-  connection.query(interviewQueries.getByUserId(id), callback);
+function getByUserId(id, currentTime, callback) {
+  connection.query(interviewQueries.getByUserId(id, currentTime), callback);
 }
 function getByCandidateId(id, callback) {
   connection.query(interviewQueries.getByCandidateId(id), callback);
+}
+function getEmailNotificationData(id, callback) {
+  connection.query(interviewQueries.getEmailNotificationData(id), callback);
 }
 
 module.exports = {
   insert,
   getByUserId,
   getByCandidateId,
+  getEmailNotificationData,
 };
