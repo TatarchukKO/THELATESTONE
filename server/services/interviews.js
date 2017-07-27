@@ -44,7 +44,6 @@ function getByUserId(id, callback) {
     }
     let result = convertKeys.toCamel(res);
     result = utils.formatDates(result);
-    result = editDoneFields(result);
     callback(err, utils.editNames(result));
   });
 }

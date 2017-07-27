@@ -28,13 +28,16 @@ function editObjNames(obj) {
   } else {
     obj.candidateName = `${obj.ruFirstName} ${obj.ruSecondName}`;
   }
+  if (obj.firstName) {
+    obj.userName = `${obj.firstName} ${obj.secondName}`;
+    delete obj.firstName;
+    delete obj.secondName;
+  }
+  if (obj.name) {
+    obj.vacancyName = obj.name;
+    delete obj.name;
+  }
 
-  obj.userName = `${obj.firstName} ${obj.secondName}`;
-  obj.vacancyName = obj.name;
-
-  delete obj.name;
-  delete obj.firstName;
-  delete obj.secondName;
   delete obj.ruFirstName;
   delete obj.ruSecondName;
   delete obj.engFirstName;
