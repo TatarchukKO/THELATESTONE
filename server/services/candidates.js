@@ -24,7 +24,7 @@ function mapRes(error, result, callback) {
 }
 
 function get(paramsSnake, callback) {
-  const params = utils.formatDate(convKeys.toSnake(paramsSnake))
+  const params = utils.formatDate(convKeys.toSnake(paramsSnake));
   const skip = paramsSnake.skip;
   let filter = params;
   delete filter.skip;
