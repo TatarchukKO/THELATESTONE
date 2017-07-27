@@ -11,7 +11,6 @@ models.getCandidates((err, res) => {
     tmp.name = `${item.eng_first_name} ${item.eng_second_name}`;
     ts.add(tmp);
   });
-  console.log(ts.root);
 });
 
 function search(name) {
