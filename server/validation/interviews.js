@@ -6,9 +6,6 @@ const getByUserId = {
     allowUnknownQuery: false,
     allowUnknownParams: false,
   },
-  query: {
-    userid: Joi.number().integer().required(),
-  },
 };
 
 const getByCandidateId = {
