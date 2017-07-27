@@ -12,9 +12,9 @@ router.use((req, res, next) => {
     next();
   }
 });
-router.put('/', validate(validation.get), candidatesCantroller.get);
+router.post('/', validate(validation.get), candidatesCantroller.get);
 router.get('/trie-search', validate(validation.trieSearch), candidatesCantroller.trieSearch);
-router.put('/search', validate(validation.search), candidatesCantroller.search);
+router.post('/search', validate(validation.search), candidatesCantroller.search);
 router.get('', validate(validation.getById), candidatesCantroller.getById);
 router.post('/new', validate(validation.insert), candidatesCantroller.insert);
 router.patch('/edit', validate(validation.update), candidatesCantroller.update);

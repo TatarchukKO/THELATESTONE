@@ -13,5 +13,6 @@ router.put('/', vacancyController.getVacancies);
 router.get('/:id', vacancyController.getVacancy);
 router.put('/:id', vacancyController.updateVacancy);
 router.post('/', vacancyController.addVacancy);
+router.get('/:id/candidates/', vacancyController.getCandidates);
 
 module.exports = router;
