@@ -2,7 +2,7 @@ const async = require('async');
 
 const query = require('../queries/candidate-queries');
 const connection = require('./connection').connection;
-const ts = require('../services/trie-search').ts;
+const ts = require('../services/trie-search');
 
 function get(limit, filter, callback) {
   connection.query(query.get(limit, filter), callback);
@@ -50,7 +50,7 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
-            return ts.add({
+            return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
@@ -158,7 +158,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
             });
           }
           if (candidate.eng_first_name) {
-            return ts.add({
+            return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });

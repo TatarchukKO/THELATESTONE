@@ -56,11 +56,12 @@ function trieSearch(req, res) {
   if (params.lenght > 2) {
     return res.status(404).send();
   }
-  const answer = trie.search(params.join(' '));
-  if (answer.length) {
-    return res.status(200).send(answer);
-  }
-  return res.status(404).send();
+  trie.search(params.join(' '), (error, answer) => {
+    if (answer.length) {
+      return res.status(200).send(answer);
+    }
+    return res.status(404).send();
+  });
 }
 
 module.exports = {
