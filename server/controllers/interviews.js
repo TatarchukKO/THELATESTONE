@@ -9,7 +9,7 @@ function insert(req, res) {
   });
 }
 function getByUserId(req, res) {
-  interviewService.getByUserId(2 /* req.user.id*/, (error, result) => {
+  interviewService.getByUserId(req.user.id, (error, result) => {
     if (error) {
       throw error;
     }
