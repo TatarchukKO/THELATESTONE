@@ -58,7 +58,9 @@ const getOtherSkills = id =>
   LEFT JOIN other_skills ON other_skills_has_vacancy.other_skills_id = other_skills.id
   WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
 
-const updateVacancy = id => `UPDATE vacancy SET ? WHERE id = ${id}`;
+const updateVacancy = id =>
+  `UPDATE vacancy SET ? WHERE id = ${id}`;
+
 const deleteSecondarySkills = id =>
   `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
 
@@ -90,47 +92,47 @@ const getCandidates = (skip, vacancyId) =>
 `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
   skills.skill_name, candidate_emails.email, candidate_status.status, result.total, result.primary_skill_lvl
-FROM
-(
+  FROM
+  (
   SELECT c_id , SUM (v_lvl * c_lvl) as 'total', primary_skill_lvl
-  FROM 
-    ( 
-      SELECT c_id, v_skill_id, v_lvl, c_skill_id, c_lvl, primary_skill_lvl
-      FROM
-        (
-          SELECT skill_id AS v_skill_id, lvl AS v_lvl
-          FROM vacancy_secondary_skills
-          WHERE vacancy_id =  ${vacancyId}
-        ) AS vInfo
-      LEFT JOIN
-        (
-          SELECT c_id, skill_id AS c_skill_id, lvl AS c_lvl, primary_skill_lvl
-          FROM    
-              (
-                SELECT id AS c_id, primary_skill_lvl
-                FROM candidate
-                WHERE primary_skill IN (
-                  SELECT primary_skill
-                    FROM vacancy
-                    WHERE id = ${vacancyId}
-                ) 
-              ) AS t2
-          LEFT JOIN candidate_secondary_skills AS t1
-          ON  t1.candidate_id = t2.c_id
-        ) AS cInfo
-      ON  vInfo.v_skill_id = cInfo.c_skill_id
-    ) AS preResult
-  WHERE c_id IS NOT NULL
-  GROUP BY c_id 
-  ORDER BY primary_skill_lvl DESC, total DESC
+      FROM 
+        ( 
+          SELECT c_id, v_skill_id, v_lvl, c_skill_id, c_lvl, primary_skill_lvl
+          FROM
+            (
+              SELECT skill_id AS v_skill_id, lvl AS v_lvl
+              FROM vacancy_secondary_skills
+              WHERE vacancy_id =  ${vacancyId}
+            ) AS vInfo
+          RIGHT JOIN
+            (
+              SELECT c_id, skill_id AS c_skill_id, lvl AS c_lvl, primary_skill_lvl
+              FROM    
+                  (
+                    SELECT id AS c_id, primary_skill_lvl
+                    FROM candidate
+                    WHERE primary_skill IN (
+                      SELECT primary_skill
+                        FROM vacancy
+                        WHERE id = ${vacancyId}
+                    ) 
+                  ) AS t2
+              LEFT JOIN candidate_secondary_skills AS t1
+              ON  t1.candidate_id = t2.c_id
+            ) AS cInfo
+          ON  vInfo.v_skill_id = cInfo.c_skill_id
+      ) AS preResult
+      WHERE c_id IS NOT NULL
+      GROUP BY c_id 
 ) AS result
 LEFT JOIN candidate ON candidate.id = result.c_id
 LEFT JOIN location ON candidate.city = location.id
 LEFT JOIN skills ON candidate.primary_skill = skills.id
 LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
 LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
-LIMIT ${skip}, ${capacity}`;
-
+GROUP BY candidate.id
+ORDER BY total DESC, primary_skill_lvl DESC, eng_first_name
+LIMIT ${skip}, 100`;
 
 module.exports = {
   getVacancies,

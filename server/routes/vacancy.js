@@ -1,5 +1,7 @@
 const vacancyController = require('../controllers/vacancy.js');
 const router = require('express').Router();
+const validate = require('express-validation');
+const validation = require('../validation/vacancies.js');
 
 router.use((req, res, next) => {
   if (req.user.type === 'TECH') {
@@ -9,10 +11,10 @@ router.use((req, res, next) => {
   }
 });
 
-router.put('/', vacancyController.getVacancies);
-router.get('/:id', vacancyController.getVacancy);
-router.put('/:id', vacancyController.updateVacancy);
-router.post('/', vacancyController.addVacancy);
+router.post('/', validate(validation.getVacancies), vacancyController.getVacancies);
+router.get('/:id', validate(validation.getVacancy), vacancyController.getVacancy);
+router.patch('/:id', validate(validation.updateVacancy), vacancyController.updateVacancy);
+router.post('/new', validate(validation.addVacancy), vacancyController.addVacancy);
 router.get('/:id/candidates/', vacancyController.getCandidates);
 
 module.exports = router;
