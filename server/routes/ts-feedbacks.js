@@ -1,7 +1,7 @@
 const express = require('express');
 const tsFeedbackController = require('../controllers/ts-feedbacks.js');
 const validate = require('express-validation');
-const validation = require('../validation/hrm-feedbacks.js');
+const validation = require('../validation/ts-feedbacks.js');
 
 const router = express.Router();
 

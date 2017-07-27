@@ -38,6 +38,16 @@ function insertEventToGeneralHistory(id, cb) {
     cb(null);
   });
 }
+function updateInterviewStatus(object, cb) {
+  connection
+    .query(tsFeedbackQueries.updateInterviewStatus(object),
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      cb(null);
+    });
+}
 
 function getById(id, callback) {
   connection.beginTransaction((transError) => {
@@ -127,6 +137,7 @@ function insert(object, callback) {
         async.apply(insertFeedback, object),
         insertSecondarySkills,
         insertEventToGeneralHistory,
+        async.apply(updateInterviewStatus, object),
       ],
       (err, res) => {
         if (err) {

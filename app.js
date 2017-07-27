@@ -6,7 +6,8 @@ const hrmFeedback = require('./server/routes/hrm-feedbacks.js');
 const tsFeedback = require('./server/routes/ts-feedbacks.js');
 const candidate = require('./server/routes/candidates.js');
 const interview = require('./server/routes/interviews.js');
-const authentication = require('./server/authentication/passport.js');
+const notification = require('./server/routes/notification.js');
+// const authentication = require('./server/authentication/passport.js');
 const cors = require('cors');
 
 const app = express();
@@ -41,6 +42,8 @@ app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 app.use('/api/candidates/', candidate);
 app.use('/api/interviews/', interview);
+app.use('/api/notification/', notification);
+
 app.get('/api/user', (req, res) => {
   const user = req.user;
   delete user.id;
