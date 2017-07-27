@@ -7,7 +7,7 @@ const get = {
     allowUnknownParams: false,
   },
   body: {
-    skip: Joi.number().integer().greater(0),
+    skip: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
@@ -118,7 +118,7 @@ const search = {
     skype: Joi.string(),
   },
   body: {
-    skip: Joi.number().integer().greater(0),
+    skip: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)),

@@ -1,8 +1,9 @@
-const candidatesModel = require('../dao/candidates.js');
 const translit = require('translitit-cyrillic-russian-to-latin');
 const metaphone = require('metaphone');
+
+const candidatesModel = require('../dao/candidates');
 const convKeys = require('./convert-keys');
-const utils = require('../../utils.js');
+const utils = require('../../utils');
 
 function mapRes(error, result, callback) {
   const res = result.map((value) => {
