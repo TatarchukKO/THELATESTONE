@@ -23,11 +23,17 @@ function getById(id) {
   WHERE ${id} = h_f.id`;
 }
 function insert(object) {
-  return `INSERT INTO hrm_feedback (change_reason, ready_to_work, ready_to_travel,
-  motivation, english_lvl, salary_wish, other, vacancy_id, user_id, candidate_id, interview_id)
-  VALUES ('${object.change_reason}', '${object.ready_to_work}', '${object.ready_to_travel}',
-    '${object.motivation}', '${object.english_lvl}', '${object.salary_wish}',
-    '${object.other}', '${object.vacancy_id}', '${object.user_id}', '${object.candidate_id}', '${object.interview_id}')`;
+  return `INSERT INTO hrm_feedback
+  (change_reason, ready_to_work, ready_to_travel,
+  motivation, english_lvl, salary_wish, other,
+  vacancy_id, user_id, candidate_id, interview_id)
+  VALUES
+  ('${object.change_reason}', '${object.ready_to_work}',
+  '${object.ready_to_travel}', '${object.motivation}',
+  '${object.english_lvl}', '${object.salary_wish}',
+  '${object.other}', '${object.vacancy_id}',
+  '${object.user_id}', '${object.candidate_id}',
+  '${object.interview_id}')`;
 }
 function updateInterviewStatus(object) {
   return `UPDATE interview

@@ -1,9 +1,5 @@
-const convertKeys = require('./server/services/convert-keys.js');
 const dateFormat = require('dateformat');
 
-function toCamel(arr) {
-  return arr.map(item => convertKeys.toCamel(item));
-}
 function formatDate(object) {
   object.date = dateFormat(object.date, 'yyyy-mm-dd HH:MM:ss');
   return object;
@@ -40,11 +36,22 @@ function editObjNames(obj) {
 function editNames(arr) {
   return arr.map(item => editObjNames(item));
 }
+function editDoneField(obj) {
+  if (obj.done) {
+    obj.done = 'Closed';
+  } else {
+    obj.done = 'Open';
+  }
+  return obj;
+}
+function editDoneFields(arr) {
+  return arr.map(item => editDoneField(item));
+}
 
 module.exports = {
   formatDate,
   formatDates,
-  toCamel,
   isEngName,
   editNames,
+  editDoneFields,
 };

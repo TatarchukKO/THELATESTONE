@@ -3,6 +3,17 @@ const convertKeys = require('./convert-keys.js');
 const gmail = require('../notification/gmail.js');
 const utils = require('../../utils.js');
 
+function editDoneField(obj) {
+  if (obj.done) {
+    obj.done = 'Open';
+  } else {
+    obj.done = 'Closed';
+  }
+  return obj;
+}
+function editDoneFields(arr) {
+  return arr.map(item => editDoneField(item));
+}
 function editAndSendMail(obj) {
   const camelRes = convertKeys.toCamel(obj);
   const resp = utils.editNames(camelRes);
@@ -30,6 +41,7 @@ function getByUserId(id, callback) {
     }
     let result = convertKeys.toCamel(res);
     result = utils.formatDates(result);
+    result = editDoneFields(result);
     callback(err, utils.editNames(result));
   });
 }
@@ -40,6 +52,7 @@ function getByCandidateId(id, callback) {
     }
     let result = convertKeys.toCamel(res);
     result = utils.formatDates(result);
+    result = editDoneFields(result);
     callback(err, utils.editNames(result));
   });
 }
