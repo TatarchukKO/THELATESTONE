@@ -1,13 +1,14 @@
 const interviewDao = require('../dao/interviews.js');
 const convertKeys = require('./convert-keys.js');
+const dateFormat = require('dateformat');
 const gmail = require('../notification/gmail.js');
 const utils = require('../../utils.js');
 
 function editDoneField(obj) {
   if (obj.done) {
-    obj.done = 'Open';
-  } else {
     obj.done = 'Closed';
+  } else {
+    obj.done = 'Open';
   }
   return obj;
 }
@@ -34,17 +35,19 @@ function insert(object, callback) {
       });
   });
 }
+
 function getByUserId(id, callback) {
-  interviewDao.getByUserId(id, (err, res) => {
+  const currentTime = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
+  interviewDao.getByUserId(id, currentTime, (err, res) => {
     if (err) {
       throw err;
     }
     let result = convertKeys.toCamel(res);
     result = utils.formatDates(result);
-    result = editDoneFields(result);
     callback(err, utils.editNames(result));
   });
 }
+
 function getByCandidateId(id, callback) {
   interviewDao.getByCandidateId(id, (err, res) => {
     if (err) {
