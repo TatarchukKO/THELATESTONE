@@ -5,7 +5,6 @@ const cors = require('cors');
 const interview = require('./server/routes/interviews');
 const notification = require('./server/routes/notification');
 const tsFeedback = require('./server/routes/ts-feedbacks');
-
 const metaData = require('./server/routes/meta-data');
 const vacancy = require('./server/routes/vacancy');
 const hrmFeedback = require('./server/routes/hrm-feedbacks');

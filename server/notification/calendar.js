@@ -9,18 +9,29 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_DIR = `${process.env.HOME || process.env.HOMEPATH ||
   process.env.USERPROFILE}/.credentials/`;
 const TOKEN_PATH = `${TOKEN_DIR}calendar-nodejs-quickstart.json`;
-console.log(TOKEN_PATH);
+
+let cId;
+let date = new Date();
+date.setDate(30);
+date = date.toISOString();
+let staticEvent = {
+  summary: 'Interview',
+  description: 'You are assigned to an interview',
+  start: {},
+  end: {},
+};
+
+function setStaticEvent(event) {
+  staticEvent.start.dateTime = event.date.toISOString();
+  staticEvent.start.timeZone = 'Europe/Minsk';
+  staticEvent.end.dateTime = event.date.toISOString();
+  staticEvent.end.timeZone = 'Europe/Minsk';
+}
+function setCalendarId(id) {
+  cId = id;
+}
 
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', (err, content) => {
-  if (err) {
-    console.log(`Error loading client secret file: ${err}`);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Google Calendar API.
-  authorize(JSON.parse(content), listEvents);
-});
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -95,36 +106,18 @@ function storeToken(token) {
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
   console.log(`Token stored to ${TOKEN_PATH}`);
 }
-let date = new Date();
-date.setDate(30);
-date = date.toISOString();
-console.log(date);
-
-const event = {
-  summary: 'ПИДОР',
-  location: '800 Howard St., San Francisco, CA 94103',
-  description: 'A chance to hear more about Google\'s developer products.',
-  start: {
-    dateTime: date, // '2017-07-30 15:00:00',
-    timeZone: 'Europe/Minsk',
-  },
-  end: {
-    dateTime: date, // '2017-07-30T17:00:00-07:00',
-    timeZone: 'Europe/Minsk',
-  },
-};
 
 /**
  * Lists the next 10 events on the user's primary calendar.
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listEvents(auth) {
+function insertEvent(auth) {
   const calendar = google.calendar('v3');
   calendar.events.insert({
     auth,
-    calendarId: 'maxaderiha@gmail.com',
-    resource: event,
+    calendarId: cId,
+    resource: staticEvent,
   }, (err) => {
     if (err) {
       console.log('SHIET');
@@ -134,3 +127,21 @@ function listEvents(auth) {
     console.log('WP, DAD');
   });
 }
+
+function mainFunc() {
+  fs.readFile('client_secret.json', (err, content) => {
+    if (err) {
+      console.log(`Error loading client secret file: ${err}`);
+      return;
+    }
+    // Authorize a client with the loaded credentials, then call the
+    // Google Calendar API.
+    authorize(JSON.parse(content), insertEvent);
+  });
+}
+
+module.exports = {
+  mainFunc,
+  setStaticEvent,
+  setCalendarId,
+};

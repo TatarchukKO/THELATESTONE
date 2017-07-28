@@ -8,7 +8,6 @@ function insert(object) {
 function getEmailNotificationData(id) {
   return `SELECT u.first_name, u.second_name,
   u.login, u.type, i.date, v.name, s.skill_name,
-  c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name
   FROM interview i
   LEFT JOIN vacancy v ON v.id = i.vacancy_id

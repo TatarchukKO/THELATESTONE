@@ -18,14 +18,12 @@ function formatDates(arr) {
 }
 function isEngName(obj) {
   if (obj.engFirstName || obj.engSecondName) {
-    console.log('est eng name');
     return true;
   }
   return false;
 }
 function isRuName(obj) {
   if (obj.ruFirstName || obj.ruSecondName) {
-    console.log('est ru name');
     return true;
   }
   return false;
@@ -57,7 +55,6 @@ function editObjNames(obj) {
     delete obj.name;
   }
   
-  console.log(obj);
   return obj;
 }
 function editNames(arr) {

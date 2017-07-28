@@ -3,6 +3,7 @@ const convertKeys = require('./convert-keys.js');
 const dateFormat = require('dateformat');
 const gmail = require('../notification/gmail.js');
 const utils = require('../../utils.js');
+const calendar = require('../notification/calendar.js');
 
 function editDoneField(obj) {
   if (obj.done) {
@@ -21,6 +22,14 @@ function editAndSendMail(obj) {
   utils.formatDate(resp);
   gmail.sendMail(resp[0]);
 }
+function insertEventInGoogleCalendar(obj) {
+  const camelRes = convertKeys.toCamel(obj);
+  const event = {};
+  event.date = new Date(camelRes[0].date);
+  calendar.setCalendarId(camelRes[0].login);
+  calendar.setStaticEvent(event);
+  calendar.mainFunc();
+}
 
 function insert(object, callback) {
   utils.formatDate(object);
@@ -31,6 +40,7 @@ function insert(object, callback) {
     interviewDao.getEmailNotificationData(result,
       (err, res) => {
         editAndSendMail(res);
+        insertEventInGoogleCalendar(res);
         callback(err);
       });
   });
