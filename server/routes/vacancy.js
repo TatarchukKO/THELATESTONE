@@ -16,5 +16,6 @@ router.get('/:id', validate(validation.getVacancy), vacancyController.getVacancy
 router.patch('/:id', validate(validation.updateVacancy), vacancyController.updateVacancy);
 router.post('/new', validate(validation.addVacancy), vacancyController.addVacancy);
 router.get('/:id/candidates/', validate(validation.getCandidates), vacancyController.getCandidates);
+router.get('/:id/assigned', vacancyController.getAssignedCandidates);
 
 module.exports = router;

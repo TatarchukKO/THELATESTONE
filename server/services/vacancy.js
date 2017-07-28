@@ -47,7 +47,7 @@ const updateVacancy = (id, req, callback) => {
 
   delete changes.primary_skill_lvl;
   changes.vacancy_id = id;
-  changes.user_id = req.user.id;
+  changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
   changes.change_date = formatDate(new Date());
 
@@ -92,6 +92,9 @@ const mapRes = (error, result, callback) => {
     tmp.id = value.id;
     tmp.total = value.total;
     tmp.primary_skill_lvl = value.primary_skill_lvl;
+    if (value.date) {
+      tmp.date = value.date;
+    }
     return tmp;
   });
   console.log(result);
@@ -103,10 +106,16 @@ const getCandidates = (skip, vacancyId, callback) => {
   vacancyModel.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
+const getAssignedCandidates = (skip, vacancyId, callback) => {
+  skip = skip || 0;
+  vacancyModel.getAssignedCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
   updateVacancy,
   getCandidates,
+  getAssignedCandidates,
 };
