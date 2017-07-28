@@ -97,7 +97,6 @@ const mapRes = (error, result, callback) => {
     }
     return tmp;
   });
-  console.log(result);
   callback(error, convKeys.toCamel(res));
 };
 
