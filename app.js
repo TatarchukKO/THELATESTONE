@@ -45,7 +45,7 @@ app.get('/api/user', (req, res) => {
   delete user.login;
   res.status(200).send(convKeys.toCamel(user));
 });
-app.use('/api/candidate/', interview);
+app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 app.use((req, res, next) => {
@@ -61,7 +61,6 @@ app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
-app.use('/api/user/', interview);
 
 app.use((err, req, res, next) => {
   console.log(err);

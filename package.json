@@ -12,6 +12,8 @@
     "express-mysql-session": "^1.2.1",
     "express-session": "^1.15.3",
     "express-validation": "^1.0.2",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^20.1.0",
     "joi": "^10.6.0",
     "json2xls": "^0.1.2",
     "lodash.camelcase": "^4.3.0",

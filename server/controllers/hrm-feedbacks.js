@@ -17,7 +17,9 @@ function getByCandidateId(req, res) {
   });
 }
 function insert(req, res) {
-  hrmFeedbackService.insert(req.body, (error) => {
+  const obj = req.body;
+  obj.userId = req.user.id;
+  hrmFeedbackService.insert(obj, (error) => {
     if (error) {
       throw error;
     }
