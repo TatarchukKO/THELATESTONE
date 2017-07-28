@@ -6,13 +6,6 @@ const validation = require('../validation/candidates');
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-  if (req.user.type === 'TECH') {
-    res.status(403).send();
-  } else {
-    next();
-  }
-});
 router.post('/', validate(validation.get), candidatesCantroller.get);
 router.get('/trie-search', validate(validation.trieSearch), candidatesCantroller.trieSearch);
 router.post('/search', validate(validation.search), candidatesCantroller.search);

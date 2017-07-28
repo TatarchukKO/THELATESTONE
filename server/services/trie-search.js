@@ -36,7 +36,6 @@ function insert(item) {
 
 function search(name, callback) {
   return client.get('root', (err, root) => {
-    console.log(JSON.parse(root));
     ts.root = JSON.parse(root);
     const item = ts.get(translit(name));
     callback(err, item);
