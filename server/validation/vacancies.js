@@ -102,10 +102,22 @@ const getCandidates = {
   },
 };
 
+const getAssignedCandidates = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
   updateVacancy,
   getCandidates,
+  getAssignedCandidates,
 };
