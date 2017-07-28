@@ -45,10 +45,14 @@ const getVacancies = (limit, filter) => {
 
 const getVacancy = id =>
   `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
-  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
+  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
+  vacancy.linkedin, vacancy.exp_year, english_lvl.lvl AS vacancy_english_lvl, 
+  vacancy.description, vacancy.salary_wish
+  FROM vacancy 
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
+  LEFT JOIN english_lvl ON english_lvl.id = vacancy.english_lvl
   WHERE vacancy.id = ${id}`;
 
 const getSecondarySkills = id =>
@@ -88,10 +92,10 @@ const insertOtherSkill = (id, skillId) =>
 
 const addVacancy = vacancy =>
   `INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, 
-    status, linkedin, exp_year, english_lvl, salary_wish)
+    status, linkedin, exp_year, english_lvl, salary_wish , description)
     VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}', '${vacancy.primary_skill}',
     ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
-    '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}')`;
+    '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}', '${vacancy.description}')`;
 
 const getCandidates = (skip, vacancyId) =>
   `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,

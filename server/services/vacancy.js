@@ -47,7 +47,7 @@ const updateVacancy = (id, req, callback) => {
 
   delete changes.primary_skill_lvl;
   changes.vacancy_id = id;
-  changes.user_id = 2; // User ID
+  changes.user_id = req.user.id;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
   changes.change_date = formatDate(new Date());
 
@@ -71,6 +71,7 @@ const addVacancy = (req, callback) => {
   vacancy.linkedin = req.linkedin || 0;
   vacancy.english_lvl = req.english_lvl || 0;
   vacancy.salary_wish = req.salary_wish || 0;
+  vacancy.description = req.description;
 
   vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
