@@ -33,9 +33,13 @@ const insert = {
     primarySkillLvl: Joi.number().integer().required(),
     candidateId: Joi.number().integer().required(),
     vacancyId: Joi.number().integer().required(),
-    userId: Joi.number().integer().required(),
     interviewId: Joi.number().integer().required(),
     secondarySkills: Joi.array().required(),
+  },
+  query: {
+    user: {
+      id: Joi.number().integer().required(),
+    },
   },
 };
 

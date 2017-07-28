@@ -42,8 +42,7 @@ app.use('/api/vacancies/', vacancy);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 app.use('/api/candidates/', candidate);
-app.use('/api/user/', interview);
-app.use('/api/candidate/', interview);
+app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
 
 app.get('/api/user', (req, res) => {
