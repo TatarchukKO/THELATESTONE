@@ -56,6 +56,7 @@ const addVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date().required(),
     expYear: Joi.date().required(),
+    description: Joi.string().required(),
   },
 };
 
