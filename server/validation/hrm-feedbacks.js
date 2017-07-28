@@ -37,9 +37,13 @@ const insert = {
     salaryWish: Joi.number().integer().required(),
     other: Joi.string(),
     vacancyId: Joi.number().integer().required(),
-    userId: Joi.number().integer().required(),
     candidateId: Joi.number().integer().required(),
     interviewId: Joi.number().integer().required(),
+  },
+  query: {
+    user: {
+      id: Joi.number().integer().required(),
+    },
   },
 };
 

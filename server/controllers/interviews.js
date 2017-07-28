@@ -1,7 +1,9 @@
 const interviewService = require('../services/interviews.js');
 
 function insert(req, res) {
-  interviewService.insert(req.body, (error) => {
+  const obj = req.body;
+  obj.assignerId = req.user.id;
+  interviewService.insert(obj, (error) => {
     if (error) {
       throw error;
     }

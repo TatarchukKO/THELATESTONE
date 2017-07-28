@@ -17,32 +17,47 @@ function formatDates(arr) {
   return arr.map(item => formatDate(item));
 }
 function isEngName(obj) {
-  if (obj.ruFirstName || obj.ruSecondName) {
-    return false;
+  if (obj.engFirstName || obj.engSecondName) {
+    console.log('est eng name');
+    return true;
   }
-  return true;
+  return false;
+}
+function isRuName(obj) {
+  if (obj.ruFirstName || obj.ruSecondName) {
+    console.log('est ru name');
+    return true;
+  }
+  return false;
+}
+function deleteCandidateNames(obj) {
+  delete obj.ruFirstName;
+  delete obj.ruSecondName;
+  delete obj.engFirstName;
+  delete obj.engSecondName;
+  return obj;
 }
 function editObjNames(obj) {
-  if (isEngName(obj)) {
-    obj.candidateName = `${obj.engFirstName} ${obj.engSecondName}`;
-  } else {
+  if (isRuName(obj)) {
     obj.candidateName = `${obj.ruFirstName} ${obj.ruSecondName}`;
+    obj = deleteCandidateNames(obj);
+  } else if (isEngName(obj)) {
+    obj.candidateName = `${obj.engFirstName} ${obj.engSecondName}`;
+    obj = deleteCandidateNames(obj);
   }
+
   if (obj.firstName) {
     obj.userName = `${obj.firstName} ${obj.secondName}`;
     delete obj.firstName;
     delete obj.secondName;
   }
+  
   if (obj.name) {
     obj.vacancyName = obj.name;
     delete obj.name;
   }
-
-  delete obj.ruFirstName;
-  delete obj.ruSecondName;
-  delete obj.engFirstName;
-  delete obj.engSecondName;
-
+  
+  console.log(obj);
   return obj;
 }
 function editNames(arr) {
