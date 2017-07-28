@@ -1,5 +1,5 @@
-const connection = require('./connection.js').connection;
-const metaDataQueries = require('../queries/meta-data-queries.js');
+const connection = require('./connection').connection;
+const metaDataQueries = require('../queries/meta-data-queries');
 
 function getEnglishLevels(callback) {
   connection.query(metaDataQueries.englishLevelsQuery(), callback);

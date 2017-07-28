@@ -1,4 +1,4 @@
-const interviewService = require('../services/interviews.js');
+const interviewService = require('../services/interviews');
 
 function insert(req, res) {
   const obj = req.body;

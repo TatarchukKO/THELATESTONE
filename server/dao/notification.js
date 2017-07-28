@@ -1,5 +1,5 @@
-const connection = require('./connection.js').connection;
-const notificationQueries = require('../queries/notification-queries.js');
+const connection = require('./connection').connection;
+const notificationQueries = require('../queries/notification-queries');
 
 function getUpcomingInterviews(id, currentTime, timeLimit, callback) {
   connection
