@@ -1,14 +1,13 @@
-const hrmFeedbackDao = require('../dao/hrm-feedbacks.js');
-const convertKeys = require('./convert-keys.js');
-const utils = require('../../utils.js');
+const hrmFeedbackDao = require('../dao/hrm-feedbacks');
+const utils = require('../../utils');
 
 function getById(id, callback) {
   hrmFeedbackDao.getById(id, (err, res) => {
     if (err) {
       throw err;
     }
-    const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    const result = utils.toCamel(res);
+    callback(err, utils.namesEditor.editArr(result));
   });
 }
 function getByCandidateId(id, callback) {
@@ -16,12 +15,12 @@ function getByCandidateId(id, callback) {
     if (err) {
       throw err;
     }
-    const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    const result = utils.toCamel(res);
+    callback(err, utils.namesEditor.editArr(result));
   });
 }
 function insert(object, callback) {
-  hrmFeedbackDao.insert(convertKeys.toSnake(object), callback);
+  hrmFeedbackDao.insert(utils.toSnake(object), callback);
 }
 
 module.exports = {

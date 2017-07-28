@@ -1,6 +1,7 @@
 const async = require('async');
-const connection = require('./connection.js').connection;
-const hrmFeedbackQueries = require('../queries/hrm-feedback-queries.js');
+
+const connection = require('./connection').connection;
+const hrmFeedbackQueries = require('../queries/hrm-feedback-queries');
 
 function insertFeedback(object, cb) {
   connection

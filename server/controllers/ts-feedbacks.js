@@ -1,4 +1,4 @@
-const tsFeedbackService = require('../services/ts-feedbacks.js');
+const tsFeedbackService = require('../services/ts-feedbacks');
 
 function getById(req, res) {
   tsFeedbackService.getById(req.query.feedbackid, (error, result) => {
