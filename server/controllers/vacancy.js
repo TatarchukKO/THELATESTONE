@@ -15,7 +15,7 @@ const getVacancy = (req, res) => {
 };
 
 const updateVacancy = (req, res) => {
-  vacancyServices.updateVacancy(req.params.id, req.body, (error, result) => {
+  vacancyServices.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
@@ -35,11 +35,19 @@ const getCandidates = (req, res) => {
   });
 };
 
+const getAssignedCandidates = (req, res) => {
+  vacancyServices.getAssignedCandidates(req.query.skip, req.params.id, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
   updateVacancy,
   addVacancy,
+  getAssignedCandidates,
 };
 

@@ -138,10 +138,15 @@ const getCandidates = (skip, vacancyId, callback) => {
   connection.query(query.getCandidates(skip, vacancyId), callback);
 };
 
+const getAssignedCandidates = (skip, vacancyId, callback) => {
+  connection.query(query.getAssignedCandidates(skip, vacancyId), callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
   updateVacancy,
   addVacancy,
+  getAssignedCandidates,
 };
