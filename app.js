@@ -56,7 +56,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.use('api/users/', users);
+app.use('/api/users', users);
 app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);

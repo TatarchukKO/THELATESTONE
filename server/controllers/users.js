@@ -1,4 +1,4 @@
-const usersService = require('../services/candidates');
+const usersService = require('../services/users');
 
 function get(req, res) {
   return usersService.get(req.query.type, (error, result) => {
