@@ -1,4 +1,4 @@
-const vacancyModel = require('../dao/vacancy.js');
+const model = require('../dao/vacancy.js');
 const convKeys = require('./convert-keys');
 
 const getVacancies = (body, callback) => {
@@ -6,13 +6,13 @@ const getVacancies = (body, callback) => {
   const limit = (body.limit < 0) ? 0 : (body.limit || 0);
   const filter = body;
   delete filter.limit;
-  vacancyModel.getVacancies(limit, filter, (error, result) => {
+  model.getVacancies(limit, filter, (error, result) => {
     callback(error, convKeys.toCamel(result));
   });
 };
 
 const getVacancy = (id, callback) => {
-  vacancyModel.getVacancy(id, (error, result) => {
+  model.getVacancy(id, (error, result) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
@@ -44,14 +44,16 @@ const updateVacancy = (id, req, user, callback) => {
   });
   clearSkills(config);
   clearSkills(changes);
-
-  delete changes.primary_skill_lvl;
+  if (req.primary_skill_lvl) {
+    delete changes.primary_skill_lvl;
+    changes.primary_skill = 1;
+  }
   changes.vacancy_id = id;
   changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
-  changes.change_date = formatDate(new Date());
 
-  vacancyModel.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
+  console.log(changes);
+  model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 };
 
 const addVacancy = (req, callback) => {
@@ -73,7 +75,7 @@ const addVacancy = (req, callback) => {
   vacancy.salary_wish = req.salary_wish || 0;
   vacancy.description = req.description;
 
-  vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
+  model.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 
 const mapRes = (error, result, callback) => {
@@ -102,12 +104,17 @@ const mapRes = (error, result, callback) => {
 
 const getCandidates = (skip, vacancyId, callback) => {
   skip = skip || 0;
-  vacancyModel.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+  model.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
-const getAssignedCandidates = (skip, vacancyId, callback) => {
+const getAssigned = (skip, vacancyId, callback) => {
   skip = skip || 0;
-  vacancyModel.getAssignedCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+  model.getAssigned(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+};
+
+const closeVacancy = (req, callback) => {
+  req = convKeys.toSnake(req);
+  model.closeVacancy(req, callback);
 };
 
 module.exports = {
@@ -116,5 +123,6 @@ module.exports = {
   addVacancy,
   updateVacancy,
   getCandidates,
-  getAssignedCandidates,
+  getAssigned,
+  closeVacancy,
 };
