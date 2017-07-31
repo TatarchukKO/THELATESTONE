@@ -6,7 +6,7 @@ function get(skip = 0, amount = 14, filter = {}) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
-      query[i] = `${sent}candidate.${item} >= ${filter[item][0]} 
+      query[i] = `${sent}candidate.${item} >= ${filter[item][0]}
         AND candidate.${item} <= ${filter[item][1]}`;
       return;
     }
@@ -18,7 +18,7 @@ function get(skip = 0, amount = 14, filter = {}) {
       if (j >= 1) {
         sent = ' OR ';
       }
-      query[i + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + j] = `${sent}candidate.${item} = ${val}`;
     });
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
@@ -27,7 +27,7 @@ function get(skip = 0, amount = 14, filter = {}) {
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
   ${query.join('')}
   GROUP BY candidate.id
@@ -36,15 +36,15 @@ function get(skip = 0, amount = 14, filter = {}) {
 }
 
 function getById(id) {
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
   candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
-  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, 
-  candidate_status.status 
+  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl,
+  candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE candidate.id = ${id}`;
 }
@@ -56,14 +56,14 @@ function getEmails(id) {
 }
 
 function getSecondarySkills(id) {
-  return `SELECT skills.id, skills.skill_name, candidate_secondary_skills.lvl 
+  return `SELECT skills.id, skills.skill_name, candidate_secondary_skills.lvl
   FROM candidate_secondary_skills
   LEFT JOIN skills ON candidate_secondary_skills.skill_id = skills.id
   WHERE candidate_secondary_skills.candidate_id = ${id}`;
 }
 
 function getOtherSkills(id) {
-  return `SELECT other_skills.skill, other_skills.id 
+  return `SELECT other_skills.skill, other_skills.id
   FROM other_skills_has_candidate
   LEFT JOIN other_skills ON other_skills_has_candidate.other_skills_id = other_skills.id
   WHERE other_skills_has_candidate.candidate_id = ${id}`;
@@ -147,7 +147,7 @@ function search(params, skip = 0, amount = 14, filter = {}) {
   }
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + index] = ` AND candidate.${item} >= ${filter[item][0]} 
+      query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}
         AND candidate.${item} <= ${filter[item][1]}`;
       return;
     }
@@ -160,17 +160,17 @@ function search(params, skip = 0, amount = 14, filter = {}) {
       if (j >= 1) {
         sent = ' OR ';
       }
-      query[i + index + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + index + j] = `${sent}candidate.${item} = ${val}`;
     });
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status
   FROM metaphone
   LEFT JOIN candidate ON metaphone.candidate_id = candidate.id
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
   LIMIT ${skip}, ${amount}`;
@@ -181,7 +181,7 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
   query[0] = `candidate_emails.email = "${params}"`;
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]} 
+      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]}
         AND candidate.${item} <= ${filter[item][1]}`;
       return;
     }
@@ -194,17 +194,17 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
       if (j >= 1) {
         sent = ' OR ';
       }
-      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + 1 + j] = `${sent}candidate.${item} = ${val}`;
     });
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status
   FROM candidate_emails
   LEFT JOIN candidate ON candidate_emails.candidate_id = candidate.id
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
   LIMIT ${skip}, ${amount}`;
@@ -215,7 +215,7 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
   query[0] = `candidate.skype = "${params}"`;
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]} 
+      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]}
         AND candidate.${item} <= ${filter[item][1]}`;
       return;
     }
@@ -228,16 +228,16 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
       if (j >= 1) {
         sent = ' OR ';
       }
-      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + 1 + j] = `${sent}candidate.${item} = ${val}`;
     });
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
   LIMIT ${skip}, ${amount}`;

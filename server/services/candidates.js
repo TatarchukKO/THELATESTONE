@@ -4,8 +4,10 @@ const candidatesModel = require('../dao/candidates');
 const utils = require('../../utils');
 
 function mapRes(error, result, callback) {
-  const res = utils.namesEditor.editArr(utils.toCamel(result));
-  callback(error, res);
+  if(result) {
+    result = utils.namesEditor.editArr(utils.toCamel(result));
+  }
+  callback(error, result);
 }
 
 function get(paramsSnake, callback) {
