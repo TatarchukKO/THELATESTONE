@@ -163,9 +163,11 @@ const getAssigned = (skip, vacancyId) =>
     LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
     ORDER BY date DESC`;
 
-const changeCanidateStatus = body =>
-  `UPDATE candidate SET status = 1 WHERE id = ${body.c_id}
-    UPDATE interview SET done = 1 WHERE vacancy_id = ${body.v_id}`;
+const changeCandidateStatus = body =>
+  `UPDATE candidate SET status = 9 WHERE id = ${body.c_id}`;
+
+const changeInterviewStatus = body =>
+  `UPDATE interview SET done = 1 WHERE vacancy_id = ${body.v_id}`;
 
 const getOtherCandidates = body =>
   `SELECT candidate_id
@@ -191,7 +193,8 @@ module.exports = {
   insertSecSkill,
   addVacancy,
   getAssigned,
-  changeCanidateStatus,
+  changeCandidateStatus,
   getOtherCandidates,
   changeOtherCandidatesStatus,
+  changeInterviewStatus,
 };

@@ -162,6 +162,7 @@ const closeVacancy = (body, callback) => {
       async.parallel(
         [
           call => connection.query(query.changeCandidateStatus(body), call),
+          call => connection.query(query.changeInterviewStatus(body), call),
           call => connection.query(query.getOtherCandidates(body), (err, res) =>
           changeOtherCandidatesStatus(res, call)),
         ],
