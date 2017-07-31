@@ -4,23 +4,22 @@ const redis = require('redis');
 
 const models = require('../dao/trie-search.js');
 
-const client = redis.createClient(18657, 'pub-redis-18657.eu-central-1-1.1.ec2.redislabs.com');
+const client = redis.createClient(6379, 'localhost');
 client.on('connect', () => console.log('Connected to Redis'));
 client.on('error', err => console.log(err));
 const ts = new TrieSearch('name');
-models.getCandidates((err, res) => {
-  res.forEach((item) => {
-    const tmp = {};
-    tmp.id = item.id;
-    tmp.name = `${item.eng_first_name} ${item.eng_second_name}`;
-    ts.add(tmp);
+
+function init(callback) {
+  models.getNames((err, res) => {
+    res.forEach((item) => {
+      const tmp = {};
+      tmp.id = item.id;
+      tmp.name = `${item.eng_first_name} ${item.eng_second_name}`;
+      ts.add(tmp);
+    });
+    client.set('root', JSON.stringify(ts.root), callback);
   });
-  client.set('root', JSON.stringify(ts.root), (error) => {
-    if (error) {
-      throw error;
-    }
-  });
-});
+}
 
 function insert(item) {
   return client.get('root', (err, root) => {
@@ -43,6 +42,7 @@ function search(name, callback) {
 }
 
 module.exports = {
+  init,
   search,
   insert,
 };

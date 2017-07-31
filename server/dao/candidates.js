@@ -50,13 +50,13 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
+            callback(error, result);
+            console.log('Insert transaction has been commited');
             return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
           });
-          callback(error, result);
-          return console.log('Insert transaction has been commited');
         });
     });
   });
@@ -157,6 +157,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
               throw commitError;
             });
           }
+          callback(error, result);
+          console.log('Update transaction has been commited');
           if (candidate.eng_first_name) {
             return ts.insert({
               id,
@@ -164,8 +166,6 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
             });
           }
         });
-        callback(error, result);
-        return console.log('Update transaction has been commited');
       });
     return undefined;
   });
