@@ -127,6 +127,10 @@ const closeVacancy = (req, callback) => {
   model.closeVacancy(req, callback);
 };
 
+const getHistory = (req, callback) => {
+  model.getHistory(req.params.id, callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -134,5 +138,6 @@ module.exports = {
   updateVacancy,
   getCandidates,
   getAssigned,
+  getHistory,
   closeVacancy,
 };

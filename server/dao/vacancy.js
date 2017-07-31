@@ -186,12 +186,17 @@ const closeVacancy = (body, callback) => {
   });
 };
 
+const getHistory = (vacancyId, callback) => {
+  connection.query(query.getHistory(vacancyId), callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
+  getAssigned,
+  getHistory,
   updateVacancy,
   addVacancy,
-  getAssigned,
   closeVacancy,
 };

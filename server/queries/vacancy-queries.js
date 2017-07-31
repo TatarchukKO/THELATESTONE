@@ -178,12 +178,23 @@ const changeOtherCandidatesStatus = candidateId =>
   `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
   UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
 
+const getHistory = id =>
+  `SELECT users.login, change_date, name, request_date, start_date, status,
+    primary_skill, other_skills, city, secondary_skills, exp_year
+    FROM vacancy_changes
+    LEFT JOIN users ON users.id = vacancy_changes.user_id
+    WHERE vacancy_id = ${id}
+  `;
+
 module.exports = {
   getVacancies,
   getVacancy,
   getOtherSkills,
   getSecondarySkills,
   getCandidates,
+  getAssigned,
+  getHistory,
+  getOtherCandidates,
   generalHistory,
   commitChanges,
   updateVacancy,
@@ -192,9 +203,7 @@ module.exports = {
   insertOtherSkill,
   insertSecSkill,
   addVacancy,
-  getAssigned,
   changeCandidateStatus,
-  getOtherCandidates,
   changeOtherCandidatesStatus,
   changeInterviewStatus,
 };
