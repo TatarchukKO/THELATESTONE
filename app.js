@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const async = require('async');
 
 const interview = require('./server/routes/interviews');
 const notification = require('./server/routes/notification');
 const tsFeedback = require('./server/routes/ts-feedbacks');
 
+const connection = require('./server/dao/connection');
+const trieSearch = require('./server/services/trie-search');
 const metaData = require('./server/routes/meta-data');
 const vacancy = require('./server/routes/vacancy');
 const hrmFeedback = require('./server/routes/hrm-feedbacks');
@@ -69,4 +72,12 @@ app.use((err, req, res, next) => {
 });
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
 
-app.listen(app.get('port'), () => console.log('Server is running on port', app.get('port')));
+async.series([
+  connection.init,
+  trieSearch.init,
+], (error) => {
+  if (error) {
+    throw error;
+  }
+  app.listen(app.get('port'), () => console.log('Server is running on port', app.get('port')));
+});
