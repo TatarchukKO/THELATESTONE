@@ -47,11 +47,11 @@ function editArr(arr) {
 function mapNames(obj) {
   if (isRu(obj)) {
     obj.firstName = obj.ruFirstName;
-    obj.lastName = obj.ruSecondName;
+    obj.secondName = obj.ruSecondName;
     obj = deleteCandidate(obj);
   } else {
     obj.firstName = obj.engFirstName;
-    obj.lastName = obj.engSecondName;
+    obj.secondName = obj.engSecondName;
     obj = deleteCandidate(obj);
   }
 }
