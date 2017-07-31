@@ -18,12 +18,12 @@ function editDoneFields(arr) {
 function editAndSendMail(obj) {
   const camelRes = utils.toCamel(obj);
   const resp = utils.namesEditor.editArr(camelRes);
-  utils.formatDate(resp);
+  utils.dateFormatter.format(resp);
   gmail.sendMail(resp[0]);
 }
 
 function insert(object, callback) {
-  utils.formatDate(object);
+  utils.dateFormatter.format(object);
   interviewDao.insert(utils.toSnake(object), (error, result) => {
     if (error) {
       throw error;
@@ -43,7 +43,7 @@ function getByUserId(id, callback) {
       throw err;
     }
     let result = utils.toCamel(res);
-    result = utils.formatDates(result);
+    result = utils.dateFormatter.formatArr(result);
     callback(err, utils.namesEditor.editArr(result));
   });
 }
@@ -54,7 +54,7 @@ function getByCandidateId(id, callback) {
       throw err;
     }
     let result = utils.toCamel(res);
-    result = utils.formatDates(result);
+    result = utils.dateFormatter.formatArr(result);
     result = editDoneFields(result);
     callback(err, utils.namesEditor.editArr(result));
   });
