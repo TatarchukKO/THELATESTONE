@@ -1,6 +1,6 @@
 
-const model = require('../dao/vacancy.js');
-const convKeys = require('./convert-keys');
+const model = require('../dao/vacancy');
+const utils = require('../../utils');
 
 const getVacancies = (body, callback) => {
   body = utils.toSnake(body);
@@ -9,7 +9,7 @@ const getVacancies = (body, callback) => {
   delete filter.limit;
 
   model.getVacancies(limit, filter, (error, result) => {
-    callback(error, convKeys.toCamel(result));
+    callback(error, utils.toCamel(result));
   });
 };
 
@@ -33,7 +33,7 @@ const clearSkills = (obj) => {
   return copy;
 };
 
-const updateVacancy = (id, req, callback) => {
+const updateVacancy = (id, req, user, callback) => {
   req = utils.toSnake(req);
   const config = {};
   const changes = {};
@@ -123,7 +123,7 @@ const getAssigned = (skip, vacancyId, callback) => {
 };
 
 const closeVacancy = (req, callback) => {
-  req = convKeys.toSnake(req);
+  req = utils.toSnake(req);
   model.closeVacancy(req, callback);
 };
 
