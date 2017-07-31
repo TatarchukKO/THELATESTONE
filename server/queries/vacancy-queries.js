@@ -82,9 +82,9 @@ const insertSecSkill = (id, skill) =>
 
 const commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
 
-const generalHistory = (id, date) =>
-  `INSERT INTO general_history (vacancy_change_id, change_date)
-  VALUES (${id},'${date}')`;
+const generalHistory = id =>
+  `INSERT INTO general_history (vacancy_change_id)
+  VALUES (${id})`;
 
 const deleteOtherSkills = id =>
   `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;

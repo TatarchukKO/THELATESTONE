@@ -52,6 +52,13 @@ const updateVacancy = (id, req, user, callback) => {
   changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
 
+  if (req.start_date) {
+    config.start_date = formatDate(new Date(req.start_date));
+  }
+  if (req.exp_year) {
+    config.exp_year = formatDate(new Date(req.exp_year));
+  }
+
   console.log(changes);
   model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 };
