@@ -44,10 +44,23 @@ function editArr(arr) {
   return arr.map(item => edit(item));
 }
 
+function mapNames(obj) {
+  if (isRu(obj)) {
+    obj.firstName = obj.ruFirstName;
+    obj.lastName = obj.ruSecondName;
+    obj = deleteCandidate(obj);
+  } else {
+    obj.firstName = obj.engFirstName;
+    obj.lastName = obj.engSecondName;
+    obj = deleteCandidate(obj);
+  }
+}
+
 module.exports = {
   isEng,
   isRu,
   deleteCandidate,
+  mapNames,
   edit,
   editArr,
 };
