@@ -23,7 +23,7 @@ function editAndSendMail(obj) {
   gmail.sendMail(resp[0]);
 }
 function insertEventInGoogleCalendar(obj) {
-  const camelRes = convertKeys.toCamel(obj);
+  const camelRes = utils.toCamel(obj);
   const event = {};
   event.date = new Date(camelRes[0].date);
   calendar.setCalendarId(camelRes[0].login);
