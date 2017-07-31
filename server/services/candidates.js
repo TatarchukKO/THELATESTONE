@@ -24,15 +24,16 @@ function get(paramsSnake, callback) {
 function getById(id, callback) {
   candidatesModel.getById(id, (error, result) => {
     const item = result.map(val => val[0]);
-    const res = item[0][0];
+    let res = item[0][0];
     if (!res) {
       result = 'No such candidate';
       return callback(error, result);
     }
-    utils.namesEditor.edit(res);
+    res = utils.toCamel(res);
+    utils.namesEditor.mapNames(res);
     res.emails = item[1].map(val => val.email);
-    res.sec_skills = item[2];
-    res.other_skills = item[3];
+    res.secSkills = item[2];
+    res.otherSkills = item[3];
     callback(error, utils.clearFields(utils.toCamel(res)));
   });
 }
