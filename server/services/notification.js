@@ -24,7 +24,7 @@ function getUpcomingInterviews(id, callback) {
     if (err) {
       throw err;
     }
-    let result = utils.formatDates(res);
+    let result = utils.dateFormatter.formatArr(res);
     result = utils.toCamel(result);
     result = editDoneFields(result);
     callback(err, utils.namesEditor.editArr(result));
