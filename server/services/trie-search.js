@@ -1,5 +1,5 @@
 const TrieSearch = require('trie-search');
-const translit = require('translitit-cyrillic-russian-to-latin');
+const utils = require('../../utils');
 const redis = require('redis');
 
 const models = require('../dao/trie-search.js');
@@ -25,7 +25,7 @@ models.getCandidates((err, res) => {
 function insert(item) {
   return client.get('root', (err, root) => {
     ts.root = JSON.parse(root);
-    ts.add(translit(item));
+    ts.add(utils.translit(item));
     client.set('root', JSON.stringify(root), (error) => {
       if (error) {
         throw error;

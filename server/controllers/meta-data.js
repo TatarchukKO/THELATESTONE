@@ -1,4 +1,4 @@
-const metaDataService = require('../services/meta-data.js');
+const metaDataService = require('../services/meta-data');
 
 function getEnglishLevels(req, res) {
   metaDataService.getEnglishLevels((error, result) => {

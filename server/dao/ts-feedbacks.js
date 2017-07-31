@@ -1,6 +1,7 @@
 const async = require('async');
-const connection = require('./connection.js').connection;
-const tsFeedbackQueries = require('../queries/ts-feedback-queries.js');
+
+const connection = require('./connection').connection;
+const tsFeedbackQueries = require('../queries/ts-feedback-queries');
 
 function uniteResults(feedbacks, otherSkills) {
   return feedbacks.map((item) => {

@@ -1,4 +1,4 @@
-const hrmFeedbackService = require('../services/hrm-feedbacks.js');
+const hrmFeedbackService = require('../services/hrm-feedbacks');
 
 function getById(req, res) {
   hrmFeedbackService.getById(req.query.feedbackid, (error, result) => {

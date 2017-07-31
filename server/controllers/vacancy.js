@@ -1,3 +1,4 @@
+
 const services = require('../services/vacancy.js');
 
 const getVacancies = (req, res) => {

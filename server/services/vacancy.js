@@ -1,11 +1,13 @@
+
 const model = require('../dao/vacancy.js');
 const convKeys = require('./convert-keys');
 
 const getVacancies = (body, callback) => {
-  body = convKeys.toSnake(body);
+  body = utils.toSnake(body);
   const limit = (body.limit < 0) ? 0 : (body.limit || 0);
   const filter = body;
   delete filter.limit;
+
   model.getVacancies(limit, filter, (error, result) => {
     callback(error, convKeys.toCamel(result));
   });
@@ -17,7 +19,7 @@ const getVacancy = (id, callback) => {
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
     finalResult.other_skills = vacancyInfo[2];
-    callback(error, convKeys.toCamel(finalResult));
+    callback(error, utils.toCamel(finalResult));
   });
 };
 
@@ -31,8 +33,8 @@ const clearSkills = (obj) => {
   return copy;
 };
 
-const updateVacancy = (id, req, user, callback) => {
-  req = convKeys.toSnake(req);
+const updateVacancy = (id, req, callback) => {
+  req = utils.toSnake(req);
   const config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
@@ -64,7 +66,7 @@ const updateVacancy = (id, req, user, callback) => {
 };
 
 const addVacancy = (req, callback) => {
-  req = convKeys.toSnake(req);
+  req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
@@ -106,7 +108,8 @@ const mapRes = (error, result, callback) => {
     }
     return tmp;
   });
-  callback(error, convKeys.toCamel(res));
+  console.log(result);
+  callback(error, utils.toCamel(res));
 };
 
 const getCandidates = (skip, vacancyId, callback) => {
