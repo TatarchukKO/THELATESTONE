@@ -143,6 +143,23 @@ const getCandidates = (skip, vacancyId) =>
     ORDER BY total DESC, primary_skill_lvl DESC, eng_first_name
     LIMIT ${skip}, ${capacity}`;
 
+const getAssignedCandidates = (skip, vacancyId) =>
+  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+    candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+    skills.skill_name, candidate_emails.email, candidate_status.status, result.date
+  FROM
+    (
+      SELECT candidate_id AS c_id, date
+      FROM interview
+      WHERE vacancy_id = ${vacancyId} AND done = 0
+    ) AS result
+  LEFT JOIN candidate ON candidate.id = result.c_id
+  LEFT JOIN location ON candidate.city = location.id
+  LEFT JOIN skills ON candidate.primary_skill = skills.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
+  ORDER BY date DESC`;
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -157,4 +174,5 @@ module.exports = {
   insertOtherSkill,
   insertSecSkill,
   addVacancy,
+  getAssignedCandidates,
 };
