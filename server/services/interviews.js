@@ -28,7 +28,7 @@ function insertEventInGoogleCalendar(obj) {
   event.date = new Date(camelRes[0].date);
   calendar.setCalendarId(camelRes[0].login);
   calendar.setStaticEvent(event);
-  calendar.mainFunc();
+  calendar.insertEventInGoogleCal();
 }
 
 function insert(object, callback) {

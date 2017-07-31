@@ -120,15 +120,13 @@ function insertEvent(auth) {
     resource: staticEvent,
   }, (err) => {
     if (err) {
-      console.log('SHIET');
-      console.log(err);
-      return;
+      throw err;
     }
-    console.log('WP, DAD');
+    console.log('event inserted in google calendar');
   });
 }
 
-function mainFunc() {
+function insertEventInGoogleCal() {
   fs.readFile('client_secret.json', (err, content) => {
     if (err) {
       console.log(`Error loading client secret file: ${err}`);
@@ -141,7 +139,7 @@ function mainFunc() {
 }
 
 module.exports = {
-  mainFunc,
+  insertEventInGoogleCal,
   setStaticEvent,
   setCalendarId,
 };
