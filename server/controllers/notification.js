@@ -1,4 +1,4 @@
-const notificationService = require('../services/notification.js');
+const notificationService = require('../services/notification');
 
 function getUpcomingInterviews(req, res) {
   notificationService.getUpcomingInterviews(2, (error, result) => {

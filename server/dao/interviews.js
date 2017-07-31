@@ -1,6 +1,7 @@
 const async = require('async');
-const connection = require('./connection.js').connection;
-const interviewQueries = require('../queries/interview-queries.js');
+
+const connection = require('./connection').connection;
+const interviewQueries = require('../queries/interview-queries');
 
 function insertInterview(object, cb) {
   connection.query(interviewQueries.insert(object), (err, res) => {

@@ -1,4 +1,4 @@
-function get(skip = 0, filter = {}) {
+function get(skip = 0, amount = 14, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
   Object.keys(filter).forEach((item, i) => {
@@ -32,7 +32,7 @@ function get(skip = 0, filter = {}) {
   ${query.join('')}
   GROUP BY candidate.id
   ORDER BY candidate.contact_date DESC
-  LIMIT ${skip}, 7`;
+  LIMIT ${skip}, ${amount}`;
 }
 
 function getById(id) {
@@ -133,7 +133,7 @@ function generalHistory(id) {
     VALUES (${id});`;
 }
 
-function search(params, skip = 0, filter = {}) {
+function search(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   let index = 2;
   query[0] = `metaphone.first = "${params[0]}"`;
@@ -173,10 +173,10 @@ function search(params, skip = 0, filter = {}) {
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
-  LIMIT ${skip}, 7`;
+  LIMIT ${skip}, ${amount}`;
 }
 
-function searchByEmail(params, skip = 0, filter = {}) {
+function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate_emails.email = "${params}"`;
   Object.keys(filter).forEach((item, i) => {
@@ -207,10 +207,10 @@ function searchByEmail(params, skip = 0, filter = {}) {
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
-  LIMIT ${skip}, 7`;
+  LIMIT ${skip}, ${amount}`;
 }
 
-function searchBySkype(params, skip = 0, filter = {}) {
+function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate.skype = "${params}"`;
   Object.keys(filter).forEach((item, i) => {
@@ -240,7 +240,7 @@ function searchBySkype(params, skip = 0, filter = {}) {
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE ${query.join('')}
-  LIMIT ${skip}, 7`;
+  LIMIT ${skip}, ${amount}`;
 }
 
 module.exports = {
