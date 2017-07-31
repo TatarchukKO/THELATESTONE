@@ -102,10 +102,35 @@ const getCandidates = {
   },
 };
 
+const getAssigned = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
+const closeVacancy = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  body: {
+    v_id: Joi.number().integer().greater(0).required(),
+    c_id: Joi.number().integer().greater(0).required(),
+  },
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
   updateVacancy,
   getCandidates,
+  getAssigned,
+  closeVacancy,
 };

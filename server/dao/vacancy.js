@@ -50,6 +50,7 @@ const updateOtherSkills = (otherSkills, id, call) => {
 };
 
 const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
+  console.log(changes);
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
     connection.query(query.updateVacancy(id), config, (error) => {
@@ -63,7 +64,7 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
           call => updateSecondarySkills(secSkills, id, call),
           call => updateOtherSkills(otherSkills, id, call),
           call => connection.query(query.commitChanges(), changes, (err, res) =>
-          connection.query(query.generalHistory(res.insertId, changes.change_date), call)),
+          connection.query(query.generalHistory(res.insertId), call)),
         ],
         (parError, result) => {
           if (parError) {
@@ -139,8 +140,49 @@ const getCandidates = (skip, vacancyId, callback) => {
   connection.query(query.getCandidates(skip, vacancyId), callback);
 };
 
-const getAssignedCandidates = (skip, vacancyId, callback) => {
-  connection.query(query.getAssignedCandidates(skip, vacancyId), callback);
+const getAssigned = (skip, vacancyId, callback) => {
+  connection.query(query.getAssigned(skip, vacancyId), callback);
+};
+
+
+const changeOtherCandidatesStatus = (candidatesArray, call) => {
+  async.parallel(candidatesArray.map(val => eCall =>
+      connection.query(query.changeOtherCandidatesStatus(val), eCall)), call);
+};
+
+const closeVacancy = (body, callback) => {
+  connection.beginTransaction((transError) => {
+    if (transError) throw transError;
+    connection.query(query.updateVacancy(body.v_id), { status: 8 }, (error) => {
+      if (error) {
+        return connection.rollback(() => {
+          throw error;
+        });
+      }
+      async.parallel(
+        [
+          call => connection.query(query.changeCandidateStatus(body), call),
+          call => connection.query(query.getOtherCandidates(body), (err, res) =>
+          changeOtherCandidatesStatus(res, call)),
+        ],
+        (parError, result) => {
+          if (parError) {
+            return connection.rollback(() => {
+              throw parError;
+            });
+          }
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+          });
+          callback(error, result);
+          return console.log('Commited');
+        });
+    });
+  });
 };
 
 module.exports = {
@@ -149,5 +191,6 @@ module.exports = {
   getCandidates,
   updateVacancy,
   addVacancy,
-  getAssignedCandidates,
+  getAssigned,
+  closeVacancy,
 };
