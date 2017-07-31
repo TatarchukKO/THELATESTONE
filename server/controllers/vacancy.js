@@ -1,39 +1,62 @@
-const vacancyServices = require('../services/vacancy.js');
 
-const getConfig = {
-  limit: null,
-};
+const services = require('../services/vacancy.js');
 
-exports.getVacancies = (req, res) => {
-  getConfig.limit = (req.query.limit < 0) ? 0 : (req.query.limit || 0);
-  vacancyServices.getVacancies(getConfig, (error, result) => {
-    if (error) {
-      console.log(error);
-      throw error;
-    }
-    return res.status(200).send(result);
-  });
-};
-
-exports.getVacancy = (req, res) => {
-  vacancyServices.getVacancy(req.params.id, (error, result) => {
+const getVacancies = (req, res) => {
+  services.getVacancies(req.body, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
 };
 
-exports.updateVacancy = (req, res) => {
-  console.log(req.body);
-  vacancyServices.updateVacancy(req.params.id, req.body, (error, result) => {
+const getVacancy = (req, res) => {
+  services.getVacancy(req.params.id, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
 };
 
-exports.addVacancy = (req, res) => {
-  console.log(req.body);
-  vacancyServices.addVacancy(req.body, (error, result) => {
+const updateVacancy = (req, res) => {
+  services.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
 };
+
+const addVacancy = (req, res) => {
+  services.addVacancy(req.body, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+const getCandidates = (req, res) => {
+  services.getCandidates(req.query.skip, req.params.id, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+const getAssigned = (req, res) => {
+  services.getAssigned(req.query.skip, req.params.id, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+const closeVacancy = (req, res) => {
+  services.closeVacancy(req.body, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+module.exports = {
+  getVacancies,
+  getVacancy,
+  getCandidates,
+  updateVacancy,
+  addVacancy,
+  getAssigned,
+  closeVacancy,
+};
+

@@ -1,81 +1,71 @@
-const mysql = require('mysql');
 const async = require('async');
-const vacancyQueries = require('../queries/vacancy-queries.js');
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'qweasdzxc',
-  database: 'pick_brains_db',
-});
+const query = require('../queries/vacancy-queries');
+const connection = require('./connection').connection;
 
-connection.connect((error) => {
-  if (error) {
-    console.log('Db connection error');
-    throw error;
-  }
-  console.log('Connected to db');
-});
-
-exports.getVacancies = (config, callback) => {
-  connection.query(vacancyQueries.getVacancies(config), callback);
+const getVacancies = (limit, filter, callback) => {
+  connection.query(query.getVacancies(limit, filter), callback);
 };
 
-exports.getVacancy = (id, callback) => {
+const getVacancy = (id, callback) => {
   async.parallel(
     [
-      call => connection.query(vacancyQueries.getVacancy(id), call),
-      call => connection.query(vacancyQueries.getVacancyOtherSkills(id), call),
+      call => connection.query(query.getVacancy(id), call),
+      call => connection.query(query.getSecondarySkills(id), call),
+      call => connection.query(query.getOtherSkills(id), call),
     ],
     callback);
 };
 
-exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
+const updateSecondarySkills = (secSkills, id, call) => {
+  if (secSkills) {
+    connection.query(query.deleteSecondarySkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        secSkills.map(val => eCall =>
+          connection.query(query.insertSecSkill(id, val), eCall)),
+        call);
+    });
+  }
+};
+
+const updateOtherSkills = (otherSkills, id, call) => {
+  if (otherSkills) {
+    connection.query(query.deleteOtherSkills(id), (err) => {
+      if (err) {
+        return connection.rollback(() => {
+          throw err;
+        });
+      }
+      return async.parallel(
+        otherSkills.map(val => eCall =>
+          connection.query(query.insertOtherSkill(id, val), eCall)),
+        call);
+    });
+  }
+};
+
+const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
+  console.log(changes);
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
-    connection.query(vacancyQueries.updateVacancy(id), config, (error) => {
+    connection.query(query.updateVacancy(id), config, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
         });
       }
-        async.parallel(
-          [
-            (call) => {
-              if (secSkills) {
-                connection.query(vacancyQueries.deleteSecondarySkills(id), (err) => {
-                  if (err) {
-                    return connection.rollback(() => {
-                      throw error;
-                    });
-                  }
-                  return async.parallel(
-                    secSkills.map(val => eCall =>
-                      connection.query(vacancyQueries.insertSecSkill(id, val), eCall)),
-                    call);
-                });
-              }
-            },
-            (call) => {
-              if (otherSkills) {
-                connection.query(vacancyQueries.deleteOtherSkills(id), (err) => {
-                  if (err) {
-                    return connection.rollback(() => {
-                      throw error;
-                    });
-                  }
-                  return async.parallel(
-                    otherSkills.map(val => eCall =>
-                      connection.query(vacancyQueries.insertOtherSkill(id, val), eCall)),
-                    call);
-                });
-              }
-            },
-            call =>
-              connection.query(vacancyQueries.commitChanges(), changes, call),
-            call =>
-              connection.query(vacancyQueries.generalHistory(id, changes.change_date), call),
-          ],
+      async.parallel(
+        [
+          call => updateSecondarySkills(secSkills, id, call),
+          call => updateOtherSkills(otherSkills, id, call),
+          call => connection.query(query.commitChanges(), changes, (err, res) =>
+          connection.query(query.generalHistory(res.insertId), call)),
+        ],
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {
@@ -96,6 +86,111 @@ exports.updateVacancy = (id, config, changes, secSkills, otherSkills, callback) 
   });
 };
 
-exports.addVacancy = (vacancy, callback) => {
-  connection.query(vacancyQueries.addVacancy(vacancy), callback);
+
+const insertOtherSkills = (otherSkills, id, call) => {
+  if (otherSkills) {
+    async.parallel(otherSkills.map(val => eCall =>
+          connection.query(query.insertOtherSkill(id, val), eCall)), call);
+  }
+};
+
+const insertSecSkills = (secSkills, id, call) => {
+  if (secSkills) {
+    async.parallel(secSkills.map(val => eCall =>
+          connection.query(query.insertSecSkill(id, val), eCall)), call);
+  }
+};
+
+const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
+  connection.beginTransaction((transError) => {
+    if (transError) throw transError;
+    connection.query(query.addVacancy(vacancy), (error, res) => {
+      if (error) {
+        return connection.rollback(() => {
+          throw error;
+        });
+      }
+      const id = res.insertId;
+      async.parallel(
+        [
+          call => insertSecSkills(secSkills, id, call),
+          call => insertOtherSkills(otherSkills, id, call),
+        ],
+        (parError, result) => {
+          if (parError) {
+            return connection.rollback(() => {
+              throw parError;
+            });
+          }
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+          });
+          callback(error, result);
+          return console.log('Commited');
+        });
+    });
+  });
+};
+
+const getCandidates = (skip, vacancyId, callback) => {
+  connection.query(query.getCandidates(skip, vacancyId), callback);
+};
+
+const getAssigned = (skip, vacancyId, callback) => {
+  connection.query(query.getAssigned(skip, vacancyId), callback);
+};
+
+
+const changeOtherCandidatesStatus = (candidatesArray, call) => {
+  async.parallel(candidatesArray.map(val => eCall =>
+      connection.query(query.changeOtherCandidatesStatus(val), eCall)), call);
+};
+
+const closeVacancy = (body, callback) => {
+  connection.beginTransaction((transError) => {
+    if (transError) throw transError;
+    connection.query(query.updateVacancy(body.v_id), { status: 8 }, (error) => {
+      if (error) {
+        return connection.rollback(() => {
+          throw error;
+        });
+      }
+      async.parallel(
+        [
+          call => connection.query(query.changeCandidateStatus(body), call),
+          call => connection.query(query.getOtherCandidates(body), (err, res) =>
+          changeOtherCandidatesStatus(res, call)),
+        ],
+        (parError, result) => {
+          if (parError) {
+            return connection.rollback(() => {
+              throw parError;
+            });
+          }
+          connection.commit((commitError) => {
+            if (commitError) {
+              return connection.rollback(() => {
+                throw commitError;
+              });
+            }
+          });
+          callback(error, result);
+          return console.log('Commited');
+        });
+    });
+  });
+};
+
+module.exports = {
+  getVacancies,
+  getVacancy,
+  getCandidates,
+  updateVacancy,
+  addVacancy,
+  getAssigned,
+  closeVacancy,
 };

@@ -1,4 +1,5 @@
-const candidatesService = require('../services/candidates.js');
+const candidatesService = require('../services/candidates');
+const trie = require('../services/trie-search');
 
 function get(req, res) {
   candidatesService.get(req.body, (error, result) => {
@@ -11,7 +12,7 @@ function get(req, res) {
 }
 
 function getById(req, res) {
-  candidatesService.getById(req.params.id, (error, result) => {
+  candidatesService.getById(req.query.id, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;
@@ -31,7 +32,7 @@ function insert(req, res) {
 }
 
 function update(req, res) {
-  candidatesService.update(req.params.id, req.body, req.user.id, (error) => {
+  candidatesService.update(req.query.id, req.body, req.user.id, (error) => {
     if (error) {
       res.status(500).send();
       throw error;
@@ -40,9 +41,34 @@ function update(req, res) {
   });
 }
 
+function search(req, res) {
+  candidatesService.search(req.query, req.body, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
+
+function trieSearch(req, res) {
+  const params = req.query.candidate.split(' ');
+  if (params.lenght > 2) {
+    return res.status(404).send();
+  }
+  trie.search(params.join(' '), (error, answer) => {
+    if (answer.length) {
+      return res.status(200).send(answer);
+    }
+    return res.status(404).send();
+  });
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
+  search,
+  trieSearch,
 };
