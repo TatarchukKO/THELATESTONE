@@ -11,12 +11,14 @@ function mapRes(error, result, callback) {
 function get(paramsSnake, callback) {
   const params = utils.dateFormatter.format(utils.toSnake(paramsSnake));
   const skip = paramsSnake.skip;
+  const amount = paramsSnake.amount;
   let filter = params;
   delete filter.skip;
+  delete filter.amount;
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
-  candidatesModel.get(skip, filter, (err, res) => mapRes(err, res, callback));
+  candidatesModel.get(skip, amount, filter, (err, res) => mapRes(err, res, callback));
 }
 
 function getById(id, callback) {
@@ -95,9 +97,11 @@ function update(id, candidateSnake, user, callback) {
 
 function search(query, bodySnake, callback) {
   const body = utils.dateFormatter.format(utils.toSnake(bodySnake));
-  const skip = body.skip;
+  const skip = bodySnake.skip;
+  const amount = bodySnake.amount;
   let filter = body;
   delete filter.skip;
+  delete filter.amount;
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
@@ -107,16 +111,17 @@ function search(query, bodySnake, callback) {
       params = params.slice(1, 3);
     }
     params = params.map(val => metaphone(utils.translit(val)));
-    return candidatesModel.search(params, skip, filter, (err, res) => mapRes(err, res, callback));
+    return candidatesModel.search(params, skip, amount, filter, (err, res) =>
+      mapRes(err, res, callback));
   }
   if (query.email) {
     const params = query.email.split(' ')[0];
-    return candidatesModel.searchByEmail(params, skip, filter, (err, res) =>
+    return candidatesModel.searchByEmail(params, skip, amount, amount, filter, (err, res) =>
       mapRes(err, res, callback));
   }
   if (query.skype) {
     const params = query.skype.split(' ')[0];
-    return candidatesModel.searchBySkype(params, skip, filter, (err, res) =>
+    return candidatesModel.searchBySkype(params, skip, amount, filter, (err, res) =>
       mapRes(err, res, callback));
   }
   return callback();

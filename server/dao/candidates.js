@@ -4,8 +4,8 @@ const query = require('../queries/candidate-queries');
 const connection = require('./connection').connection;
 const ts = require('../services/trie-search');
 
-function get(limit, filter, callback) {
-  connection.query(query.get(limit, filter), callback);
+function get(skip, amount, filter, callback) {
+  connection.query(query.get(skip, amount, filter), callback);
 }
 
 function getById(id, callback) {
@@ -171,16 +171,16 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
   });
 }
 
-function search(params, skip, filter, callback) {
-  return connection.query(query.search(params, skip, filter), callback);
+function search(params, skip, amount, filter, callback) {
+  return connection.query(query.search(params, skip, amount, filter), callback);
 }
 
-function searchByEmail(params, skip, filter, callback) {
-  return connection.query(query.searchByEmail(params, skip, filter), callback);
+function searchByEmail(params, skip, amount, filter, callback) {
+  return connection.query(query.searchByEmail(params, skip, amount, filter), callback);
 }
 
-function searchBySkype(params, skip, filter, callback) {
-  return connection.query(query.searchBySkype(params, skip, filter), callback);
+function searchBySkype(params, skip, amount, filter, callback) {
+  return connection.query(query.searchBySkype(params, skip, amount, filter), callback);
 }
 
 module.exports = {
