@@ -6,7 +6,6 @@ const async = require('async');
 const interview = require('./server/routes/interviews');
 const notification = require('./server/routes/notification');
 const tsFeedback = require('./server/routes/ts-feedbacks');
-
 const connection = require('./server/dao/connection');
 const trieSearch = require('./server/services/trie-search');
 const metaData = require('./server/routes/meta-data');

@@ -1,3 +1,4 @@
+const calendar = require('../notification/calendar.js');
 const interviewDao = require('../dao/interviews');
 const gmail = require('../notification/gmail');
 const utils = require('../../utils');
@@ -21,6 +22,14 @@ function editAndSendMail(obj) {
   utils.dateFormatter.format(resp);
   gmail.sendMail(resp[0]);
 }
+function insertEventInGoogleCalendar(obj) {
+  const camelRes = convertKeys.toCamel(obj);
+  const event = {};
+  event.date = new Date(camelRes[0].date);
+  calendar.setCalendarId(camelRes[0].login);
+  calendar.setStaticEvent(event);
+  calendar.insertEventInGoogleCal();
+}
 
 function insert(object, callback) {
   utils.dateFormatter.format(object);
@@ -31,6 +40,7 @@ function insert(object, callback) {
     interviewDao.getEmailNotificationData(result,
       (err, res) => {
         editAndSendMail(res);
+        insertEventInGoogleCalendar(res);
         callback(err);
       });
   });

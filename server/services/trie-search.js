@@ -2,7 +2,7 @@ const TrieSearch = require('trie-search');
 const utils = require('../../utils');
 const redis = require('redis');
 
-const models = require('../dao/trie-search.js');
+// const models = require('../dao/trie-search.js');
 
 const client = redis.createClient(6379, 'localhost');
 client.on('connect', () => console.log('Connected to Redis'));

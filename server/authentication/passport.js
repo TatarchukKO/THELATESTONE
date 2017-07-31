@@ -10,9 +10,13 @@ const validation = require('../validation/authentication.js');
 const router = express.Router();
 
 const options = {
-  host: 'mysql5.gear.host',
+  /* host: 'mysql5.gear.host',
   user: 'pickbrainsdb',
   password: 'Ko09GB6-o1!o',
+  database: 'pickbrainsdb',*/
+  host: 'localhost',
+  user: 'root',
+  password: '123789',
   database: 'pickbrainsdb',
   checkExpirationInterval: 900000,
   expiration: 86400000,
