@@ -273,37 +273,49 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
   LIMIT ${skip}, ${amount}`;
 }
 
-function report(span, filter = {}) {
+function report(span = {}, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
+  let j = 0;
   Object.keys(filter).forEach((item, i) => {
     if (i >= 1) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
-      query[i] = `${sent}candidate.${item} >= ${filter[item][0]}
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter[item][0]) {
+        query[i + j] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          j += 1;
+          query[i + j] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
       return;
     }
     if (item === 'exp_year') {
-      query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      query[i + j] = `${sent}candidate.${item} <= ${filter[item][0]}`;
       return;
     }
     if (item === 'span') {
-      query[i] = `${sent}candidate.${item} >= ${filter[item][0]}
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter.span.to) {
+        query[i + j] = `${sent}candidate.${item} >= ${filter.span.to}`;
+        if (filter.span.from) {
+          j += 1;
+          query[i + j] = ` AND candidate.${item} <= ${filter.span.from}`;
+        }
+      }
       return;
     }
-    filter[item].forEach((val, j) => {
-      if (j >= 1) {
+    filter[item].forEach((val, l) => {
+      if (l >= 1) {
         sent = ' OR ';
+        j += 1;
       }
       query[i + j] = `${sent}candidate.${item} = ${val}`;
     });
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  return `SELECT candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
-  skills.skill_name, candidate_emails.email, candidate_status.status
+  skills.skill_name, candidate.primary_skill_lvl, candidate_emails.email, candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
