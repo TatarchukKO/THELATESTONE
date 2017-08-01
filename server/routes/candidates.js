@@ -12,5 +12,6 @@ router.post('/search', validate(validation.search), candidatesCantroller.search)
 router.get('', validate(validation.getById), candidatesCantroller.getById);
 router.post('/new', validate(validation.insert), candidatesCantroller.insert);
 router.patch('/edit', validate(validation.update), candidatesCantroller.update);
+router.post('/report', validate(validation.report), candidatesCantroller.report);
 
 module.exports = router;

@@ -183,6 +183,10 @@ function searchBySkype(params, skip, amount, filter, callback) {
   return connection.query(query.searchBySkype(params, skip, amount, filter), callback);
 }
 
+function report(span, filter, callback) {
+  connection.query(query.report(span, filter), callback);
+}
+
 module.exports = {
   get,
   getById,
@@ -191,4 +195,5 @@ module.exports = {
   search,
   searchByEmail,
   searchBySkype,
+  report,
 };
