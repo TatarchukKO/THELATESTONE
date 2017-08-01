@@ -21,7 +21,7 @@ function insertEventToGeneralHistory(id) {
   (interview_id)
   VALUES ('${id}')`;
 }
-function getByUserId(id, currentTime) {
+function getByUserId(id) {
   return `SELECT c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name, i.date
   FROM interview i
@@ -29,8 +29,7 @@ function getByUserId(id, currentTime) {
   JOIN users u ON i.user_id = u.id
   WHERE 
   ${id} = i.user_id
-  AND
-  '${currentTime}' <= i.date`;
+  ORDER BY i.date DESC`;
 }
 function getByCandidateId(id) {
   return `SELECT i.candidate_id, c.ru_first_name,

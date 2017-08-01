@@ -47,8 +47,7 @@ function insert(object, callback) {
 }
 
 function getByUserId(id, callback) {
-  const currentTime = utils.dateFormatter.format(new Date(), 'yyyy-mm-dd HH:MM:ss');
-  interviewDao.getByUserId(id, currentTime, (err, res) => {
+  interviewDao.getByUserId(id, (err, res) => {
     if (err) {
       throw err;
     }
