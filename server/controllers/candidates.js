@@ -52,12 +52,12 @@ function search(req, res) {
 }
 
 function report(req, res) {
-  candidatesService.get(req.body, (error, result) => {
+  candidatesService.report(req.body, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;
     }
-    return res.status(200).send(result);
+    return res.xls('report.xlsx', result);
   });
 }
 

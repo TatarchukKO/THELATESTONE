@@ -132,13 +132,18 @@ function search(query, bodyCamel, callback) {
 
 function report(paramsCamel, callback) {
   const params = utils.dateFormatter.format(utils.toSnake(paramsCamel));
-  const span = utils.dateFormatter.format(paramsCamel.span);
+  const span = paramsCamel.span ? utils.dateFormatter.format(paramsCamel.span) : undefined;
   let filter = params;
   delete filter.span;
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
-  candidatesModel.report(span, filter, (err, res) => mapRes(err, res, callback));
+  candidatesModel.report(span, filter, (err, res) => {
+    if (res) {
+      res = utils.namesEditor.editArr(utils.toCamel(res));
+    }
+    callback(err, res);
+  });
 }
 
 module.exports = {
