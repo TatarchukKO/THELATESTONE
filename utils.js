@@ -5,7 +5,7 @@ const translit = require('./utils/translit');
 
 function clearFields(item) {
   Object.keys(item).forEach((field) => {
-    if (!item[field]) {
+    if (!item[field] || Array.isArray(item[field]) && item[field].length === 0) {
       delete item[field];
     }
   });

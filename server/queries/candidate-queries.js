@@ -17,7 +17,7 @@ function get(skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + j] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      query[i + j] = `${sent}candidate.${item} <= "${filter[item]}"`;
       return;
     }
     filter[item].forEach((val, l) => {

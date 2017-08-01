@@ -17,6 +17,7 @@ function get(paramsCamel, callback) {
   let filter = params;
   delete filter.skip;
   delete filter.amount;
+  utils.clearFields(filter);
   if (Object.keys(filter).length === 0) {
     filter = undefined;
   }
