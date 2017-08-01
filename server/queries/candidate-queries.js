@@ -168,7 +168,7 @@ function search(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -213,7 +213,7 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -257,7 +257,7 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -305,7 +305,7 @@ function report(span = {}, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + j] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      query[i + j] = `${sent}candidate.${item} <= ${filter[item]}`;
       return;
     }
     if (item === 'span') {
