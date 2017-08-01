@@ -171,14 +171,17 @@ function search(params, skip = 0, amount = 14, filter = {}) {
       query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, l) => {
-      if (l >= 1) {
-        sent = ' OR ';
-        index += 1;
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + index] = `${sent}candidate.${item} = ${val}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
@@ -213,14 +216,17 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
       query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, l) => {
-      if (l >= 1) {
-        sent = ' OR ';
-        index += 1;
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + index] = `${sent}candidate.${item} = ${val}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
@@ -254,14 +260,17 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
       query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, l) => {
-      if (l >= 1) {
-        sent = ' OR ';
-        index += 1;
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + index] = `${sent}candidate.${item} = ${val}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
