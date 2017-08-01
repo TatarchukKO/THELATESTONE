@@ -84,7 +84,7 @@ const commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
 
 const generalHistory = id =>
   `INSERT INTO general_history (vacancy_change_id)
-  VALUES (${id})`;
+    VALUES (${id})`;
 
 const deleteOtherSkills = id =>
   `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
@@ -163,6 +163,18 @@ const getAssigned = (skip, vacancyId) =>
     LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
     ORDER BY date DESC`;
 
+const getHiringList = vacancyId =>
+  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+    candidate.eng_first_name, candidate.eng_second_name
+    FROM
+      (
+        SELECT candidate_id AS c_id, date
+        FROM interview
+        WHERE vacancy_id = ${vacancyId} AND done = 1
+      ) AS result
+    LEFT JOIN candidate ON candidate.id = result.c_id
+    ORDER BY date DESC`;
+
 const changeCandidateStatus = body =>
   `UPDATE candidate SET status = 9 WHERE id = ${body.c_id}`;
 
@@ -176,7 +188,7 @@ const getOtherCandidates = body =>
 
 const changeOtherCandidatesStatus = candidateId =>
   `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
-  UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
+    UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
 
 const getHistory = id =>
   `SELECT users.login, change_date, name, request_date, start_date, status,
@@ -196,6 +208,7 @@ module.exports = {
   getHistory,
   getOtherCandidates,
   generalHistory,
+  getHiringList,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,

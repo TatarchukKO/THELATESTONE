@@ -19,6 +19,7 @@ router.get('/:id/candidates', validate(validation.getCandidates), controller.get
 router.get('/:id/assigned', validate(validation.getAssigned), controller.getAssigned);
 router.patch('/close', validate(validation.closeVacancy), controller.closeVacancy);
 router.get('/:id/history', validate(validation.getHistory), controller.getHistory);
+router.get('/:id/hiring', validate(validation.getHiringList), controller.getHiringList);
 
 
 module.exports = router;

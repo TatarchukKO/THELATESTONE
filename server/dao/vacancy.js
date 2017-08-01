@@ -189,12 +189,17 @@ const getHistory = (vacancyId, callback) => {
   connection.query(query.getHistory(vacancyId), callback);
 };
 
+const getHiringList = (vacancyId, callback) => {
+  connection.query(query.getHiringList(vacancyId), callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
   getAssigned,
   getHistory,
+  getHiringList,
   updateVacancy,
   addVacancy,
   closeVacancy,
