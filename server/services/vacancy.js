@@ -102,6 +102,7 @@ const mapRes = (error, result, callback) => {
     tmp.skill_name = value.skill_name;
     tmp.id = value.id;
     tmp.total = value.total;
+    tmp.ideal = value.ideal;
     tmp.primary_skill_lvl = value.primary_skill_lvl;
     if (value.date) {
       tmp.date = value.date;
@@ -128,7 +129,7 @@ const closeVacancy = (req, callback) => {
 };
 
 const getHistory = (req, callback) => {
-  model.getHistory(req.params.id, callback);
+  model.getHistory(req.params.id, (err, res) => callback(err, utils.toCamel(res)));
 };
 
 module.exports = {

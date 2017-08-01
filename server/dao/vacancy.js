@@ -78,9 +78,9 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
@@ -128,9 +128,9 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
@@ -143,7 +143,6 @@ const getCandidates = (skip, vacancyId, callback) => {
 const getAssigned = (skip, vacancyId, callback) => {
   connection.query(query.getAssigned(skip, vacancyId), callback);
 };
-
 
 const changeOtherCandidatesStatus = (candidatesArray, call) => {
   async.parallel(candidatesArray.map(val => eCall =>
@@ -178,9 +177,9 @@ const closeVacancy = (body, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });

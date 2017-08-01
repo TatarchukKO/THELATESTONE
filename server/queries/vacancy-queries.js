@@ -52,7 +52,7 @@ const getVacancy = id =>
     vacancy.linkedin, vacancy.exp_year, english_lvl.lvl AS vacancy_english_lvl, 
     vacancy.description, vacancy.salary_wish
     FROM vacancy 
-    LEFT JOIN skills ON vacancy.id = skills.id
+    LEFT JOIN skills ON vacancy.primary_skill = skills.id
     LEFT JOIN location ON vacancy.city = location.id
     LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
     LEFT JOIN english_lvl ON english_lvl.id = vacancy.english_lvl
@@ -143,7 +143,7 @@ const getCandidates = (skip, vacancyId) =>
     LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
     LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
     GROUP BY candidate.id
-    ORDER BY total DESC, primary_skill_lvl DESC, eng_first_name
+    ORDER BY  total DESC, primary_skill_lvl DESC, eng_first_name
     LIMIT ${skip}, ${capacity}`;
 
 const getAssigned = (skip, vacancyId) =>
