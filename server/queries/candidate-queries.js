@@ -147,14 +147,11 @@ function generalHistory(id) {
 function search(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   let index = 2;
-  query[0] = `metaphone.first = "${params[0]}"`;
+  query[0] = `metaphone.first in ("${params[0]}"`;
   if (params[1]) {
-    query[1] = ` AND metaphone.second = "${params[1]}"`;
-    query[3] = ` AND metaphone.first = "${params[1]}"`;
-    query[2] = ` OR metaphone.second = "${params[0]}"`;
-    index = 4;
+    query[1] = `,"${params[1]}") AND metaphone.second in ("${params[1]}", "${params[0]}")`;
   } else {
-    query[1] = ` OR metaphone.second = "${params[0]}"`;
+    query[1] = `) OR metaphone.second in ("${params[0]}")`;
   }
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
@@ -168,7 +165,7 @@ function search(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -213,7 +210,7 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -257,7 +254,7 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
     query[i + index] = ` AND candidate.${item} IN (`;
@@ -289,42 +286,46 @@ function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
 function report(span = {}, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
-  let j = 0;
+  let index = 0;
   Object.keys(filter).forEach((item, i) => {
     if (i >= 1) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
       if (filter[item][0]) {
-        query[i + j] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+        query[i + index] = `${sent}candidate.${item} >= ${filter[item][0]}`;
         if (filter[item][1]) {
-          j += 1;
-          query[i + j] = ` AND candidate.${item} <= ${filter[item][1]}`;
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
+      return;
+    }
+    if (item === 'span') {
+      if (filter.span.to) {
+        query[i + index] = `${sent}candidate.${item} >= ${filter.span.to}`;
+        if (filter.span.from) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter.span.from}`;
         }
       }
       return;
     }
     if (item === 'exp_year') {
-      query[i + j] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
-    if (item === 'span') {
-      if (filter.span.to) {
-        query[i + j] = `${sent}candidate.${item} >= ${filter.span.to}`;
-        if (filter.span.from) {
-          j += 1;
-          query[i + j] = ` AND candidate.${item} <= ${filter.span.from}`;
-        }
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      return;
-    }
-    filter[item].forEach((val, l) => {
-      if (l >= 1) {
-        sent = ' OR ';
-        j += 1;
-      }
-      query[i + j] = `${sent}candidate.${item} = ${val}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
   return `SELECT candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
