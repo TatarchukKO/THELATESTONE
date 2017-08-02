@@ -5,6 +5,7 @@ const capacity = 5;
 const getVacancies = (limit, filter) => {
   const query = [];
   let sent = 'WHERE ';
+  let j = 0;
   if (filter) {
     Object.keys(filter).forEach((key, i) => {
       if (i === 1) {
@@ -23,19 +24,24 @@ const getVacancies = (limit, filter) => {
         query[i] = `${sent}vacancy.${key} <= ${filter[key][0]}`;
         return;
       }
-      filter[key].forEach((val, j) => {
-        if (j >= 1) {
-          sent = ' OR ';
+      query[i + j] = `${sent}vacancy.${key} IN (`;
+      filter[key].forEach((val, l, arr) => {
+        j += 1;
+        if (l !== arr.length - 1) {
+          query[i + j] = `"${val}",`;
+          return;
         }
-        query[i + j] = `${sent}vacancy.${key} = ${filter[key][j]}`;
+        query[i + j] = `"${val}"`;
       });
+      j += 1;
+      query[i + j] = ')';
     });
   }
   return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
   skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
   request_date 
   FROM vacancy 
-  LEFT JOIN skills ON vacancy.id = skills.id
+  LEFT JOIN skills ON vacancy.primary_skill = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
   ${query.join('')}
