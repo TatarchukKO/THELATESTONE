@@ -114,9 +114,7 @@ const search = {
     allowUnknownParams: false,
   },
   query: {
-    candidate: Joi.string(),
-    email: Joi.string().email(),
-    skype: Joi.string(),
+    q: Joi.any,
   },
   body: {
     skip: Joi.number().integer().greater(-1),
