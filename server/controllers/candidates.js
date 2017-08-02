@@ -57,7 +57,7 @@ function report(req, res) {
       res.status(500).send();
       throw error;
     }
-    return res.xls('report.xlsx', result);
+    return result.pipe(res);
   });
 }
 
