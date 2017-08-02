@@ -15,20 +15,21 @@ const transporter = nodemailer.createTransport({
 });
 
 function greetings(obj) {
-  return `Здравствуйте, ${obj.userName}.`;
+  return `Hello, ${obj.userName}.`;
 }
 function interviewee(obj) {
-  return `Вам назначено собеседование кандидата
-    ${obj.candidateName}`;
+  return `You are assigned
+  to an interview with
+  ${obj.candidateName}`;
 }
 function vacancy(obj) {
-  return `на вакансию ${obj.vacancyName}`;
+  return `on vacancy ${obj.vacancyName}`;
 }
 function technology(obj) {
-  return `по технологии ${obj.skillName}`;
+  return `technology: ${obj.skillName}`;
 }
 function interviewDate(obj) {
-  return `Дата собеседования:
+  return `Interview date:
   ${dateFormat(obj.date, 'yyyy-mm-dd HH:MM')} `;
 }
 
@@ -36,12 +37,14 @@ function formHtml(obj) {
   let html = '';
   if (obj.type === 'TECH') {
     html = `<b> ${greetings(obj)} <br>
-  ${interviewee(obj)} ${vacancy(obj)} ${technology(obj)}.<br>
-    ${interviewDate(obj)}</b>`;
+  ${interviewee(obj)} ${vacancy(obj)}.<br>
+  ${technology(obj)}.<br>
+  ${interviewDate(obj)}</b>`;
   }
   if (obj.type === 'HRM') {
     html = `<b>${greetings(obj)}<br>
-    ${interviewee(obj)} ${vacancy(obj)}.<br>
+    ${interviewee(obj)}<br>
+    ${vacancy(obj)}.<br>
     ${interviewDate(obj)}</b>`;
   }
   return html;

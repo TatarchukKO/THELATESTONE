@@ -1,4 +1,4 @@
-const tsFeedbackService = require('../services/ts-feedbacks.js');
+const tsFeedbackService = require('../services/ts-feedbacks');
 
 function getById(req, res) {
   tsFeedbackService.getById(req.query.feedbackid, (error, result) => {
@@ -17,7 +17,9 @@ function getByCandidateId(req, res) {
   });
 }
 function insert(req, res) {
-  tsFeedbackService.insert(req.body, (error) => {
+  const obj = req.body;
+  obj.userId = req.user.id;
+  tsFeedbackService.insert(obj, (error) => {
     if (error) {
       throw error;
     }

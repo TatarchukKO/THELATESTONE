@@ -31,6 +31,11 @@ const insert = {
     userId: Joi.number().integer().required(),
     date: Joi.number().integer().required(),
   },
+  query: {
+    user: {
+      id: Joi.number().integer().required(),
+    },
+  },
 };
 
 module.exports = {

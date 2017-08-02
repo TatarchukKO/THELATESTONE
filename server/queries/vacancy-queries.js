@@ -32,12 +32,15 @@ const getVacancies = (limit, filter) => {
     });
   }
   return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
-  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
+  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
+  request_date 
+  FROM vacancy 
   LEFT JOIN skills ON vacancy.id = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
   ${query.join('')}
   GROUP BY vacancy.id
+  ORDER BY request_date DESC
   LIMIT ${limit}, ${capacity}`;
 };
 
@@ -45,23 +48,27 @@ const getVacancies = (limit, filter) => {
 
 const getVacancy = id =>
   `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
-  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status FROM vacancy 
-  LEFT JOIN skills ON vacancy.id = skills.id
-  LEFT JOIN location ON vacancy.city = location.id
-  LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  WHERE vacancy.id = ${id}`;
+    skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
+    vacancy.linkedin, vacancy.exp_year, english_lvl.lvl AS vacancy_english_lvl, 
+    vacancy.description, vacancy.salary_wish
+    FROM vacancy 
+    LEFT JOIN skills ON vacancy.id = skills.id
+    LEFT JOIN location ON vacancy.city = location.id
+    LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
+    LEFT JOIN english_lvl ON english_lvl.id = vacancy.english_lvl
+    WHERE vacancy.id = ${id}`;
 
 const getSecondarySkills = id =>
   `SELECT skills.skill_name, vacancy_secondary_skills.lvl
-  FROM vacancy_secondary_skills
-  LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
-  WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
+    FROM vacancy_secondary_skills
+    LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
+    WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
 
 const getOtherSkills = id =>
   `SELECT other_skills.skill, other_skills.id 
-  FROM other_skills_has_vacancy
-  LEFT JOIN other_skills ON other_skills_has_vacancy.other_skills_id = other_skills.id
-  WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
+    FROM other_skills_has_vacancy
+    LEFT JOIN other_skills ON other_skills_has_vacancy.other_skills_id = other_skills.id
+    WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
 
 const updateVacancy = id =>
   `UPDATE vacancy SET ? WHERE id = ${id}`;
@@ -75,9 +82,9 @@ const insertSecSkill = (id, skill) =>
 
 const commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
 
-const generalHistory = (id, date) =>
-  `INSERT INTO general_history (vacancy_change_id, change_date)
-  VALUES (${id},'${date}')`;
+const generalHistory = id =>
+  `INSERT INTO general_history (vacancy_change_id)
+  VALUES (${id})`;
 
 const deleteOtherSkills = id =>
   `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
@@ -88,10 +95,10 @@ const insertOtherSkill = (id, skillId) =>
 
 const addVacancy = vacancy =>
   `INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, 
-    status, linkedin, exp_year, english_lvl, salary_wish)
+    status, linkedin, exp_year, english_lvl, salary_wish , description)
     VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}', '${vacancy.primary_skill}',
     ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
-    '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}')`;
+    '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}', '${vacancy.description}')`;
 
 const getCandidates = (skip, vacancyId) =>
   `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
@@ -139,6 +146,36 @@ const getCandidates = (skip, vacancyId) =>
     ORDER BY total DESC, primary_skill_lvl DESC, eng_first_name
     LIMIT ${skip}, ${capacity}`;
 
+const getAssigned = (skip, vacancyId) =>
+  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+    candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+    skills.skill_name, candidate_emails.email, candidate_status.status, result.date
+    FROM
+      (
+        SELECT candidate_id AS c_id, date
+        FROM interview
+        WHERE vacancy_id = ${vacancyId} AND done = 0
+      ) AS result
+    LEFT JOIN candidate ON candidate.id = result.c_id
+    LEFT JOIN location ON candidate.city = location.id
+    LEFT JOIN skills ON candidate.primary_skill = skills.id
+    LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+    LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
+    ORDER BY date DESC`;
+
+const changeCanidateStatus = body =>
+  `UPDATE candidate SET status = 1 WHERE id = ${body.c_id}
+    UPDATE interview SET done = 1 WHERE vacancy_id = ${body.v_id}`;
+
+const getOtherCandidates = body =>
+  `SELECT candidate_id
+    FROM interview
+    WHERE vacancy_id = ${body.v_id} AND done = 0`;
+
+const changeOtherCandidatesStatus = candidateId =>
+  `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
+  UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -153,4 +190,8 @@ module.exports = {
   insertOtherSkill,
   insertSecSkill,
   addVacancy,
+  getAssigned,
+  changeCanidateStatus,
+  getOtherCandidates,
+  changeOtherCandidatesStatus,
 };

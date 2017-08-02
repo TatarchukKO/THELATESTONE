@@ -1,4 +1,4 @@
-const hrmFeedbackService = require('../services/hrm-feedbacks.js');
+const hrmFeedbackService = require('../services/hrm-feedbacks');
 
 function getById(req, res) {
   hrmFeedbackService.getById(req.query.feedbackid, (error, result) => {
@@ -17,7 +17,9 @@ function getByCandidateId(req, res) {
   });
 }
 function insert(req, res) {
-  hrmFeedbackService.insert(req.body, (error) => {
+  const obj = req.body;
+  obj.userId = req.user.id;
+  hrmFeedbackService.insert(obj, (error) => {
     if (error) {
       throw error;
     }

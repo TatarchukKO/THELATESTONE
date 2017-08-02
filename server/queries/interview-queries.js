@@ -1,14 +1,13 @@
 function insert(object) {
   return `INSERT INTO interview
-  (candidate_id, vacancy_id, user_id, date, done)
+  (candidate_id, vacancy_id, user_id, assigner_id, date, done)
   VALUES (
     '${object.candidate_id}', '${object.vacancy_id}',
-    '${object.user_id}', '${object.date}', 0)`;
+    '${object.user_id}', '${object.assigner_id}', '${object.date}', 0)`;
 }
 function getEmailNotificationData(id) {
   return `SELECT u.first_name, u.second_name,
   u.login, u.type, i.date, v.name, s.skill_name,
-  c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name
   FROM interview i
   LEFT JOIN vacancy v ON v.id = i.vacancy_id

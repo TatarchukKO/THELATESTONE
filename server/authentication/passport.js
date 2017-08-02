@@ -13,7 +13,7 @@ const options = {
   host: 'mysql5.gear.host',
   user: 'pickbrainsdb',
   password: 'Ko09GB6-o1!o',
-  database: 'pickbrainsdb',
+  database: 'pickbrainsdb', 
   checkExpirationInterval: 900000,
   expiration: 86400000,
   createDatabaseTable: true,

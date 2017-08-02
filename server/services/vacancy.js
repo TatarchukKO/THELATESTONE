@@ -1,23 +1,25 @@
-const vacancyModel = require('../dao/vacancy.js');
-const convKeys = require('./convert-keys');
+
+const model = require('../dao/vacancy');
+const utils = require('../../utils');
 
 const getVacancies = (body, callback) => {
-  body = convKeys.toSnake(body);
+  body = utils.toSnake(body);
   const limit = (body.limit < 0) ? 0 : (body.limit || 0);
   const filter = body;
   delete filter.limit;
-  vacancyModel.getVacancies(limit, filter, (error, result) => {
-    callback(error, convKeys.toCamel(result));
+
+  model.getVacancies(limit, filter, (error, result) => {
+    callback(error, utils.toCamel(result));
   });
 };
 
 const getVacancy = (id, callback) => {
-  vacancyModel.getVacancy(id, (error, result) => {
+  model.getVacancy(id, (error, result) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
     finalResult.other_skills = vacancyInfo[2];
-    callback(error, convKeys.toCamel(finalResult));
+    callback(error, utils.toCamel(finalResult));
   });
 };
 
@@ -31,8 +33,8 @@ const clearSkills = (obj) => {
   return copy;
 };
 
-const updateVacancy = (id, req, callback) => {
-  req = convKeys.toSnake(req);
+const updateVacancy = (id, req, user, callback) => {
+  req = utils.toSnake(req);
   const config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
@@ -44,18 +46,27 @@ const updateVacancy = (id, req, callback) => {
   });
   clearSkills(config);
   clearSkills(changes);
-
-  delete changes.primary_skill_lvl;
+  if (req.primary_skill_lvl) {
+    delete changes.primary_skill_lvl;
+    changes.primary_skill = 1;
+  }
   changes.vacancy_id = id;
-  changes.user_id = 2; // User ID
+  changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
-  changes.change_date = formatDate(new Date());
 
-  vacancyModel.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
+  if (req.start_date) {
+    config.start_date = formatDate(new Date(req.start_date));
+  }
+  if (req.exp_year) {
+    config.exp_year = formatDate(new Date(req.exp_year));
+  }
+
+  console.log(changes);
+  model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 };
 
 const addVacancy = (req, callback) => {
-  req = convKeys.toSnake(req);
+  req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
@@ -71,8 +82,9 @@ const addVacancy = (req, callback) => {
   vacancy.linkedin = req.linkedin || 0;
   vacancy.english_lvl = req.english_lvl || 0;
   vacancy.salary_wish = req.salary_wish || 0;
+  vacancy.description = req.description;
 
-  vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
+  model.addVacancy(vacancy, secSkills, otherSkills, callback);
 };
 
 const mapRes = (error, result, callback) => {
@@ -91,15 +103,28 @@ const mapRes = (error, result, callback) => {
     tmp.id = value.id;
     tmp.total = value.total;
     tmp.primary_skill_lvl = value.primary_skill_lvl;
+    if (value.date) {
+      tmp.date = value.date;
+    }
     return tmp;
   });
   console.log(result);
-  callback(error, convKeys.toCamel(res));
+  callback(error, utils.toCamel(res));
 };
 
 const getCandidates = (skip, vacancyId, callback) => {
   skip = skip || 0;
-  vacancyModel.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+  model.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+};
+
+const getAssigned = (skip, vacancyId, callback) => {
+  skip = skip || 0;
+  model.getAssigned(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+};
+
+const closeVacancy = (req, callback) => {
+  req = utils.toSnake(req);
+  model.closeVacancy(req, callback);
 };
 
 module.exports = {
@@ -108,4 +133,6 @@ module.exports = {
   addVacancy,
   updateVacancy,
   getCandidates,
+  getAssigned,
+  closeVacancy,
 };

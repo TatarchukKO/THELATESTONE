@@ -51,16 +51,27 @@ function search(req, res) {
   });
 }
 
+function report(req, res) {
+  candidatesService.report(req.body, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    return res.xls('report.xlsx', result);
+  });
+}
+
 function trieSearch(req, res) {
   const params = req.query.candidate.split(' ');
   if (params.lenght > 2) {
     return res.status(404).send();
   }
-  const answer = trie.search(params.join(' '));
-  if (answer.length) {
-    return res.status(200).send(answer);
-  }
-  return res.status(404).send();
+  trie.search(params.join(' '), (error, answer) => {
+    if (answer.length) {
+      return res.status(200).send(answer);
+    }
+    return res.status(404).send();
+  });
 }
 
 module.exports = {
@@ -69,5 +80,6 @@ module.exports = {
   insert,
   update,
   search,
+  report,
   trieSearch,
 };

@@ -8,6 +8,7 @@ const get = {
   },
   body: {
     skip: Joi.number().integer().greater(-1),
+    amount: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
@@ -119,9 +120,27 @@ const search = {
   },
   body: {
     skip: Joi.number().integer().greater(-1),
+    amount: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)),
+    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
+    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
+    expYear: Joi.date(),
+  },
+};
+
+const report = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  body: {
+    span: Joi.array().items(Joi.date()),
+    city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
+    salaryWish: Joi.array().items(Joi.number().integer()),
+    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
     status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
     englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
     expYear: Joi.date(),
@@ -135,4 +154,5 @@ module.exports = {
   insert,
   update,
   search,
+  report,
 };

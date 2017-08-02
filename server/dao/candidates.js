@@ -2,10 +2,10 @@ const async = require('async');
 
 const query = require('../queries/candidate-queries');
 const connection = require('./connection').connection;
-const ts = require('../services/trie-search').ts;
+const ts = require('../services/trie-search');
 
-function get(limit, filter, callback) {
-  connection.query(query.get(limit, filter), callback);
+function get(skip, amount, filter, callback) {
+  connection.query(query.get(skip, amount, filter), callback);
 }
 
 function getById(id, callback) {
@@ -50,13 +50,13 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
-            return ts.add({
+            callback(error, result);
+            console.log('Insert transaction has been commited');
+            return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
           });
-          callback(error, result);
-          return console.log('Insert transaction has been commited');
         });
     });
   });
@@ -157,30 +157,34 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
               throw commitError;
             });
           }
+          callback(error, result);
+          console.log('Update transaction has been commited');
           if (candidate.eng_first_name) {
-            return ts.add({
+            return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
           }
         });
-        callback(error, result);
-        return console.log('Update transaction has been commited');
       });
     return undefined;
   });
 }
 
-function search(params, skip, filter, callback) {
-  return connection.query(query.search(params, skip, filter), callback);
+function search(params, skip, amount, filter, callback) {
+  return connection.query(query.search(params, skip, amount, filter), callback);
 }
 
-function searchByEmail(params, skip, filter, callback) {
-  return connection.query(query.searchByEmail(params, skip, filter), callback);
+function searchByEmail(params, skip, amount, filter, callback) {
+  return connection.query(query.searchByEmail(params, skip, amount, filter), callback);
 }
 
-function searchBySkype(params, skip, filter, callback) {
-  return connection.query(query.searchBySkype(params, skip, filter), callback);
+function searchBySkype(params, skip, amount, filter, callback) {
+  return connection.query(query.searchBySkype(params, skip, amount, filter), callback);
+}
+
+function report(span, filter, callback) {
+  connection.query(query.report(span, filter), callback);
 }
 
 module.exports = {
@@ -191,4 +195,5 @@ module.exports = {
   search,
   searchByEmail,
   searchBySkype,
+  report,
 };

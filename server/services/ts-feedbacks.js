@@ -8,7 +8,7 @@ function getById(id, callback) {
       throw err;
     }
     const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    callback(err, utils.namesEditor.editArr(result));
   });
 }
 function getByCandidateId(id, callback) {
@@ -17,7 +17,7 @@ function getByCandidateId(id, callback) {
       throw err;
     }
     const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    callback(err, utils.namesEditor.editArr(result));
   });
 }
 function insert(object, callback) {

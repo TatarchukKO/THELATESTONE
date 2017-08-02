@@ -8,13 +8,13 @@ const getVacancies = {
   },
   body: {
     limit: Joi.number().integer().greater(-1),
-    city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(), // TODO
-    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(), // TODO
-    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(), //TODO
-    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(), // TODO
+    city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
+    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
+    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
+    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
     expYear: Joi.date(),
     startDate: Joi.date(),
-    salaryWish: Joi.array().items(Joi.number().integer()),// TODO
+    salaryWish: Joi.array().items(Joi.number().integer()),
   },
 };
 
@@ -56,6 +56,7 @@ const addVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date().required(),
     expYear: Joi.date().required(),
+    description: Joi.string().required(),
   },
 };
 
@@ -101,10 +102,35 @@ const getCandidates = {
   },
 };
 
+const getAssigned = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
+const closeVacancy = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  body: {
+    v_id: Joi.number().integer().greater(0).required(),
+    c_id: Joi.number().integer().greater(0).required(),
+  },
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
   updateVacancy,
   getCandidates,
+  getAssigned,
+  closeVacancy,
 };
