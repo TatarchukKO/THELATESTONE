@@ -114,7 +114,7 @@ const search = {
     allowUnknownParams: false,
   },
   query: {
-    q: Joi.string().required(),
+    q: Joi.any,
   },
   body: {
     skip: Joi.number().integer().greater(-1),
