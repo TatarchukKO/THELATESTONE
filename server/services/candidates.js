@@ -101,6 +101,9 @@ function update(id, candidateCamel, user, callback) {
 }
 
 function search(query, bodyCamel, callback) {
+  if (!query.q) {
+    return get(bodyCamel, callback);
+  }
   const body = utils.dateFormatter.format(utils.toSnake(bodyCamel));
   const skip = bodyCamel.skip;
   const amount = bodyCamel.amount;
