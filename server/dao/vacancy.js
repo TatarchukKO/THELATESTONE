@@ -78,9 +78,9 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
@@ -128,9 +128,9 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
@@ -143,7 +143,6 @@ const getCandidates = (skip, vacancyId, callback) => {
 const getAssigned = (skip, vacancyId, callback) => {
   connection.query(query.getAssigned(skip, vacancyId), callback);
 };
-
 
 const changeOtherCandidatesStatus = (candidatesArray, call) => {
   async.parallel(candidatesArray.map(val => eCall =>
@@ -162,6 +161,7 @@ const closeVacancy = (body, callback) => {
       async.parallel(
         [
           call => connection.query(query.changeCandidateStatus(body), call),
+          call => connection.query(query.changeInterviewStatus(body), call),
           call => connection.query(query.getOtherCandidates(body), (err, res) =>
           changeOtherCandidatesStatus(res, call)),
         ],
@@ -177,20 +177,25 @@ const closeVacancy = (body, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
+};
+
+const getHistory = (vacancyId, callback) => {
+  connection.query(query.getHistory(vacancyId), callback);
 };
 
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
+  getAssigned,
+  getHistory,
   updateVacancy,
   addVacancy,
-  getAssigned,
   closeVacancy,
 };

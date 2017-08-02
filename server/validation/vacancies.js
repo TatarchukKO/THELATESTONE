@@ -125,6 +125,19 @@ const closeVacancy = {
   },
 };
 
+
+const getHistory = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -132,5 +145,6 @@ module.exports = {
   updateVacancy,
   getCandidates,
   getAssigned,
+  getHistory,
   closeVacancy,
 };
