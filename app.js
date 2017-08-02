@@ -63,7 +63,9 @@ app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
-
+app.get('/', (req, res) => {
+  res.send('WASSUP');
+});
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).json(err);
