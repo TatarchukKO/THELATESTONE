@@ -110,6 +110,7 @@ function search(query, bodyCamel, callback) {
   let filter = body;
   delete filter.skip;
   delete filter.amount;
+  utils.clearFields(filter);
   let params = query.q.split(' ');
   if (params.length > 2) {
     params = params.slice(1, 3);
@@ -171,7 +172,12 @@ function report(paramsCamel, callback) {
     if (res) {
       res = utils.namesEditor.editArr(utils.toCamel(res));
     }
-    callback(err, res);
+    var Readable = require('stream').Readable;
+    var s = new Readable();
+    s._read = function noop() {}; // redundant? see update below
+    s.push(require('json2xls')(res));
+    s.push(null);
+    callback(err, s);
   });
 }
 

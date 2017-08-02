@@ -7,7 +7,7 @@ const getVacancies = (body, callback) => {
   const limit = (body.limit < 0) ? 0 : (body.limit || 0);
   const filter = body;
   delete filter.limit;
-
+  utils.clearFields(filter);
   model.getVacancies(limit, filter, (error, result) => {
     callback(error, utils.toCamel(result));
   });

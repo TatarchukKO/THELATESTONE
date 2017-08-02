@@ -335,9 +335,11 @@ function report(span = {}, filter = {}) {
   LEFT JOIN skills ON candidate.primary_skill = skills.id
   LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
+  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   ${query.join('')}
   GROUP BY candidate.id
-  ORDER BY candidate.contact_date DESC`;
+  ORDER BY candidate.contact_date DESC
+  LIMIT 1`;
 }
 
 module.exports = {
