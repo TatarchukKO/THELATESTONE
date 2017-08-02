@@ -338,8 +338,7 @@ function report(span = {}, filter = {}) {
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   ${query.join('')}
   GROUP BY candidate.id
-  ORDER BY candidate.contact_date DESC
-  LIMIT 1`;
+  ORDER BY candidate.contact_date DESC`;
 }
 
 module.exports = {
