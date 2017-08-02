@@ -88,6 +88,7 @@ const addVacancy = (req, callback) => {
 };
 
 const mapRes = (error, result, callback) => {
+  console.log(result);
   const res = result.map((value) => {
     const tmp = {};
     if (value.ru_first_name) {
@@ -133,7 +134,7 @@ const getHistory = (req, callback) => {
 };
 
 const getHiringList = (req, callback) => {
-  model.getHiringList(req.params.id, callback);
+  model.getHiringList(req.params.id, (err, res) => mapRes(err, res, callback));
 };
 
 module.exports = {

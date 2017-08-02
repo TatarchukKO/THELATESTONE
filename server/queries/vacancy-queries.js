@@ -106,7 +106,7 @@ const getCandidates = (skip, vacancyId) =>
     skills.skill_name, candidate_emails.email, candidate_status.status, result.total, result.primary_skill_lvl
     FROM
     (
-    SELECT c_id , SUM (v_lvl * c_lvl) as 'total', primary_skill_lvl
+    SELECT c_id , (v_lvl * c_lvl )  as 'total', primary_skill_lvl
         FROM 
           ( 
             SELECT c_id, v_skill_id, v_lvl, c_skill_id, c_lvl, primary_skill_lvl
@@ -198,6 +198,12 @@ const getHistory = id =>
     WHERE vacancy_id = ${id}
   `;
 
+const getVacancyTotal = id =>
+  `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
+    FROM vacancy_secondary_skills
+    LEFT JOIN vacacncy ON vacancy.id = vacancy_id
+    WHERE vacancy_id =  ${id} `;
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -209,6 +215,7 @@ module.exports = {
   getOtherCandidates,
   generalHistory,
   getHiringList,
+  getVacancyTotal,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,
