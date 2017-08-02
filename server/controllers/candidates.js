@@ -52,12 +52,14 @@ function search(req, res) {
 }
 
 function report(req, res) {
-  candidatesService.report(req.body, (error, result) => {
+  candidatesService.report(req.query, (error, result) => {
     if (error) {
       res.status(500).send();
       throw error;
     }
-    return result.pipe(res);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename= report.xlsx');
+    res.end(result, 'binary');
   });
 }
 

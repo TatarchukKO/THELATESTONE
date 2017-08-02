@@ -1,7 +1,6 @@
 const metaphone = require('metaphone');
 const async = require('async');
 const json2xls = require('json2xls');
-const Readable = require('stream').Readable;
 
 const candidatesModel = require('../dao/candidates');
 const utils = require('../../utils');
@@ -174,11 +173,8 @@ function report(paramsCamel, callback) {
     if (res) {
       res = utils.namesEditor.editArr(utils.toCamel(res));
     }
-    const stream = new Readable();
-    stream._read = function noop() {}; // redundant? see update below
-    stream.push(json2xls(res));
-    stream.push(null);
-    callback(err, stream);
+    res = json2xls(res);
+    callback(err, res);
   });
 }
 
