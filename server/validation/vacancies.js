@@ -137,6 +137,16 @@ const getHistory = {
   },
 };
 
+const getHiringList = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
 
 module.exports = {
   getVacancies,
@@ -146,5 +156,6 @@ module.exports = {
   getCandidates,
   getAssigned,
   getHistory,
+  getHiringList,
   closeVacancy,
 };

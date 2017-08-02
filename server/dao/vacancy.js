@@ -137,6 +137,10 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
 };
 
 const getCandidates = (skip, vacancyId, callback) => {
+  /*connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
+    console.log(res);
+    connection.query(query.getCandidates(skip, vacancyId, res), callback);
+  });*/
   connection.query(query.getCandidates(skip, vacancyId), callback);
 };
 
@@ -189,12 +193,17 @@ const getHistory = (vacancyId, callback) => {
   connection.query(query.getHistory(vacancyId), callback);
 };
 
+const getHiringList = (vacancyId, callback) => {
+  connection.query(query.getHiringList(vacancyId), callback);
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
   getAssigned,
   getHistory,
+  getHiringList,
   updateVacancy,
   addVacancy,
   closeVacancy,

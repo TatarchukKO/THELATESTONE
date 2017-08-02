@@ -57,11 +57,19 @@ const getHistory = (req, res) => {
   });
 };
 
+const getHiringList = (req, res) => {
+  services.getHiringList(req, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
   getHistory,
+  getHiringList,
   updateVacancy,
   addVacancy,
   getAssigned,

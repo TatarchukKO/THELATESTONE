@@ -47,8 +47,8 @@ function insert(object, callback) {
       });
   });
 }
-function getByUserId(id, currentTime, callback) {
-  connection.query(interviewQueries.getByUserId(id, currentTime), callback);
+function getByUserId(id, callback) {
+  connection.query(interviewQueries.getByUserId(id), callback);
 }
 function getByCandidateId(id, callback) {
   connection.query(interviewQueries.getByCandidateId(id), callback);

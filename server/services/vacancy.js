@@ -88,6 +88,7 @@ const addVacancy = (req, callback) => {
 };
 
 const mapRes = (error, result, callback) => {
+  console.log(result);
   const res = result.map((value) => {
     const tmp = {};
     if (value.ru_first_name) {
@@ -132,13 +133,18 @@ const getHistory = (req, callback) => {
   model.getHistory(req.params.id, (err, res) => callback(err, utils.toCamel(res)));
 };
 
+const getHiringList = (req, callback) => {
+  model.getHiringList(req.params.id, (err, res) => mapRes(err, res, callback));
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
-  addVacancy,
-  updateVacancy,
   getCandidates,
   getAssigned,
+  getHiringList,
   getHistory,
+  addVacancy,
+  updateVacancy,
   closeVacancy,
 };
