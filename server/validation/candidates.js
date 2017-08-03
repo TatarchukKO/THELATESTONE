@@ -74,6 +74,17 @@ const insert = {
   },
 };
 
+const validateEmail = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  query: {
+    email: Joi.string(),
+  },
+};
+
 const update = {
   options: {
     allowUnknownBody: false,
@@ -150,6 +161,7 @@ module.exports = {
   getById,
   trieSearch,
   insert,
+  validateEmail,
   update,
   search,
   report,
