@@ -56,8 +56,12 @@ function getByCandidateId(id, callback) {
 function getEmailNotificationData(id, callback) {
   connection.query(interviewQueries.getEmailNotificationData(id), callback);
 }
+function getUserId(id, callback) {
+  connection.query(interviewQueries.getUserId(id), callback);
+}
 
 module.exports = {
+  getUserId,
   insert,
   getByUserId,
   getByCandidateId,

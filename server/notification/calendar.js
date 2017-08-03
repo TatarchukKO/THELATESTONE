@@ -11,14 +11,17 @@ const TOKEN_DIR = `${process.env.HOME || process.env.HOMEPATH ||
 const TOKEN_PATH = `${TOKEN_DIR}calendar-nodejs-quickstart.json`;
 
 let cId;
-let date = new Date();
-date.setDate(30);
-date = date.toISOString();
-let staticEvent = {
+const staticEvent = {
   summary: 'Interview',
   description: 'You are assigned to an interview',
   start: {},
   end: {},
+  reminders: {
+    useDefault: false,
+    overrides: [
+      { method: 'popup', minutes: 60 },
+    ],
+  },
 };
 
 function setStaticEvent(event) {
@@ -46,7 +49,7 @@ function authorize(credentials, callback) {
   const redirectUrl = credentials.installed.redirect_uris[0];
   const auth = new googleAuth();
   const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-
+  oauth2ClientHolder = oauth2Client;
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) {
@@ -57,6 +60,7 @@ function authorize(credentials, callback) {
     }
   });
 }
+
 
 /**
  * Get and store new token after prompting for user authorization, and then

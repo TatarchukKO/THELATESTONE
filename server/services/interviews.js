@@ -2,6 +2,7 @@ const calendar = require('../notification/calendar.js');
 const interviewDao = require('../dao/interviews');
 const gmail = require('../notification/gmail');
 const utils = require('../../utils');
+const async = require('async');
 
 function editDoneField(obj) {
   if (obj.done) {
@@ -69,7 +70,18 @@ function getByCandidateId(id, callback) {
   });
 }
 
+function getUserId(id, callback) {
+  interviewDao.getUserId(id, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    const result = utils.toCamel(res);
+    callback(err, result[0].userId);
+  });
+}
+
 module.exports = {
+  getUserId,
   insert,
   getByUserId,
   getByCandidateId,
