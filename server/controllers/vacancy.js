@@ -1,5 +1,4 @@
-
-const services = require('../services/vacancy.js');
+const services = require('../services/vacancy');
 
 const getVacancies = (req, res) => {
   services.getVacancies(req.body, (error, result) => {

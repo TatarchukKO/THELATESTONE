@@ -10,6 +10,7 @@ const connection = require('./server/dao/connection');
 const trieSearch = require('./server/services/trie-search');
 const metaData = require('./server/routes/meta-data');
 const vacancy = require('./server/routes/vacancy');
+const generalHistory = require('./server/routes/general-history');
 const hrmFeedback = require('./server/routes/hrm-feedbacks');
 const candidate = require('./server/routes/candidates');
 const authentication = require('./server/authentication/passport');
@@ -29,6 +30,7 @@ app.use(cors({
 }));
 
 app.use('/api/authentication/', authentication.router);
+
 app.use('/api/', (req, res, next) => {
   console.log('message');
   next();
@@ -51,6 +53,7 @@ app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 app.use('/api/users', users);
 app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
+app.use('/api/history/', generalHistory);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
 app.get('/', (req, res) => {
