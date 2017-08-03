@@ -197,7 +197,7 @@ const changeOtherCandidatesStatus = candidateId =>
     UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
 
 const getHistory = id =>
-  `SELECT users.login, change_date, name, request_date, start_date, status,
+  `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
     primary_skill, other_skills, city, secondary_skills, exp_year
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
