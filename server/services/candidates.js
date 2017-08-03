@@ -66,6 +66,18 @@ function insert(candidateCamel, callback) {
   candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
 }
 
+function validate(email, callback) {
+  candidatesModel.validate(email, (err, res) => {
+    if (err) {
+      return callback(err);
+    }
+    if (res[0]) {
+      return callback(err, 406);
+    }
+    callback(err, 200);
+  });
+}
+
 function update(id, candidateCamel, user, callback) {
   const candidate = utils.dateFormatter.format(utils.toSnake(candidateCamel));
   const changes = {};
@@ -210,6 +222,7 @@ module.exports = {
   getById,
   getHistory,
   insert,
+  validate,
   update,
   search,
   report,

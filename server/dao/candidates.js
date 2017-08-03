@@ -62,6 +62,11 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
   });
 }
 
+function validate(email, callback) {
+  connection.query(`SELECT * FROM candidate_emails
+    WHERE email = "${email}"`, callback);
+}
+
 function deleteRuName(name, id, call) {
   if (name) {
     return call(null, null);
@@ -197,6 +202,7 @@ module.exports = {
   getById,
   getHistory,
   insert,
+  validate,
   update,
   search,
   searchByEmail,
