@@ -27,7 +27,17 @@ function insert(req, res) {
       res.status(500).send();
       throw error;
     }
-    return res.status(200).send();
+    return res.status(201).send();
+  });
+}
+
+function validate(req, res) {
+  candidatesService.validate(req.query.email, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    return res.status(result).send();
   });
 }
 
@@ -88,6 +98,7 @@ module.exports = {
   getById,
   getHistory,
   insert,
+  validate,
   update,
   search,
   report,
