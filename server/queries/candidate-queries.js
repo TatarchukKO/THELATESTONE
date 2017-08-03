@@ -326,10 +326,11 @@ function report(span = {}, filter = {}) {
     index += 1;
     query[i + index] = ')';
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  return `SELECT candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
-  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
-  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, candidate_status.status
+  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl as english_lvl,
+  candidate.contact_date, candidate_emails.email, skills.skill_name as primary_skill, candidate.primary_skill_lvl,
+  candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id

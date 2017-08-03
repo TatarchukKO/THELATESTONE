@@ -173,7 +173,12 @@ function report(paramsCamel, callback) {
     if (res) {
       res = utils.namesEditor.editArr(utils.toCamel(res));
     }
-    res = json2xls(res);
+    res = json2xls(res, {
+      fields: [
+        'candidateName', 'status', 'primarySkill', 'primarySkillLvl', 'expYear', 'englishLvl',
+        'email', 'city', 'phone', 'skype', 'salaryWish', 'linkedIn', 'contactDate',
+      ],
+    });
     callback(err, res);
   });
 }
