@@ -342,12 +342,23 @@ function report(span = {}, filter = {}) {
   ORDER BY candidate.contact_date DESC`;
 }
 
+
+function getHistory(id) {
+  return `SELECT users.first_name, users.second_name, ru_first_name, ru_second_name,
+  eng_first_name, eng_second_name, emails, linkedin, skype, phone, city, primary_skill,
+  exp_year, salary_wish, english_lvl, status, sec_skills
+  FROM candidate_changes
+  LEFT JOIN users ON users.id = candidate_changes.user_id
+  WHERE candidate_id = ${id}`;
+}
+
 module.exports = {
   get,
   getById,
   getEmails,
   getSecondarySkills,
   getOtherSkills,
+  getHistory,
   insert,
   insertEmails,
   insertSecSkills,

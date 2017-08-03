@@ -130,7 +130,24 @@ const closeVacancy = (req, callback) => {
 };
 
 const getHistory = (req, callback) => {
-  model.getHistory(req.params.id, (err, res) => callback(err, utils.toCamel(res)));
+  model.getHistory(req.params.id, (err, res) => {
+    res = utils.toCamel(res);
+    const result = res.map((item) => {
+      const changesArray = [];
+      Object.keys(item).forEach((key) => {
+        if (item[`${key}`] === 1) {
+          changesArray.push(`${key}`);
+        }
+      });
+      const history = {
+        user: `${item.firstName} ${item.secondName}`,
+        cahngeDate: item.changeDate,
+        changes: changesArray,
+      };
+      return history;
+    });
+    callback(err, result);
+  });
 };
 
 const getHiringList = (req, callback) => {

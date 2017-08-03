@@ -145,9 +145,22 @@ const report = {
   },
 };
 
+
+const getHistory = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
 module.exports = {
   get,
   getById,
+  getHistory,
   trieSearch,
   insert,
   update,
