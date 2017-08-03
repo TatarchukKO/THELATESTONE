@@ -13,5 +13,6 @@ router.get('', validate(validation.getById), candidatesCantroller.getById);
 router.post('/new', validate(validation.insert), candidatesCantroller.insert);
 router.patch('/edit', validate(validation.update), candidatesCantroller.update);
 router.get('/report', validate(validation.report), candidatesCantroller.report);
+router.get('/:id/history', validate(validation.getHistory), candidatesCantroller.getHistory);
 
 module.exports = router;

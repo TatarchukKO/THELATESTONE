@@ -201,8 +201,7 @@ const getHistory = id =>
     primary_skill, other_skills, city, secondary_skills, exp_year
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
-    WHERE vacancy_id = ${id}
-  `;
+    WHERE vacancy_id = ${id}`;
 
 const getVacancyTotal = id =>
   `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl

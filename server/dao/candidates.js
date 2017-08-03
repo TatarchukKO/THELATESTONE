@@ -187,9 +187,15 @@ function report(span, filter, callback) {
   connection.query(query.report(span, filter), callback);
 }
 
+function getHistory(vacancyId, callback) {
+  connection.query(query.getHistory(vacancyId), callback);
+}
+
+
 module.exports = {
   get,
   getById,
+  getHistory,
   insert,
   update,
   search,
