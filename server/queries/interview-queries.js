@@ -42,8 +42,15 @@ function getByCandidateId(id) {
   JOIN users u ON i.user_id = u.id
   WHERE ${id} = i.candidate_id`;
 }
+function getUserId(id) {
+  return `SELECT i.user_id
+  from interview i
+  WHERE
+  ${id} = i.id`;
+}
 
 module.exports = {
+  getUserId,
   insert,
   insertEventToGeneralHistory,
   getByUserId,

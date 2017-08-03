@@ -1,4 +1,5 @@
 const hrmFeedbackService = require('../services/hrm-feedbacks');
+const interviewService = require('../services/interviews.js');
 
 function getById(req, res) {
   hrmFeedbackService.getById(req.query.feedbackid, (error, result) => {
@@ -19,12 +20,18 @@ function getByCandidateId(req, res) {
 function insert(req, res) {
   const obj = req.body;
   obj.userId = req.user.id;
-  hrmFeedbackService.insert(obj, (error) => {
-    if (error) {
-      throw error;
-    }
-    return res.sendStatus(200);
-  });
+  interviewService.getUserId(obj.interviewId,
+    (uErr, uRes) => {
+      if (obj.userId !== uRes) {
+        return res.sendStatus(403);
+      }
+      hrmFeedbackService.insert(obj, (error) => {
+        if (error) {
+          throw error;
+        }
+        return res.sendStatus(200);
+      });
+    });
 }
 
 module.exports = {
