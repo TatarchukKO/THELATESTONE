@@ -51,9 +51,9 @@ const getHistory = () =>
 
 const getCandidateNames = id =>
   `SELECT candidate.ru_first_name, candidate.ru_second_name,
-  candidate.eng_first_name, candidate.eng_second_name
-  FROM candidate
-  WHERE candidate.id = ${id} `;
+    candidate.eng_first_name, candidate.eng_second_name
+    FROM candidate
+    WHERE candidate.id = ${id} `;
 
 module.exports = {
   getHistory,
