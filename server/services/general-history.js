@@ -18,11 +18,27 @@ const formAction = (obj) => {
   if (obj.interviewId) {
     return 'Interview was assigned/closed';
   }
-  return 'nothing';
+  return 'Nothing';
 };
 
-/**
- * "vacancyChangeId": 14,
+const formCandidateName = (obj, names) => {
+  return 'Andrew';
+};
+
+/*
+
+"candidateId": 10,
+"ruFirstName": null,
+"ruSecondName": null,
+"engFirstName": "Andrew",
+"engSecondName": "Belous"
+
+*/
+
+
+/*
+
+"vacancyChangeId": 14,
 "candidateChangeId": null,
 "hrmFeedbackId": null,
 "tsFeedbackId": null,
@@ -32,16 +48,19 @@ const formAction = (obj) => {
 "firstName": "Vasya",
 "secondName": "Pupkin",
 "vacancyId": 28,
-"name": "Onliner.by" */
+"name": "Onliner.by"
+
+*/
 
 
 const getHistory = (req, callback) => {
   model.getHistory(req, (error, res) => {
-    res = utils.toCamel(res);
+    const names = utils.toCamel(res[1][0]);
+    res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
       const history = {
         subject: `${item.firstName} ${item.secondName}`,
-        object: item.name,
+        object: item.candidateChangeId ? formCandidateName(item, names) : item.name,
         date: item.changeDate,
         changes: formAction(item),
       };
