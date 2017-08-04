@@ -5,9 +5,10 @@ function insert(req, res) {
   obj.assignerId = req.user.id;
   interviewService.insert(obj, (error) => {
     if (error) {
+      res.sendStatus(500);
       throw error;
     }
-    return res.sendStatus(200);
+    return res.sendStatus(201);
   });
 }
 function getByUserId(req, res) {

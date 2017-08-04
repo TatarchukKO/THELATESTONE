@@ -28,9 +28,10 @@ function insert(req, res) {
       }
       hrmFeedbackService.insert(obj, (error) => {
         if (error) {
+          res.sendStatus(500);
           throw error;
         }
-        return res.sendStatus(200);
+        return res.sendStatus(201);
       });
     });
 }
