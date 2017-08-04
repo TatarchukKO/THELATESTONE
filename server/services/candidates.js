@@ -174,6 +174,11 @@ function search(query, bodyCamel, callback) {
 }*/
 
 function report(paramsCamel, callback) {
+  paramsCamel.expYear = paramsCamel.expYear ? new Date(+paramsCamel.expYear) : undefined;
+  if (paramsCamel.span) {
+    paramsCamel.span.from = paramsCamel.span.from ? new Date(+paramsCamel.span.from) : undefined;
+    paramsCamel.span.to = paramsCamel.span.to ? new Date(+paramsCamel.span.to) : undefined;
+  }
   const params = utils.dateFormatter.format(utils.toSnake(paramsCamel));
   const span = paramsCamel.span ? utils.dateFormatter.format(paramsCamel.span) : undefined;
   let filter = params;
