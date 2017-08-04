@@ -67,7 +67,8 @@ function getById(id, callback) {
       }
       async
         .parallel(result
-          .map(item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
+          .map(item => cb =>
+            connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
         (err, res) => {
           if (err) {
             return connection.rollback(() => {
@@ -98,30 +99,6 @@ function getByCandidateId(id, callback) {
           throw error;
         });
       }
-      /* async.parallel(result.map(
-        item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), (e, r) => {
-          if (e) {
-            return connection.rollback(() => {
-              throw e;
-            });
-          }
-          cb(e, r);
-        })),
-        (err, res) => {
-          if (err) {
-            return connection.rollback(() => {
-              throw err;
-            });
-          }
-          connection.commit((commitError) => {
-            if (commitError) {
-              return connection.rollback(() => {
-                throw commitError;
-              });
-            }
-          });
-          callback(err, uniteResults(result, res));
-        });*/
       connection.commit((commitError) => {
         if (commitError) {
           return connection.rollback(() => {
