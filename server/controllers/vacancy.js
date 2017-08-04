@@ -29,14 +29,14 @@ const addVacancy = (req, res) => {
 };
 
 const getCandidates = (req, res) => {
-  services.getCandidates(req.query.skip, req.params.id, (error, result) => {
+  services.getCandidates(req, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });
 };
 
 const getAssigned = (req, res) => {
-  services.getAssigned(req.query.skip, req.params.id, (error, result) => {
+  services.getAssigned(req, (error, result) => {
     if (error) throw error;
     return res.status(200).send(result);
   });

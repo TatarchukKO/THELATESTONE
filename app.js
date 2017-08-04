@@ -32,7 +32,6 @@ app.use(cors({
 app.use('/api/authentication/', authentication.router);
 
 app.use('/api/', (req, res, next) => {
-  console.log('message');
   next();
 });
 
