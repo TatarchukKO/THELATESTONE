@@ -1,5 +1,7 @@
 const controller = require('../controllers/general-history');
 const router = require('express').Router();
+const validate = require('express-validation');
+const validation = require('../validation/general-history');
 
 router.use((req, res, next) => {
   if (req.user.type === 'admin') {
@@ -9,6 +11,6 @@ router.use((req, res, next) => {
   }
 });
 
-router.get('/', controller.getHistory);
+router.get('/',validate(validation.getHistory), controller.getHistory);
 
 module.exports = router;

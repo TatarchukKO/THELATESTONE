@@ -1,6 +1,8 @@
 const model = require('../dao/general-history');
 const utils = require('../../utils');
 
+const defaultCapacity = 10;
+
 const formAction = (obj) => {
   if (obj.vacancyChangeId) {
     return 'Vacancy was changed';
@@ -20,32 +22,42 @@ const formAction = (obj) => {
   return 'nothing';
 };
 
-/**
- * "vacancyChangeId": 14,
-"candidateChangeId": null,
-"hrmFeedbackId": null,
-"tsFeedbackId": null,
-"interviewId": null,
-"changeDate": "2017-07-31T01:01:31.000Z",
-"userId": 1,
-"firstName": "Vasya",
-"secondName": "Pupkin",
-"vacancyId": 28,
-"name": "Onliner.by" */
+const getName = (obj) => {
+  if (obj.ru_first_name) {
+    return `${obj.ruFirstName} ${obj.ruSecondName}`;
+  }
+  return `${obj.engFirstName} ${obj.engSecondName}`;
+};
+
+const formCandidateName = (obj, names) => {
+  const id = obj.candidateChangeId;
+  let result;
+  names.forEach((item) => {
+    if (item.id === id) {
+      result = getName(item);
+    }
+  }, this);
+  return result;
+};
 
 
 const getHistory = (req, callback) => {
-  model.getHistory(req, (error, res) => {
-    res = utils.toCamel(res);
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  model.getHistory(skip, capacity, (error, res) => {
+    const number = res[2][0][0].total;
+    const names = utils.toCamel(res[1][0]);
+    res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
       const history = {
         subject: `${item.firstName} ${item.secondName}`,
-        object: item.name,
+        object: item.candidateChangeId ? formCandidateName(item, names) : item.name,
         date: item.changeDate,
-        changes: formAction(item),
+        action: formAction(item),
       };
       return history;
     });
+    result.unshift(number);
     callback(error, result);
   });
 };

@@ -343,14 +343,18 @@ function report(span = {}, filter = {}) {
 }
 
 
-function getHistory(id) {
+function getHistory(skip, capacity, candId) {
   return `SELECT users.first_name, users.second_name, ru_first_name, ru_second_name,
   eng_first_name, eng_second_name, emails, linkedin, skype, phone, city, primary_skill,
   exp_year, salary_wish, english_lvl, status, sec_skills
   FROM candidate_changes
   LEFT JOIN users ON users.id = candidate_changes.user_id
-  WHERE candidate_id = ${id}`;
+  WHERE candidate_id = ${candId}
+  LIMIT ${skip}, ${capacity}`;
 }
+
+const getRecordsNumber = () =>
+  'SELECT COUNT(*) AS total FROM candidate_changes';
 
 module.exports = {
   get,
@@ -359,6 +363,7 @@ module.exports = {
   getSecondarySkills,
   getOtherSkills,
   getHistory,
+  getRecordsNumber,
   insert,
   insertEmails,
   insertSecSkills,
