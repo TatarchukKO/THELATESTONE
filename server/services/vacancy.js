@@ -4,11 +4,13 @@ const utils = require('../../utils');
 
 const getVacancies = (body, callback) => {
   body = utils.toSnake(body);
-  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+  const skip = body.skip || 0;
+  const capacity = body.capacity || 0;
   const filter = body;
-  delete filter.limit;
-
-  model.getVacancies(limit, filter, (error, result) => {
+  delete filter.skip;
+  delete filter.capacity;
+  utils.clearFields(filter);
+  model.getVacancies(skip, capacity, filter, (error, result) => {
     callback(error, utils.toCamel(result));
   });
 };
@@ -88,6 +90,7 @@ const addVacancy = (req, callback) => {
 };
 
 const mapRes = (error, result, callback) => {
+  console.log(result);
   const res = result.map((value) => {
     const tmp = {};
     if (value.ru_first_name) {
@@ -102,6 +105,7 @@ const mapRes = (error, result, callback) => {
     tmp.skill_name = value.skill_name;
     tmp.id = value.id;
     tmp.total = value.total;
+    tmp.ideal = value.ideal;
     tmp.primary_skill_lvl = value.primary_skill_lvl;
     if (value.date) {
       tmp.date = value.date;
@@ -127,12 +131,39 @@ const closeVacancy = (req, callback) => {
   model.closeVacancy(req, callback);
 };
 
+const getHistory = (req, callback) => {
+  model.getHistory(req.params.id, (err, res) => {
+    res = utils.toCamel(res);
+    const result = res.map((item) => {
+      const changesArray = [];
+      Object.keys(item).forEach((key) => {
+        if (item[`${key}`] === 1) {
+          changesArray.push(`${key}`);
+        }
+      });
+      const history = {
+        user: `${item.firstName} ${item.secondName}`,
+        cahngeDate: item.changeDate,
+        changes: changesArray,
+      };
+      return history;
+    });
+    callback(err, result);
+  });
+};
+
+const getHiringList = (req, callback) => {
+  model.getHiringList(req.params.id, (err, res) => mapRes(err, res, callback));
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
-  addVacancy,
-  updateVacancy,
   getCandidates,
   getAssigned,
+  getHiringList,
+  getHistory,
+  addVacancy,
+  updateVacancy,
   closeVacancy,
 };

@@ -15,7 +15,7 @@ const getByCandidateId = {
     allowUnknownParams: false,
   },
   query: {
-    candidateid: Joi.number().integer().required(),
+    id: Joi.number().integer().required(),
   },
 };
 

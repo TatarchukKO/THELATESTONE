@@ -7,7 +7,8 @@ const getVacancies = {
     allowUnknownParams: false,
   },
   body: {
-    limit: Joi.number().integer().greater(-1),
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
     status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
@@ -60,7 +61,6 @@ const addVacancy = {
   },
 };
 
-
 const updateVacancy = {
   options: {
     allowUnknownBody: false,
@@ -90,7 +90,6 @@ const updateVacancy = {
   },
 };
 
-
 const getCandidates = {
   options: {
     allowUnknownBody: false,
@@ -99,6 +98,10 @@ const getCandidates = {
   },
   params: {
     id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
   },
 };
 
@@ -110,6 +113,10 @@ const getAssigned = {
   },
   params: {
     id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
   },
 };
 
@@ -125,6 +132,37 @@ const closeVacancy = {
   },
 };
 
+
+const getHistory = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
+};
+
+const getHiringList = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -132,5 +170,7 @@ module.exports = {
   updateVacancy,
   getCandidates,
   getAssigned,
+  getHistory,
+  getHiringList,
   closeVacancy,
 };

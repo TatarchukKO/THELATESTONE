@@ -1,25 +1,36 @@
 function get(skip = 0, amount = 14, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
+  let j = 0;
   Object.keys(filter).forEach((item, i) => {
     if (i >= 1) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
-      query[i] = `${sent}candidate.${item} >= ${filter[item][0]} 
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter[item][0]) {
+        query[i + j] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          j += 1;
+          query[i + j] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
       return;
     }
     if (item === 'exp_year') {
-      query[i] = `${sent}candidate.${item} <= ${filter[item][0]}`;
+      query[i + j] = `${sent}candidate.${item} <= "${filter[item]}"`;
       return;
     }
-    filter[item].forEach((val, j) => {
-      if (j >= 1) {
-        sent = ' OR ';
+    query[i + j] = `${sent}candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      j += 1;
+      if (l !== arr.length - 1) {
+        query[i + j] = `"${val}",`;
+        return;
       }
-      query[i + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + j] = `"${val}"`;
     });
+    j += 1;
+    query[i + j] = ')';
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
@@ -27,7 +38,7 @@ function get(skip = 0, amount = 14, filter = {}) {
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
   ${query.join('')}
   GROUP BY candidate.id
@@ -36,15 +47,14 @@ function get(skip = 0, amount = 14, filter = {}) {
 }
 
 function getById(id) {
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
   candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl,
-  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, 
-  candidate_status.status 
+  candidate.contact_date, skills.skill_name, candidate.primary_skill_lvl, candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
   WHERE candidate.id = ${id}`;
 }
@@ -56,14 +66,14 @@ function getEmails(id) {
 }
 
 function getSecondarySkills(id) {
-  return `SELECT skills.id, skills.skill_name, candidate_secondary_skills.lvl 
+  return `SELECT skills.id, skills.skill_name, candidate_secondary_skills.lvl
   FROM candidate_secondary_skills
   LEFT JOIN skills ON candidate_secondary_skills.skill_id = skills.id
   WHERE candidate_secondary_skills.candidate_id = ${id}`;
 }
 
 function getOtherSkills(id) {
-  return `SELECT other_skills.skill, other_skills.id 
+  return `SELECT other_skills.skill, other_skills.id
   FROM other_skills_has_candidate
   LEFT JOIN other_skills ON other_skills_has_candidate.other_skills_id = other_skills.id
   WHERE other_skills_has_candidate.candidate_id = ${id}`;
@@ -136,111 +146,210 @@ function generalHistory(id) {
 function search(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   let index = 2;
-  query[0] = `metaphone.first = "${params[0]}"`;
+  query[0] = `metaphone.first in ("${params[0]}"`;
   if (params[1]) {
-    query[1] = ` AND metaphone.second = "${params[1]}"`;
-    query[3] = ` AND metaphone.first = "${params[1]}"`;
-    query[2] = ` OR metaphone.second = "${params[0]}"`;
-    index = 4;
+    query[1] = `,"${params[1]}") AND metaphone.second in ("${params[1]}", "${params[0]}")`;
   } else {
-    query[1] = ` OR metaphone.second = "${params[0]}"`;
+    query[1] = `) OR metaphone.second in ("${params[0]}")`;
   }
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + index] = ` AND candidate.${item} >= ${filter[item][0]} 
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter[item][0]) {
+        query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, j) => {
-      if (j >= 1) {
-        sent = ' OR ';
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + index + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate_emails.email, candidate_status.status
   FROM metaphone
   LEFT JOIN candidate ON metaphone.candidate_id = candidate.id
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
-  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
+  LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
   WHERE ${query.join('')}
+  GROUP BY candidate.id
   LIMIT ${skip}, ${amount}`;
 }
 
 function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate_emails.email = "${params}"`;
+  let index = 1;
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]} 
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter[item][0]) {
+        query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
       return;
     }
     if (item === 'exp_year') {
-      query[i + 1] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, j) => {
-      if (j >= 1) {
-        sent = ' OR ';
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate_emails.email, candidate_status.status
   FROM candidate_emails
   LEFT JOIN candidate ON candidate_emails.candidate_id = candidate.id
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
-  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
   WHERE ${query.join('')}
+  ORDER BY candidate.contact_date DESC
   LIMIT ${skip}, ${amount}`;
 }
 
 function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate.skype = "${params}"`;
+  let index = 1;
   Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
-      query[i + 1] = ` AND candidate.${item} >= ${filter[item][0]} 
-        AND candidate.${item} <= ${filter[item][1]}`;
+      if (filter[item][0]) {
+        query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
       return;
     }
     if (item === 'exp_year') {
-      query[i + 1] = ` AND candidate.${item} <= ${filter[item][0]}`;
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
       return;
     }
-    let sent = ' AND ';
-    filter[item].forEach((val, j) => {
-      if (j >= 1) {
-        sent = ' OR ';
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
       }
-      query[i + 1 + j] = `${sent}candidate.${item} = ${filter[item]}`;
+      query[i + index] = `"${val}"`;
     });
+    index += 1;
+    query[i + index] = ')';
   });
-  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name, 
-  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date, 
-  skills.skill_name, candidate.primary_skill_lvl, candidate_status.status 
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
+  skills.skill_name, candidate_emails.email, candidate_status.status
   FROM candidate
   LEFT JOIN location ON candidate.city = location.id
   LEFT JOIN skills ON candidate.primary_skill = skills.id
-  LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
-  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
+  LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
   WHERE ${query.join('')}
+  GROUP BY candidate.id
+  ORDER BY candidate.contact_date DESC
   LIMIT ${skip}, ${amount}`;
+}
+
+function report(span = {}, filter = {}) {
+  const query = [];
+  let sent = 'WHERE ';
+  let index = 0;
+  Object.keys(filter).forEach((item, i) => {
+    if (i >= 1) {
+      sent = ' AND ';
+    }
+    if (item === 'salary_wish') {
+      if (filter[item][0]) {
+        query[i + index] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+        if (filter[item][1]) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
+        }
+      }
+      return;
+    }
+    if (item === 'span') {
+      if (filter.span.to) {
+        query[i + index] = `${sent}candidate.${item} >= ${filter.span.to}`;
+        if (filter.span.from) {
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter.span.from}`;
+        }
+      }
+      return;
+    }
+    if (item === 'exp_year') {
+      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
+      return;
+    }
+    query[i + index] = ` AND candidate.${item} IN (`;
+    filter[item].forEach((val, l, arr) => {
+      index += 1;
+      if (l !== arr.length - 1) {
+        query[i + index] = `"${val}",`;
+        return;
+      }
+      query[i + index] = `"${val}"`;
+    });
+    index += 1;
+    query[i + index] = ')';
+  });
+  return `SELECT candidate.ru_first_name, candidate.ru_second_name,
+  candidate.eng_first_name, candidate.eng_second_name, candidate.linkedin, candidate.skype,
+  candidate.phone,  location.city, candidate.exp_year, candidate.salary_wish, english_lvl.lvl as english_lvl,
+  candidate.contact_date, candidate_emails.email, skills.skill_name as primary_skill, candidate.primary_skill_lvl,
+  candidate_status.status
+  FROM candidate
+  LEFT JOIN location ON candidate.city = location.id
+  LEFT JOIN skills ON candidate.primary_skill = skills.id
+  LEFT JOIN candidate_status ON candidate.status = candidate_status.id
+  LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
+  LEFT JOIN english_lvl ON candidate.english_lvl = english_lvl.id
+  ${query.join('')}
+  GROUP BY candidate.id
+  ORDER BY candidate.contact_date DESC`;
+}
+
+
+function getHistory(id) {
+  return `SELECT users.first_name, users.second_name, ru_first_name, ru_second_name,
+  eng_first_name, eng_second_name, emails, linkedin, skype, phone, city, primary_skill,
+  exp_year, salary_wish, english_lvl, status, sec_skills
+  FROM candidate_changes
+  LEFT JOIN users ON users.id = candidate_changes.user_id
+  WHERE candidate_id = ${id}`;
 }
 
 module.exports = {
@@ -249,6 +358,7 @@ module.exports = {
   getEmails,
   getSecondarySkills,
   getOtherSkills,
+  getHistory,
   insert,
   insertEmails,
   insertSecSkills,
@@ -265,4 +375,5 @@ module.exports = {
   search,
   searchByEmail,
   searchBySkype,
+  report,
 };

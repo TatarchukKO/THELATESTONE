@@ -3,8 +3,8 @@ const async = require('async');
 const query = require('../queries/vacancy-queries');
 const connection = require('./connection').connection;
 
-const getVacancies = (limit, filter, callback) => {
-  connection.query(query.getVacancies(limit, filter), callback);
+const getVacancies = (skip, capacity, filter, callback) => {
+  connection.query(query.getVacancies(skip, capacity, filter), callback);
 };
 
 const getVacancy = (id, callback) => {
@@ -78,9 +78,9 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
@@ -128,22 +128,25 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
 };
 
 const getCandidates = (skip, vacancyId, callback) => {
+  /*connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
+    console.log(res);
+    connection.query(query.getCandidates(skip, vacancyId, res), callback);
+  });*/
   connection.query(query.getCandidates(skip, vacancyId), callback);
 };
 
 const getAssigned = (skip, vacancyId, callback) => {
   connection.query(query.getAssigned(skip, vacancyId), callback);
 };
-
 
 const changeOtherCandidatesStatus = (candidatesArray, call) => {
   async.parallel(candidatesArray.map(val => eCall =>
@@ -162,6 +165,7 @@ const closeVacancy = (body, callback) => {
       async.parallel(
         [
           call => connection.query(query.changeCandidateStatus(body), call),
+          call => connection.query(query.changeInterviewStatus(body), call),
           call => connection.query(query.getOtherCandidates(body), (err, res) =>
           changeOtherCandidatesStatus(res, call)),
         ],
@@ -177,20 +181,30 @@ const closeVacancy = (body, callback) => {
                 throw commitError;
               });
             }
+            callback(error, result);
+            return console.log('Commited');
           });
-          callback(error, result);
-          return console.log('Commited');
         });
     });
   });
+};
+
+const getHistory = (vacancyId, callback) => {
+  connection.query(query.getHistory(vacancyId), callback);
+};
+
+const getHiringList = (vacancyId, callback) => {
+  connection.query(query.getHiringList(vacancyId), callback);
 };
 
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
+  getAssigned,
+  getHistory,
+  getHiringList,
   updateVacancy,
   addVacancy,
-  getAssigned,
   closeVacancy,
 };

@@ -1,6 +1,8 @@
+const calendar = require('../notification/calendar.js');
 const interviewDao = require('../dao/interviews');
 const gmail = require('../notification/gmail');
 const utils = require('../../utils');
+const async = require('async');
 
 function editDoneField(obj) {
   if (obj.done) {
@@ -21,6 +23,14 @@ function editAndSendMail(obj) {
   utils.dateFormatter.format(resp);
   gmail.sendMail(resp[0]);
 }
+function insertEventInGoogleCalendar(obj) {
+  const camelRes = utils.toCamel(obj);
+  const event = {};
+  event.date = new Date(camelRes[0].date);
+  calendar.setCalendarId(camelRes[0].login);
+  calendar.setStaticEvent(event);
+  calendar.insertEventInGoogleCal();
+}
 
 function insert(object, callback) {
   utils.dateFormatter.format(object);
@@ -31,14 +41,14 @@ function insert(object, callback) {
     interviewDao.getEmailNotificationData(result,
       (err, res) => {
         editAndSendMail(res);
+        insertEventInGoogleCalendar(res);
         callback(err);
       });
   });
 }
 
 function getByUserId(id, callback) {
-  const currentTime = utils.dateFormatter.format(new Date(), 'yyyy-mm-dd HH:MM:ss');
-  interviewDao.getByUserId(id, currentTime, (err, res) => {
+  interviewDao.getByUserId(id, (err, res) => {
     if (err) {
       throw err;
     }
@@ -60,7 +70,18 @@ function getByCandidateId(id, callback) {
   });
 }
 
+function getUserId(id, callback) {
+  interviewDao.getUserId(id, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    const result = utils.toCamel(res);
+    callback(err, result[0].userId);
+  });
+}
+
 module.exports = {
+  getUserId,
   insert,
   getByUserId,
   getByCandidateId,

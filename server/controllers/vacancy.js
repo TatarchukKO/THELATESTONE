@@ -1,5 +1,4 @@
-
-const services = require('../services/vacancy.js');
+const services = require('../services/vacancy');
 
 const getVacancies = (req, res) => {
   services.getVacancies(req.body, (error, result) => {
@@ -50,10 +49,26 @@ const closeVacancy = (req, res) => {
   });
 };
 
+const getHistory = (req, res) => {
+  services.getHistory(req, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
+const getHiringList = (req, res) => {
+  services.getHiringList(req, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+};
+
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
+  getHistory,
+  getHiringList,
   updateVacancy,
   addVacancy,
   getAssigned,

@@ -27,7 +27,17 @@ function insert(req, res) {
       res.status(500).send();
       throw error;
     }
-    return res.status(200).send();
+    return res.status(201).send();
+  });
+}
+
+function validate(req, res) {
+  candidatesService.validate(req.query.email, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    return res.status(result).send();
   });
 }
 
@@ -51,6 +61,18 @@ function search(req, res) {
   });
 }
 
+function report(req, res) {
+  candidatesService.report(req.query, (error, result) => {
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename= report.xlsx');
+    res.end(result, 'binary');
+  });
+}
+
 function trieSearch(req, res) {
   const params = req.query.candidate.split(' ');
   if (params.lenght > 2) {
@@ -64,11 +86,21 @@ function trieSearch(req, res) {
   });
 }
 
+function getHistory(req, res) {
+  candidatesService.getHistory(req, (error, result) => {
+    if (error) throw error;
+    return res.status(200).send(result);
+  });
+}
+
 module.exports = {
   get,
   getById,
+  getHistory,
   insert,
+  validate,
   update,
   search,
+  report,
   trieSearch,
 };

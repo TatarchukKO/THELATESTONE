@@ -8,9 +8,11 @@ function toCamel(arr) {
 function getLocations(callback) {
   metaDataDao.getLocations(callback);
 }
+
 function getEnglishLevels(callback) {
   metaDataDao.getEnglishLevels(callback);
 }
+
 function getSkills(callback) {
   metaDataDao.getSkills((err, res) => {
     if (err) {
@@ -19,12 +21,15 @@ function getSkills(callback) {
     callback(err, toCamel(res));
   });
 }
+
 function getCandidateStatuses(callback) {
   metaDataDao.getCandidateStatuses(callback);
 }
+
 function getOtherSkills(callback) {
   metaDataDao.getOtherSkills(callback);
 }
+
 function getVacancyStatuses(callback) {
   metaDataDao.getVacancyStatuses(callback);
 }

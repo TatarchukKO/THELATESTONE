@@ -50,16 +50,21 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
+            callback(error, result);
+            console.log('Insert transaction has been commited');
             return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
           });
-          callback(error, result);
-          return console.log('Insert transaction has been commited');
         });
     });
   });
+}
+
+function validate(email, callback) {
+  connection.query(`SELECT * FROM candidate_emails
+    WHERE email = "${email}"`, callback);
 }
 
 function deleteRuName(name, id, call) {
@@ -157,6 +162,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
               throw commitError;
             });
           }
+          callback(error, result);
+          console.log('Update transaction has been commited');
           if (candidate.eng_first_name) {
             return ts.insert({
               id,
@@ -164,8 +171,6 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
             });
           }
         });
-        callback(error, result);
-        return console.log('Update transaction has been commited');
       });
     return undefined;
   });
@@ -183,12 +188,24 @@ function searchBySkype(params, skip, amount, filter, callback) {
   return connection.query(query.searchBySkype(params, skip, amount, filter), callback);
 }
 
+function report(span, filter, callback) {
+  connection.query(query.report(span, filter), callback);
+}
+
+function getHistory(vacancyId, callback) {
+  connection.query(query.getHistory(vacancyId), callback);
+}
+
+
 module.exports = {
   get,
   getById,
+  getHistory,
   insert,
+  validate,
   update,
   search,
   searchByEmail,
   searchBySkype,
+  report,
 };

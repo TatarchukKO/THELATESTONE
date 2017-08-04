@@ -1,6 +1,10 @@
 {
   "name": "pick_brains",
   "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",

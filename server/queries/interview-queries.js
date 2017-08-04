@@ -5,10 +5,10 @@ function insert(object) {
     '${object.candidate_id}', '${object.vacancy_id}',
     '${object.user_id}', '${object.assigner_id}', '${object.date}', 0)`;
 }
+
 function getEmailNotificationData(id) {
   return `SELECT u.first_name, u.second_name,
   u.login, u.type, i.date, v.name, s.skill_name,
-  c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name
   FROM interview i
   LEFT JOIN vacancy v ON v.id = i.vacancy_id
@@ -17,12 +17,14 @@ function getEmailNotificationData(id) {
   LEFT JOIN candidate c ON c.id = i.candidate_id
   WHERE ${id} = i.id`;
 }
+
 function insertEventToGeneralHistory(id) {
   return `INSERT INTO general_history
   (interview_id)
   VALUES ('${id}')`;
 }
-function getByUserId(id, currentTime) {
+
+function getByUserId(id) {
   return `SELECT c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name, i.date
   FROM interview i
@@ -30,11 +32,11 @@ function getByUserId(id, currentTime) {
   JOIN users u ON i.user_id = u.id
   WHERE 
   ${id} = i.user_id
-  AND
-  '${currentTime}' <= i.date`;
+  ORDER BY i.date DESC`;
 }
+
 function getByCandidateId(id) {
-  return `SELECT i.candidate_id, c.ru_first_name,
+  return `SELECT i.id, i.candidate_id, c.ru_first_name,
   c.ru_second_name, c.eng_first_name, c.eng_second_name,
   i.vacancy_id, v.name, u.type, u.first_name,
   u.second_name, i.date, i.done
@@ -45,7 +47,15 @@ function getByCandidateId(id) {
   WHERE ${id} = i.candidate_id`;
 }
 
+function getUserId(id) {
+  return `SELECT i.user_id
+  from interview i
+  WHERE
+  ${id} = i.id`;
+}
+
 module.exports = {
+  getUserId,
   insert,
   insertEventToGeneralHistory,
   getByUserId,

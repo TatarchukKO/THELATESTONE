@@ -7,7 +7,7 @@ const getById = {
     allowUnknownParams: false,
   },
   query: {
-    feedbackid: Joi.number().integer(),
+    id: Joi.number().integer(),
   },
 };
 
@@ -18,7 +18,7 @@ const getByCandidateId = {
     allowUnknownParams: false,
   },
   query: {
-    candidateid: Joi.number().integer(),
+    id: Joi.number().integer(),
   },
 };
 
@@ -35,15 +35,8 @@ const insert = {
     motivation: Joi.string().required(),
     englishLvl: Joi.number().integer().required(),
     salaryWish: Joi.number().integer().required(),
-    other: Joi.string(),
-    vacancyId: Joi.number().integer().required(),
-    candidateId: Joi.number().integer().required(),
+    other: [Joi.string(), Joi.any().empty()],
     interviewId: Joi.number().integer().required(),
-  },
-  query: {
-    user: {
-      id: Joi.number().integer().required(),
-    },
   },
 };
 

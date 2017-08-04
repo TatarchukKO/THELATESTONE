@@ -13,7 +13,7 @@ const options = {
   host: 'mysql5.gear.host',
   user: 'pickbrainsdb',
   password: 'Ko09GB6-o1!o',
-  database: 'pickbrainsdb',
+  database: 'pickbrainsdb', 
   checkExpirationInterval: 900000,
   expiration: 86400000,
   createDatabaseTable: true,
@@ -48,7 +48,7 @@ passport.use(new LocalStrategy({
   (login, password, done) => {
     connection.query(`SELECT users.id, login, password FROM users
     WHERE login = "${login}"`, (error, res) => {
-      const user = res[0];
+      const user = res[0].toLowerCase();
       if (error) {
         return done(error);
       }

@@ -10,6 +10,7 @@ function uniteResults(feedbacks, otherSkills) {
     return cItem;
   });
 }
+
 function insertFeedback(object, cb) {
   connection.query(tsFeedbackQueries.insert(object), (err, res) => {
     if (err) {
@@ -18,6 +19,7 @@ function insertFeedback(object, cb) {
     cb(null, object, res.insertId);
   });
 }
+
 function insertSecondarySkills(object, id, cb) {
   async.parallel(object.secondary_skills.map(
     item => callback =>
@@ -31,6 +33,7 @@ function insertSecondarySkills(object, id, cb) {
       cb(null, id);
     });
 }
+
 function insertEventToGeneralHistory(id, cb) {
   connection.query(tsFeedbackQueries.insertEventToGeneralHistory(id), (err) => {
     if (err) {
@@ -39,6 +42,7 @@ function insertEventToGeneralHistory(id, cb) {
     cb(null);
   });
 }
+
 function updateInterviewStatus(object, cb) {
   connection
     .query(tsFeedbackQueries.updateInterviewStatus(object),
@@ -82,6 +86,7 @@ function getById(id, callback) {
     });
   });
 }
+
 function getByCandidateId(id, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -128,6 +133,7 @@ function getByCandidateId(id, callback) {
     });
   });
 }
+
 function insert(object, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {

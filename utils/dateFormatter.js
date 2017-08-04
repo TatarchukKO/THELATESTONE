@@ -2,6 +2,12 @@ const dateFormat = require('dateformat');
 
 function format(object) {
   const tmp = object;
+  if (tmp.from) {
+    tmp.from = dateFormat(tmp.from, 'yyyy-mm-dd HH:MM:ss');
+  }
+  if (tmp.to) {
+    tmp.to = dateFormat(tmp.to, 'yyyy-mm-dd HH:MM:ss');
+  }
   if (tmp.date) {
     tmp.date = dateFormat(tmp.date, 'yyyy-mm-dd HH:MM:ss');
   }
