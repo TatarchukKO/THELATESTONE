@@ -9,6 +9,7 @@ function getEnglishLevels(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getLocations(req, res) {
   metaDataService.getLocations((error, result) => {
     if (error) {
@@ -18,6 +19,7 @@ function getLocations(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getSkills(req, res) {
   metaDataService.getSkills((error, result) => {
     if (error) {
@@ -27,6 +29,7 @@ function getSkills(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getCandidateStatuses(req, res) {
   metaDataService.getCandidateStatuses((error, result) => {
     if (error) {
@@ -36,6 +39,7 @@ function getCandidateStatuses(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getOtherSkills(req, res) {
   metaDataService.getOtherSkills((error, result) => {
     if (error) {
@@ -45,6 +49,7 @@ function getOtherSkills(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getVacancyStatuses(req, res) {
   metaDataService.getVacancyStatuses((error, result) => {
     if (error) {

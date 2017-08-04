@@ -60,7 +60,6 @@ const addVacancy = {
   },
 };
 
-
 const updateVacancy = {
   options: {
     allowUnknownBody: false,
@@ -89,7 +88,6 @@ const updateVacancy = {
     expYear: Joi.date(),
   },
 };
-
 
 const getCandidates = {
   options: {

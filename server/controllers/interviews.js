@@ -11,6 +11,7 @@ function insert(req, res) {
     return res.sendStatus(201);
   });
 }
+
 function getByUserId(req, res) {
   interviewService.getByUserId(req.user.id, (error, result) => {
     if (error) {
@@ -19,6 +20,7 @@ function getByUserId(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getByCandidateId(req, res) {
   interviewService.getByCandidateId(req.query.id, (error, result) => {
     if (error) {

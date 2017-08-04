@@ -24,6 +24,7 @@ function insertEventToGeneralHistory(id, date, cb) {
       cb(null);
     });
 }
+
 function insertFeedbackAndHistory(object, cb) {
   async
     .waterfall([
@@ -37,6 +38,7 @@ function insertFeedbackAndHistory(object, cb) {
       cb(null);
     });
 }
+
 function updateInterviewStatus(object, cb) {
   connection
     .query(hrmFeedbackQueries.updateInterviewStatus(object),

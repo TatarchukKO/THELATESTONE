@@ -14,7 +14,7 @@ const hrmFeedback = require('./server/routes/hrm-feedbacks');
 const candidate = require('./server/routes/candidates');
 const authentication = require('./server/authentication/passport');
 const users = require('./server/routes/users');
-const convKeys = require('./server/services/convert-keys');
+const utils = require('./utils');
 
 const app = express();
 
@@ -43,7 +43,7 @@ app.get('/api/user', (req, res) => {
   const user = req.user;
   delete user.id;
   delete user.login;
-  res.status(200).send(convKeys.toCamel(user));
+  res.status(200).send(utils.toCamel(user));
 });
 app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
@@ -61,9 +61,6 @@ app.use('/api/meta-data/', metaData);
 app.use('/api/vacancies/', vacancy);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
-app.get('/', (req, res) => {
-  res.send('WASSUP');
-});
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).json(err);
