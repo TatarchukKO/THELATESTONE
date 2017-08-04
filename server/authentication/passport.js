@@ -48,7 +48,7 @@ passport.use(new LocalStrategy({
   (login, password, done) => {
     connection.query(`SELECT users.id, login, password FROM users
     WHERE login = "${login}"`, (error, res) => {
-      const user = res[0];
+      const user = res[0].toLowerCase();
       if (error) {
         return done(error);
       }
