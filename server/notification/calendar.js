@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
-const googleAuth = require('google-auth-library');
+const GoogleAuth = require('google-auth-library');
 
 // If modifying these scopes, devare your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
@@ -30,6 +30,7 @@ function setStaticEvent(event) {
   staticEvent.end.dateTime = event.date.toISOString();
   staticEvent.end.timeZone = 'Europe/Minsk';
 }
+
 function setCalendarId(id) {
   cId = id;
 }
@@ -47,7 +48,7 @@ function authorize(credentials, callback) {
   const clientSecret = credentials.installed.client_secret;
   const clientId = credentials.installed.client_id;
   const redirectUrl = credentials.installed.redirect_uris[0];
-  const auth = new googleAuth();
+  const auth = new GoogleAuth();
   const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
   oauth2ClientHolder = oauth2Client;
   // Check if we have previously stored a token.

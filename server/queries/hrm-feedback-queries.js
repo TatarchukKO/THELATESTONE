@@ -9,6 +9,7 @@ function getByCandidateId(id) {
   LEFT JOIN candidate c ON c.id = h_f.candidate_id
   WHERE ${id} = h_f.candidate_id`;
 }
+
 function getById(id) {
   return `SELECT u.first_name, u.second_name, v.name,
   h_f.change_reason, h_f.ready_to_work, h_f.ready_to_travel,
@@ -23,14 +24,17 @@ function getById(id) {
   LEFT JOIN candidate c ON c.id = i.candidate_id
   WHERE ${id} = h_f.id`;
 }
+
 function insert() {
   return 'INSERT INTO hrm_feedback SET ?';
 }
+
 function updateInterviewStatus(object) {
   return `UPDATE interview
   SET done = 1
   WHERE ${object.interview_id} = id`;
 }
+
 function insertEventToGeneralHistory(id) {
   return `INSERT INTO general_history
   (hrm_feedback_id)

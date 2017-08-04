@@ -11,6 +11,7 @@ function insertInterview(object, cb) {
     cb(null, res.insertId);
   });
 }
+
 function insertEventToGeneralHistory(id, cb) {
   connection.query(interviewQueries.insertEventToGeneralHistory(id), (err) => {
     if (err) {
@@ -47,15 +48,19 @@ function insert(object, callback) {
       });
   });
 }
+
 function getByUserId(id, callback) {
   connection.query(interviewQueries.getByUserId(id), callback);
 }
+
 function getByCandidateId(id, callback) {
   connection.query(interviewQueries.getByCandidateId(id), callback);
 }
+
 function getEmailNotificationData(id, callback) {
   connection.query(interviewQueries.getEmailNotificationData(id), callback);
 }
+
 function getUserId(id, callback) {
   connection.query(interviewQueries.getUserId(id), callback);
 }

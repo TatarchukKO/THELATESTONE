@@ -17,17 +17,21 @@ const transporter = nodemailer.createTransport({
 function greetings(obj) {
   return `Hello, ${obj.userName}.`;
 }
+
 function interviewee(obj) {
   return `You are assigned
   to an interview with
   ${obj.candidateName}`;
 }
+
 function vacancy(obj) {
   return `on vacancy ${obj.vacancyName}`;
 }
+
 function technology(obj) {
   return `technology: ${obj.skillName}`;
 }
+
 function interviewDate(obj) {
   return `Interview date:
   ${dateFormat(obj.date, 'yyyy-mm-dd HH:MM')} `;
@@ -49,6 +53,7 @@ function formHtml(obj) {
   }
   return html;
 }
+
 function formConfig(obj) {
   const config = {};
   config.from = '<exadelbot@gmail.com>';
