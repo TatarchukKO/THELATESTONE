@@ -8,7 +8,7 @@ function getById(id) {
   LEFT JOIN candidate c ON i.candidate_id = c.id
   LEFT JOIN users u ON i.user_id = u.id
   LEFT JOIN vacancy v ON v.id = i.vacancy_id
-  LEFT JOIN general_history g ON t_f.id = g.hrm_feedback_id
+  LEFT JOIN general_history g ON t_f.id = g.ts_feedback_id
   WHERE ${id} = t_f.id
   ORDER BY g.change_date DESC`;
 }
@@ -23,7 +23,7 @@ function getByCandidateId(id) {
   LEFT JOIN vacancy v ON v.id = i.vacancy_id
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
   LEFT JOIN candidate c ON c.id = i.candidate_id
-  LEFT JOIN general_history g ON t_f.id = g.hrm_feedback_id
+  LEFT JOIN general_history g ON t_f.id = g.ts_feedback_id
   WHERE ${id} = i.candidate_id
   ORDER BY g.change_date DESC`;
 }
