@@ -11,6 +11,7 @@ function getById(id, callback) {
     callback(err, utils.namesEditor.editArr(result));
   });
 }
+
 function getByCandidateId(id, callback) {
   tsFeedbackDao.getByCandidateId(id, (err, res) => {
     if (err) {
@@ -20,6 +21,7 @@ function getByCandidateId(id, callback) {
     callback(err, utils.namesEditor.editArr(result));
   });
 }
+
 function insert(object, callback) {
   tsFeedbackDao.insert(convertKeys.toSnake(object), callback);
 }

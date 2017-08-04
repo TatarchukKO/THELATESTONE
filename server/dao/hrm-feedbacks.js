@@ -5,7 +5,7 @@ const hrmFeedbackQueries = require('../queries/hrm-feedback-queries');
 
 function insertFeedback(object, cb) {
   connection
-    .query(hrmFeedbackQueries.insert(object),
+    .query(hrmFeedbackQueries.insert(), object,
     (err, res) => {
       if (err) {
         throw err;

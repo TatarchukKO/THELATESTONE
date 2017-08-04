@@ -3,11 +3,11 @@ function getById(id) {
   i.date, s.skill_name, t_f.primary_skill_lvl, c.ru_first_name,
   c.ru_second_name, c.eng_first_name, c.eng_second_name
   FROM ts_feedback t_f
-  LEFT JOIN skills s ON t_f.primary_skill_id = s.id
-  LEFT JOIN candidate c ON t_f.candidate_id = c.id
-  LEFT JOIN users u ON t_f.user_id = u.id
-  LEFT JOIN vacancy v ON v.id = t_f.vacancy_id
   LEFT JOIN interview i ON i.id = t_f.interview_id
+  LEFT JOIN skills s ON t_f.primary_skill_id = s.id
+  LEFT JOIN candidate c ON i.candidate_id = c.id
+  LEFT JOIN users u ON i.user_id = u.id
+  LEFT JOIN vacancy v ON v.id = i.vacancy_id
   WHERE ${id} = t_f.id`;
 }
 function getByCandidateId(id) {
@@ -15,12 +15,12 @@ function getByCandidateId(id) {
   i.date, v.name, s.skill_name, c.ru_first_name,
   c.ru_second_name, c.eng_first_name, c.eng_second_name
   FROM ts_feedback t_f
-  LEFT JOIN users u ON t_f.user_id = u.id
-  LEFT JOIN vacancy v ON v.id = t_f.vacancy_id
   LEFT JOIN interview i ON i.id = t_f.interview_id
+  LEFT JOIN users u ON i.user_id = u.id
+  LEFT JOIN vacancy v ON v.id = i.vacancy_id
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
-  LEFT JOIN candidate c ON c.id = t_f.candidate_id
-  WHERE ${id} = t_f.candidate_id`;
+  LEFT JOIN candidate c ON c.id = i.candidate_id
+  WHERE ${id} = i.candidate_id`;
 }
 function getSecondarySkillsByTsFeedbackId(id) {
   return `SELECT skills.skill_name, ts_secondary_skills.skill_lvl FROM ts_secondary_skills
