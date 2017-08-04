@@ -192,8 +192,13 @@ function report(span, filter, callback) {
   connection.query(query.report(span, filter), callback);
 }
 
-function getHistory(vacancyId, callback) {
-  connection.query(query.getHistory(vacancyId), callback);
+function getHistory(skip, capacity, candId, callback) {
+  async.parallel(
+    [
+      call => connection.query(query.getHistory(skip, capacity, candId), call),
+      call => connection.query(query.getRecordsNumber(), call),
+    ],
+    callback);
 }
 
 

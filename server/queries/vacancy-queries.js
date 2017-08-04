@@ -1,8 +1,6 @@
 /** All Vacancies */
 
-const capacity = 5;
-
-const getVacancies = (limit, filter) => {
+const formQuery = filter => {
   const query = [];
   let sent = 'WHERE ';
   let j = 0;
@@ -36,7 +34,11 @@ const getVacancies = (limit, filter) => {
       j += 1;
       query[i + j] = ')';
     });
+    return query.join('');
   }
+};
+
+const getVacancies = (skip, capacity, filter) => {
   return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
   skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
   request_date 
@@ -44,10 +46,10 @@ const getVacancies = (limit, filter) => {
   LEFT JOIN skills ON vacancy.primary_skill = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  ${query.join('')}
+  ${formQuery(filter)}
   GROUP BY vacancy.id
   ORDER BY request_date DESC
-  LIMIT ${limit}, ${capacity}`;
+  LIMIT ${skip}, ${capacity}`;
 };
 
 /** Single Vacancy */
@@ -106,7 +108,7 @@ const addVacancy = vacancy =>
     ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
     '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}', '${vacancy.description}')`;
 
-const getCandidates = (skip, vacancyId) =>
+const getCandidates = (skip, capacity, vacancyId) =>
   `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
     skills.skill_name, candidate_emails.email, candidate_status.status, result.total, result.primary_skill_lvl
@@ -152,7 +154,7 @@ const getCandidates = (skip, vacancyId) =>
     ORDER BY  total DESC, primary_skill_lvl DESC, eng_first_name
     LIMIT ${skip}, ${capacity}`;
 
-const getAssigned = (skip, vacancyId) =>
+const getAssigned = (skip, capacity, vacancyId) =>
   `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
     skills.skill_name, candidate_emails.email, candidate_status.status, result.date
@@ -167,9 +169,11 @@ const getAssigned = (skip, vacancyId) =>
     LEFT JOIN skills ON candidate.primary_skill = skills.id
     LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
     LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
-    ORDER BY date DESC`;
+    GROUP BY candidate.id
+    ORDER BY date DESC
+    LIMIT ${skip}, ${capacity}`;
 
-const getHiringList = vacancyId =>
+const getHiringList = (skip, capacity, vacancyId) =>
   `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name
     FROM
@@ -179,7 +183,8 @@ const getHiringList = vacancyId =>
         WHERE vacancy_id = ${vacancyId} AND done = 1
       ) AS result
     LEFT JOIN candidate ON candidate.id = result.c_id
-    ORDER BY date DESC`;
+    ORDER BY date DESC
+    LIMIT ${skip}, ${capacity}`;
 
 const changeCandidateStatus = body =>
   `UPDATE candidate SET status = 9 WHERE id = ${body.c_id}`;
@@ -196,18 +201,22 @@ const changeOtherCandidatesStatus = candidateId =>
   `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
     UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
 
-const getHistory = id =>
+const getHistory = (skip, capacity, vacancyId) =>
   `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
     primary_skill, other_skills, city, secondary_skills, exp_year
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
-    WHERE vacancy_id = ${id}`;
+    WHERE vacancy_id = ${vacancyId}
+    LIMIT ${skip}, ${capacity}`;
 
 const getVacancyTotal = id =>
   `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
     FROM vacancy_secondary_skills
     LEFT JOIN vacacncy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
+
+const getRecordsNumber = () =>
+  'SELECT COUNT(*) AS total FROM vacancy_changes';
 
 module.exports = {
   getVacancies,
@@ -221,6 +230,7 @@ module.exports = {
   generalHistory,
   getHiringList,
   getVacancyTotal,
+  getRecordsNumber,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,

@@ -3,8 +3,8 @@ const async = require('async');
 const query = require('../queries/vacancy-queries');
 const connection = require('./connection').connection;
 
-const getVacancies = (limit, filter, callback) => {
-  connection.query(query.getVacancies(limit, filter), callback);
+const getVacancies = (skip, capacity, filter, callback) => {
+  connection.query(query.getVacancies(skip, capacity, filter), callback);
 };
 
 const getVacancy = (id, callback) => {
@@ -50,7 +50,6 @@ const updateOtherSkills = (otherSkills, id, call) => {
 };
 
 const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
-  console.log(changes);
   connection.beginTransaction((transError) => {
     if (transError) throw transError;
     connection.query(query.updateVacancy(id), config, (error) => {
@@ -136,16 +135,16 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   });
 };
 
-const getCandidates = (skip, vacancyId, callback) => {
-  /*connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
-    console.log(res);
-    connection.query(query.getCandidates(skip, vacancyId, res), callback);
-  });*/
-  connection.query(query.getCandidates(skip, vacancyId), callback);
+const getCandidates = (skip, capacity, vacancyId, callback) => {
+  // connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
+  //   console.log(res);
+  //   connection.query(query.getCandidates(skip, vacancyId, res), callback);
+  // });
+  connection.query(query.getCandidates(skip, capacity, vacancyId), callback);
 };
 
-const getAssigned = (skip, vacancyId, callback) => {
-  connection.query(query.getAssigned(skip, vacancyId), callback);
+const getAssigned = (skip, capacity, vacancyId, callback) => {
+  connection.query(query.getAssigned(skip, capacity, vacancyId), callback);
 };
 
 const changeOtherCandidatesStatus = (candidatesArray, call) => {
@@ -189,12 +188,17 @@ const closeVacancy = (body, callback) => {
   });
 };
 
-const getHistory = (vacancyId, callback) => {
-  connection.query(query.getHistory(vacancyId), callback);
+const getHistory = (skip, capacity, vacancyId, callback) => {
+  async.parallel(
+    [
+      call => connection.query(query.getHistory(skip, capacity, vacancyId), call),
+      call => connection.query(query.getRecordsNumber(), call),
+    ],
+    callback);
 };
 
-const getHiringList = (vacancyId, callback) => {
-  connection.query(query.getHiringList(vacancyId), callback);
+const getHiringList = (skip, capacity, vacancyId, callback) => {
+  connection.query(query.getHiringList(skip, capacity, vacancyId), callback);
 };
 
 module.exports = {

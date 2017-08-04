@@ -1,14 +1,17 @@
-
 const model = require('../dao/vacancy');
 const utils = require('../../utils');
 
+const defaultCapacity = 10;
+
 const getVacancies = (body, callback) => {
   body = utils.toSnake(body);
-  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+  const skip = body.skip || 0;
+  const capacity = body.capacity || 0;
   const filter = body;
-  delete filter.limit;
+  delete filter.skip;
+  delete filter.capacity;
   utils.clearFields(filter);
-  model.getVacancies(limit, filter, (error, result) => {
+  model.getVacancies(skip, capacity, filter, (error, result) => {
     callback(error, utils.toCamel(result));
   });
 };
@@ -61,7 +64,6 @@ const updateVacancy = (id, req, user, callback) => {
     config.exp_year = formatDate(new Date(req.exp_year));
   }
 
-  console.log(changes);
   model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 };
 
@@ -88,7 +90,6 @@ const addVacancy = (req, callback) => {
 };
 
 const mapRes = (error, result, callback) => {
-  console.log(result);
   const res = result.map((value) => {
     const tmp = {};
     if (value.ru_first_name) {
@@ -110,18 +111,21 @@ const mapRes = (error, result, callback) => {
     }
     return tmp;
   });
-  console.log(result);
   callback(error, utils.toCamel(res));
 };
 
-const getCandidates = (skip, vacancyId, callback) => {
-  skip = skip || 0;
-  model.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+const getCandidates = (req, callback) => {
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const vacancyId = req.params.id;
+  model.getCandidates(skip, capacity, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
-const getAssigned = (skip, vacancyId, callback) => {
-  skip = skip || 0;
-  model.getAssigned(skip, vacancyId, (err, res) => mapRes(err, res, callback));
+const getAssigned = (req, callback) => {
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const vacancyId = req.params.id;
+  model.getAssigned(skip, capacity, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
 const closeVacancy = (req, callback) => {
@@ -129,9 +133,14 @@ const closeVacancy = (req, callback) => {
   model.closeVacancy(req, callback);
 };
 
+
 const getHistory = (req, callback) => {
-  model.getHistory(req.params.id, (err, res) => {
-    res = utils.toCamel(res);
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const vacancyId = req.params.id;
+  model.getHistory(skip, capacity, vacancyId, (err, res) => {
+    const number = res[1][0][0].total;
+    res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
       const changesArray = [];
       Object.keys(item).forEach((key) => {
@@ -146,12 +155,16 @@ const getHistory = (req, callback) => {
       };
       return history;
     });
+    result.unshift(number);
     callback(err, result);
   });
 };
 
 const getHiringList = (req, callback) => {
-  model.getHiringList(req.params.id, (err, res) => mapRes(err, res, callback));
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const vacancyId = req.params.id;
+  model.getHiringList(skip, capacity, vacancyId, (err, res) => mapRes(err, res, callback));
 };
 
 module.exports = {

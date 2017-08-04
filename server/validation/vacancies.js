@@ -7,7 +7,8 @@ const getVacancies = {
     allowUnknownParams: false,
   },
   body: {
-    limit: Joi.number().integer().greater(-1),
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
     status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
@@ -98,6 +99,10 @@ const getCandidates = {
   params: {
     id: Joi.number().integer().greater(0).required(),
   },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
 };
 
 const getAssigned = {
@@ -108,6 +113,10 @@ const getAssigned = {
   },
   params: {
     id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
   },
 };
 
@@ -133,6 +142,10 @@ const getHistory = {
   params: {
     id: Joi.number().integer().greater(0).required(),
   },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
 };
 
 const getHiringList = {
@@ -143,6 +156,10 @@ const getHiringList = {
   },
   params: {
     id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
   },
 };
 
