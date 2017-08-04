@@ -1,6 +1,6 @@
 /** All Vacancies */
 
-const getVacancies = (skip, cap, filter) => {
+const formQuery = filter => {
   const query = [];
   let sent = 'WHERE ';
   let j = 0;
@@ -34,7 +34,11 @@ const getVacancies = (skip, cap, filter) => {
       j += 1;
       query[i + j] = ')';
     });
+    return query.join('');
   }
+};
+
+const getVacancies = (skip, capacity, filter) => {
   return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
   skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
   request_date 
@@ -42,10 +46,10 @@ const getVacancies = (skip, cap, filter) => {
   LEFT JOIN skills ON vacancy.primary_skill = skills.id
   LEFT JOIN location ON vacancy.city = location.id
   LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  ${query.join('')}
+  ${formQuery(filter)}
   GROUP BY vacancy.id
   ORDER BY request_date DESC
-  LIMIT ${skip}, ${cap}`;
+  LIMIT ${skip}, ${capacity}`;
 };
 
 /** Single Vacancy */
