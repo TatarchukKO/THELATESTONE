@@ -302,16 +302,16 @@ function report(span = {}, filter = {}) {
     }
     if (item === 'span') {
       if (filter.span.to) {
-        query[i + index] = `${sent}candidate.${item} >= ${filter.span.to}`;
+        query[i + index] = `${sent}candidate.${item} >= "${filter.span.to}"`;
         if (filter.span.from) {
           index += 1;
-          query[i + index] = ` AND candidate.${item} <= ${filter.span.from}`;
+          query[i + index] = ` AND candidate.${item} <= "${filter.span.from}"`;
         }
       }
       return;
     }
     if (item === 'exp_year') {
-      query[i + index] = ` ${sent} candidate.${item} <= ${filter[item]}`;
+      query[i + index] = ` ${sent} candidate.${item} <= "${filter[item]}"`;
       return;
     }
     query[i + index] = ` ${sent} candidate.${item} IN (`;
