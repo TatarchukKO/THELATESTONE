@@ -3,8 +3,8 @@ const async = require('async');
 const query = require('../queries/vacancy-queries');
 const connection = require('./connection').connection;
 
-const getVacancies = (limit, filter, callback) => {
-  connection.query(query.getVacancies(limit, filter), callback);
+const getVacancies = (skip, capacity, filter, callback) => {
+  connection.query(query.getVacancies(skip, capacity, filter), callback);
 };
 
 const getVacancy = (id, callback) => {

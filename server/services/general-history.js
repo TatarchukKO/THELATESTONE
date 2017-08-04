@@ -55,18 +55,7 @@ const formCandidateName = (obj, names) => {
 
 const getHistory = (req, callback) => {
   model.getHistory(req, (error, res) => {
-    const names = utils.toCamel(res[1][0]);
-    res = utils.toCamel(res[0][0]);
-    const result = res.map((item) => {
-      const history = {
-        subject: `${item.firstName} ${item.secondName}`,
-        object: item.candidateChangeId ? formCandidateName(item, names) : item.name,
-        date: item.changeDate,
-        changes: formAction(item),
-      };
-      return history;
-    });
-    callback(error, result);
+    callback(error, res);
   });
 };
 
