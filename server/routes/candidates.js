@@ -11,6 +11,7 @@ router.get('/trie-search', validate(validation.trieSearch), candidatesCantroller
 router.post('/search', validate(validation.search), candidatesCantroller.search);
 router.get('', validate(validation.getById), candidatesCantroller.getById);
 router.post('/new', validate(validation.insert), candidatesCantroller.insert);
+router.get('/validate', validate(validation.validateEmail), candidatesCantroller.validate);
 router.patch('/edit', validate(validation.update), candidatesCantroller.update);
 router.get('/report', validate(validation.report), candidatesCantroller.report);
 router.get('/:id/history', validate(validation.getHistory), candidatesCantroller.getHistory);
