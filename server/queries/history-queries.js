@@ -1,5 +1,5 @@
 const getHistory = () =>
-  ` SELECT
+  `SELECT
       vacancy_change_id, candidate_change_id, hrm_feedback_id,
       ts_feedback_id, interview_id, general_history.change_date,
       vacancy_changes.user_id, users.first_name, users.second_name,
@@ -57,7 +57,11 @@ const getCandidatesNames = () =>
   FROM candidate_changes
   LEFT JOIN candidate ON candidate.id = candidate_id`;
 
+const getRecordsNumber = () =>
+  'SELECT COUNT(*) AS total FROM general_history';
+
 module.exports = {
   getHistory,
   getCandidatesNames,
+  getRecordsNumber,
 };

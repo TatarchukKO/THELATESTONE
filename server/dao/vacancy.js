@@ -190,7 +190,12 @@ const closeVacancy = (body, callback) => {
 };
 
 const getHistory = (vacancyId, callback) => {
-  connection.query(query.getHistory(vacancyId), callback);
+  async.parallel(
+    [
+      call => connection.query(query.getHistory(vacancyId), call),
+      call => connection.query(query.getRecordsNumber(), call),
+    ],
+    callback);
 };
 
 const getHiringList = (vacancyId, callback) => {

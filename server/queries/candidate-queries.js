@@ -352,6 +352,9 @@ function getHistory(id) {
   WHERE candidate_id = ${id}`;
 }
 
+const getRecordsNumber = () =>
+  'SELECT COUNT(*) AS total FROM candidate_changes';
+
 module.exports = {
   get,
   getById,
@@ -359,6 +362,7 @@ module.exports = {
   getSecondarySkills,
   getOtherSkills,
   getHistory,
+  getRecordsNumber,
   insert,
   insertEmails,
   insertSecSkills,

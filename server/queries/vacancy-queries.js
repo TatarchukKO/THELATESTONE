@@ -210,6 +210,9 @@ const getVacancyTotal = id =>
     LEFT JOIN vacacncy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
 
+const getRecordsNumber = () =>
+  'SELECT COUNT(*) AS total FROM vacancy_changes';
+
 module.exports = {
   getVacancies,
   getVacancy,
@@ -222,6 +225,7 @@ module.exports = {
   generalHistory,
   getHiringList,
   getVacancyTotal,
+  getRecordsNumber,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,

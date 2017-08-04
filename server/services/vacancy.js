@@ -131,9 +131,14 @@ const closeVacancy = (req, callback) => {
   model.closeVacancy(req, callback);
 };
 
+// const number = res[2][0][0].total;
+//     const names = utils.toCamel(res[1][0]);
+//     res = utils.toCamel(res[0][0]);
+
 const getHistory = (req, callback) => {
   model.getHistory(req.params.id, (err, res) => {
-    res = utils.toCamel(res);
+    const number = res[1][0][0].total;
+    res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
       const changesArray = [];
       Object.keys(item).forEach((key) => {
@@ -148,6 +153,7 @@ const getHistory = (req, callback) => {
       };
       return history;
     });
+    result.unshift(number);
     callback(err, result);
   });
 };

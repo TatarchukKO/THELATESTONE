@@ -41,6 +41,7 @@ const formCandidateName = (obj, names) => {
 
 const getHistory = (req, callback) => {
   model.getHistory(req, (error, res) => {
+    const number = res[2][0][0].total;
     const names = utils.toCamel(res[1][0]);
     res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
@@ -52,6 +53,7 @@ const getHistory = (req, callback) => {
       };
       return history;
     });
+    result.unshift(number);
     callback(error, result);
   });
 };

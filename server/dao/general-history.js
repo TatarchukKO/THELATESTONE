@@ -7,6 +7,7 @@ const getHistory = (req, callback) => {
     [
       call => connection.query(query.getHistory(), call),
       call => connection.query(query.getCandidatesNames(), call),
+      call => connection.query(query.getRecordsNumber(), call),
     ],
     callback);
 };
