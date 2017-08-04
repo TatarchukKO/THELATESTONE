@@ -344,7 +344,7 @@ function report(span = {}, filter = {}) {
 
 
 function getHistory(skip, capacity, candId) {
-  return `SELECT users.first_name, users.second_name, ru_first_name, ru_second_name,
+  return `SELECT users.first_name, users.second_name, change_date, ru_first_name, ru_second_name,
   eng_first_name, eng_second_name, emails, linkedin, skype, phone, city, primary_skill,
   exp_year, salary_wish, english_lvl, status, sec_skills
   FROM candidate_changes
