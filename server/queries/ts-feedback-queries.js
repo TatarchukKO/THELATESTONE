@@ -29,9 +29,9 @@ function getSecondarySkillsByTsFeedbackId(id) {
 }
 function insert(object) {
   return `INSERT INTO ts_feedback
-  (primary_skill_id, primary_skill_lvl, candidate_id, vacancy_id, user_id, interview_id)
+  (primary_skill_id, primary_skill_lvl, interview_id)
   VALUES ('${object.primary_skill_id}', '${object.primary_skill_lvl}',
-  '${object.candidate_id}', '${object.vacancy_id}', '${object.user_id}', '${object.interview_id}')`;
+  '${object.interview_id}')`;
 }
 function insertTsSecondarySkills(item, id) {
   return `INSERT INTO ts_secondary_skills
