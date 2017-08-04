@@ -11,7 +11,7 @@ function getById(req, res) {
 }
 
 function getByCandidateId(req, res) {
-  hrmFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
+  hrmFeedbackService.getByCandidateId(req.query.id, (error, result) => {
     if (error) {
       throw error;
     }

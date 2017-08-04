@@ -11,7 +11,7 @@ function getById(req, res) {
 }
 
 function getByCandidateId(req, res) {
-  tsFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
+  tsFeedbackService.getByCandidateId(req.query.id, (error, result) => {
     if (error) {
       throw error;
     }
