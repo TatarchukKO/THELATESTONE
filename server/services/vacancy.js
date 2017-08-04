@@ -4,11 +4,13 @@ const utils = require('../../utils');
 
 const getVacancies = (body, callback) => {
   body = utils.toSnake(body);
-  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+  const skip = body.skip || 0;
+  const capacity = body.capacity || 0;
   const filter = body;
-  delete filter.limit;
+  delete filter.skip;
+  delete filter.capacity;
   utils.clearFields(filter);
-  model.getVacancies(limit, filter, (error, result) => {
+  model.getVacancies(skip, capacity, filter, (error, result) => {
     callback(error, utils.toCamel(result));
   });
 };

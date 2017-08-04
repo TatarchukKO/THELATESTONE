@@ -6,6 +6,7 @@ const getHistory = (req, callback) => {
   async.parallel(
     [
       call => connection.query(query.getHistory(), call),
+      call => connection.query(query.getCandidatesNames(), call),
     ],
     callback);
 };

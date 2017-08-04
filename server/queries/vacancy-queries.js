@@ -2,7 +2,7 @@
 
 const capacity = 5;
 
-const getVacancies = (limit, filter) => {
+const getVacancies = (skip, cap, filter) => {
   const query = [];
   let sent = 'WHERE ';
   let j = 0;
@@ -47,7 +47,7 @@ const getVacancies = (limit, filter) => {
   ${query.join('')}
   GROUP BY vacancy.id
   ORDER BY request_date DESC
-  LIMIT ${limit}, ${capacity}`;
+  LIMIT ${skip}, ${cap}`;
 };
 
 /** Single Vacancy */
@@ -167,6 +167,7 @@ const getAssigned = (skip, vacancyId) =>
     LEFT JOIN skills ON candidate.primary_skill = skills.id
     LEFT JOIN candidate_status ON candidate.status = candidate_status.id 
     LEFT JOIN candidate_emails ON candidate.id = candidate_emails.candidate_id
+    GROUP BY candidate.id
     ORDER BY date DESC`;
 
 const getHiringList = vacancyId =>

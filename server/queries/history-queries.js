@@ -49,13 +49,13 @@ const getHistory = () =>
       LEFT JOIN users ON users.id = user_id
       LEFT JOIN vacancy ON vacancy.id = vacancy_id`;
 
-const getCandidateNames = id =>
-  `SELECT candidate.ru_first_name, candidate.ru_second_name,
+const getCandidatesNames = () =>
+  `SELECT candidate_id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name
-  FROM candidate
-  WHERE candidate.id = ${id} `;
+  FROM candidate_changes
+  LEFT JOIN candidate ON candidate.id = candidate_id`;
 
 module.exports = {
   getHistory,
-  getCandidateNames,
+  getCandidatesNames,
 };
