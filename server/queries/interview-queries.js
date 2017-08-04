@@ -32,7 +32,7 @@ function getByUserId(id) {
   ORDER BY i.date DESC`;
 }
 function getByCandidateId(id) {
-  return `SELECT i.candidate_id, c.ru_first_name,
+  return `SELECT i.id, i.candidate_id, c.ru_first_name,
   c.ru_second_name, c.eng_first_name, c.eng_second_name,
   i.vacancy_id, v.name, u.type, u.first_name,
   u.second_name, i.date, i.done
