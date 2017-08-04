@@ -7,7 +7,7 @@ const getById = {
     allowUnknownParams: false,
   },
   query: {
-    feedbackid: Joi.number().integer().required(),
+    id: Joi.number().integer().required(),
   },
 };
 

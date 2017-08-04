@@ -6,20 +6,25 @@ function getById(id, callback) {
     if (err) {
       throw err;
     }
-    const result = utils.toCamel(res);
-    callback(err, utils.namesEditor.editArr(result));
+    const result = utils.namesEditor.edit(utils.toCamel(res)[0]);
+    callback(err, utils.clearFields(result));
   });
 }
+
 function getByCandidateId(id, callback) {
   hrmFeedbackDao.getByCandidateId(id, (err, res) => {
     if (err) {
       throw err;
     }
-    const result = utils.toCamel(res);
-    callback(err, utils.namesEditor.editArr(result));
+    const result = utils.namesEditor.editArr(utils.toCamel(res));
+    callback(err, utils.clearFields(result));
   });
 }
+
 function insert(object, callback) {
+  if (!object.other.trim()) {
+    delete object.other;
+  }
   hrmFeedbackDao.insert(utils.toSnake(object), callback);
 }
 
