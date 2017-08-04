@@ -29,12 +29,7 @@ app.use(cors({
 }));
 
 app.use('/api/authentication/', authentication.router);
-app.use('/api/', (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).send();
-  }
-  next();
-});
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,12 +44,7 @@ app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
 
-app.use('/api/', (req, res, next) => {
-  if (req.user.type === 'TECH') {
-    return res.status(403).send();
-  }
-  next();
-});
+
 
 app.use('/api/users', users);
 app.use('/api/meta-data/', metaData);
