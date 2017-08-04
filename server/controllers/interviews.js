@@ -19,7 +19,7 @@ function getByUserId(req, res) {
   });
 }
 function getByCandidateId(req, res) {
-  interviewService.getByCandidateId(req.query.candidateid, (error, result) => {
+  interviewService.getByCandidateId(req.query.id, (error, result) => {
     if (error) {
       throw error;
     }
