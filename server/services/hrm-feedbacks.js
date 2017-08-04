@@ -22,7 +22,7 @@ function getByCandidateId(id, callback) {
 }
 
 function insert(object, callback) {
-  if (!object.other.trim()) {
+  if (object.other && !object.other.trim()) {
     delete object.other;
   }
   hrmFeedbackDao.insert(utils.toSnake(object), callback);
