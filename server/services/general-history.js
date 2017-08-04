@@ -1,4 +1,3 @@
-
 const model = require('../dao/general-history');
 const utils = require('../../utils');
 
@@ -18,27 +17,11 @@ const formAction = (obj) => {
   if (obj.interviewId) {
     return 'Interview was assigned/closed';
   }
-  return 'Nothing';
+  return 'nothing';
 };
 
-const formCandidateName = (obj, names) => {
-  return 'Andrew';
-};
-
-/*
-
-"candidateId": 10,
-"ruFirstName": null,
-"ruSecondName": null,
-"engFirstName": "Andrew",
-"engSecondName": "Belous"
-
-*/
-
-
-/*
-
-"vacancyChangeId": 14,
+/**
+ * "vacancyChangeId": 14,
 "candidateChangeId": null,
 "hrmFeedbackId": null,
 "tsFeedbackId": null,
@@ -48,14 +31,22 @@ const formCandidateName = (obj, names) => {
 "firstName": "Vasya",
 "secondName": "Pupkin",
 "vacancyId": 28,
-"name": "Onliner.by"
-
-*/
+"name": "Onliner.by" */
 
 
 const getHistory = (req, callback) => {
   model.getHistory(req, (error, res) => {
-    callback(error, res);
+    res = utils.toCamel(res);
+    const result = res.map((item) => {
+      const history = {
+        subject: `${item.firstName} ${item.secondName}`,
+        object: item.name,
+        date: item.changeDate,
+        changes: formAction(item),
+      };
+      return history;
+    });
+    callback(error, result);
   });
 };
 
