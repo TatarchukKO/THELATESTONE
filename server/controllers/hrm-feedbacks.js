@@ -9,6 +9,7 @@ function getById(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function getByCandidateId(req, res) {
   hrmFeedbackService.getByCandidateId(req.query.candidateid, (error, result) => {
     if (error) {
@@ -17,6 +18,7 @@ function getByCandidateId(req, res) {
     return res.status(200).send(result);
   });
 }
+
 function insert(req, res) {
   const obj = req.body;
   obj.userId = req.user.id;

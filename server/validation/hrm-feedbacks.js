@@ -40,11 +40,6 @@ const insert = {
     candidateId: Joi.number().integer().required(),
     interviewId: Joi.number().integer().required(),
   },
-  query: {
-    user: {
-      id: Joi.number().integer().required(),
-    },
-  },
 };
 
 module.exports = {
