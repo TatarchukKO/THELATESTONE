@@ -131,9 +131,6 @@ const closeVacancy = (req, callback) => {
   model.closeVacancy(req, callback);
 };
 
-// const number = res[2][0][0].total;
-//     const names = utils.toCamel(res[1][0]);
-//     res = utils.toCamel(res[0][0]);
 
 const getHistory = (req, callback) => {
   model.getHistory(req.params.id, (err, res) => {

@@ -1,6 +1,8 @@
 const model = require('../dao/general-history');
 const utils = require('../../utils');
 
+const defaultCapacity = 10;
+
 const formAction = (obj) => {
   if (obj.vacancyChangeId) {
     return 'Vacancy was changed';
@@ -40,7 +42,9 @@ const formCandidateName = (obj, names) => {
 
 
 const getHistory = (req, callback) => {
-  model.getHistory(req, (error, res) => {
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  model.getHistory(skip, capacity, (error, res) => {
     const number = res[2][0][0].total;
     const names = utils.toCamel(res[1][0]);
     res = utils.toCamel(res[0][0]);
