@@ -16,8 +16,8 @@ function getByCandidateId(id, callback) {
     if (err) {
       throw err;
     }
-    const result = utils.toCamel(res);
-    callback(err, utils.namesEditor.editArr(result));
+    const result = utils.namesEditor.editArr(utils.toCamel(res));
+    callback(err, utils.clearFields(result));
   });
 }
 

@@ -15,8 +15,8 @@ function getById(id) {
 
 function getByCandidateId(id) {
   return `SELECT t_f.id, u.first_name, u.second_name,
-  i.date, v.name, s.skill_name, c.ru_first_name,
-  c.ru_second_name, c.eng_first_name, c.eng_second_name, g.change_date AS date
+  i.date, v.name, s.skill_name, 
+  g.change_date AS date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
   LEFT JOIN users u ON i.user_id = u.id
