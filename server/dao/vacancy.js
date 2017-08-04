@@ -188,10 +188,10 @@ const closeVacancy = (body, callback) => {
   });
 };
 
-const getHistory = (vacancyId, callback) => {
+const getHistory = (skip, capacity, vacancyId, callback) => {
   async.parallel(
     [
-      call => connection.query(query.getHistory(vacancyId), call),
+      call => connection.query(query.getHistory(skip, capacity, vacancyId), call),
       call => connection.query(query.getRecordsNumber(), call),
     ],
     callback);

@@ -135,7 +135,10 @@ const closeVacancy = (req, callback) => {
 
 
 const getHistory = (req, callback) => {
-  model.getHistory(req.params.id, (err, res) => {
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const vacancyId = req.params.id;
+  model.getHistory(skip, capacity, vacancyId, (err, res) => {
     const number = res[1][0][0].total;
     res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {

@@ -5,6 +5,8 @@ const json2xls = require('json2xls');
 const candidatesModel = require('../dao/candidates');
 const utils = require('../../utils');
 
+const defaultCapacity = 10;
+
 function mapRes(error, result, callback) {
   if (result) {
     result = utils.namesEditor.editArr(utils.toCamel(result));
@@ -197,7 +199,10 @@ function report(paramsCamel, callback) {
 
 
 const getHistory = (req, callback) => {
-  candidatesModel.getHistory(req.params.id, (err, res) => {
+  const skip = req.query.skip || 0;
+  const capacity = req.query.capacity || defaultCapacity;
+  const candId = req.params.id;
+  candidatesModel.getHistory(skip, capacity, candId, (err, res) => {
     const number = res[1][0][0].total;
     res = utils.toCamel(res[0][0]);
     const result = res.map((item) => {
