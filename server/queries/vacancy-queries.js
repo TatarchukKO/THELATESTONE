@@ -1,6 +1,6 @@
 /** All Vacancies */
 
-const formQuery = filter => {
+const formQuery = (filter) => {
   const query = [];
   let sent = 'WHERE ';
   let j = 0;
@@ -38,19 +38,18 @@ const formQuery = filter => {
   }
 };
 
-const getVacancies = (skip, capacity, filter) => {
-  return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
-  skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
-  request_date 
-  FROM vacancy 
-  LEFT JOIN skills ON vacancy.primary_skill = skills.id
-  LEFT JOIN location ON vacancy.city = location.id
-  LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
-  ${formQuery(filter)}
-  GROUP BY vacancy.id
-  ORDER BY request_date DESC
-  LIMIT ${skip}, ${capacity}`;
-};
+const getVacancies = (skip, capacity, filter) => 
+  `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
+    skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
+    request_date 
+    FROM vacancy 
+    LEFT JOIN skills ON vacancy.primary_skill = skills.id
+    LEFT JOIN location ON vacancy.city = location.id
+    LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
+    ${formQuery(filter)}
+    GROUP BY vacancy.id
+    ORDER BY request_date DESC
+    LIMIT ${skip}, ${capacity}`;
 
 /** Single Vacancy */
 
@@ -207,6 +206,7 @@ const getHistory = (skip, capacity, vacancyId) =>
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
     WHERE vacancy_id = ${vacancyId}
+    ORDER BY change_date DESC
     LIMIT ${skip}, ${capacity}`;
 
 const getVacancyTotal = id =>
@@ -214,9 +214,6 @@ const getVacancyTotal = id =>
     FROM vacancy_secondary_skills
     LEFT JOIN vacacncy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
-
-const getRecordsNumber = () =>
-  'SELECT COUNT(*) AS total FROM vacancy_changes';
 
 module.exports = {
   getVacancies,
@@ -230,7 +227,6 @@ module.exports = {
   generalHistory,
   getHiringList,
   getVacancyTotal,
-  getRecordsNumber,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,

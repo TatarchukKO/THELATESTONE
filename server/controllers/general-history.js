@@ -2,7 +2,10 @@ const services = require('../services/general-history');
 
 const getHistory = (req, res) => {
   services.getHistory(req, (error, result) => {
-    if (error) throw error;
+    if (error) {
+      res.status(500).send();
+      throw error;
+    }
     return res.status(200).send(result);
   });
 };

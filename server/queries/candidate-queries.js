@@ -350,11 +350,10 @@ function getHistory(skip, capacity, candId) {
   FROM candidate_changes
   LEFT JOIN users ON users.id = candidate_changes.user_id
   WHERE candidate_id = ${candId}
+  ORDER BY change_date DESC
   LIMIT ${skip}, ${capacity}`;
 }
 
-const getRecordsNumber = () =>
-  'SELECT COUNT(*) AS total FROM candidate_changes';
 
 module.exports = {
   get,
@@ -363,7 +362,6 @@ module.exports = {
   getSecondarySkills,
   getOtherSkills,
   getHistory,
-  getRecordsNumber,
   insert,
   insertEmails,
   insertSecSkills,
