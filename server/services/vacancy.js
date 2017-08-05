@@ -140,9 +140,11 @@ const getHistory = (req, callback) => {
   const vacancyId = req.params.id;
   model.getHistory(skip, capacity, vacancyId, (err, res) => {
     let number = 0;
+    console.log(res);
     res = utils.toCamel(res);
     const result = [];
     res.map((item) => {
+      console.log(item);
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
           result.push({
