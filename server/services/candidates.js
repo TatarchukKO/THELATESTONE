@@ -198,31 +198,31 @@ function report(paramsCamel, callback) {
 }
 
 
-const getHistory = (req, callback) => {
+function getHistory(req, callback) {
   const skip = req.query.skip || 0;
   const capacity = req.query.capacity || defaultCapacity;
   const candId = req.params.id;
   candidatesModel.getHistory(skip, capacity, candId, (err, res) => {
-    const number = res[1][0][0].total;
-    res = utils.toCamel(res[0][0]);
-    const result = res.map((item) => {
-      const changesArray = [];
+    let number = 0;
+    res = utils.toCamel(res);
+    const result = [];
+    res.map((item) => {
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
-          changesArray.push(`${key}`);
+          result.push({
+            user: `${item.firstName} ${item.secondName}`,
+            cahngeDate: item.changeDate,
+            change: utils.formChange(`${key}`),
+          });
+          number += 1;
         }
       });
-      const history = {
-        user: `${item.firstName} ${item.secondName}`,
-        cahngeDate: item.changeDate,
-        changes: changesArray,
-      };
-      return history;
+      return item;
     });
     result.unshift(number);
     callback(err, result);
   });
-};
+}
 
 module.exports = {
   get,

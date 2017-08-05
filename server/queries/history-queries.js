@@ -52,6 +52,7 @@ const getHistory = (skip, capacity) =>
           LEFT JOIN users ON users.id = user_id
           LEFT JOIN vacancy ON vacancy.id = vacancy_id
       ) as smth
+      ORDER BY change_date DESC
       LIMIT ${skip}, ${capacity}`;
 
 const getCandidatesNames = () =>

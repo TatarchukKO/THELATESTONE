@@ -206,6 +206,7 @@ const getHistory = (skip, capacity, vacancyId) =>
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
     WHERE vacancy_id = ${vacancyId}
+    ORDER BY change_date DESC
     LIMIT ${skip}, ${capacity}`;
 
 const getVacancyTotal = id =>
@@ -213,9 +214,6 @@ const getVacancyTotal = id =>
     FROM vacancy_secondary_skills
     LEFT JOIN vacacncy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
-
-const getRecordsNumber = () =>
-  'SELECT COUNT(*) AS total FROM vacancy_changes';
 
 module.exports = {
   getVacancies,
@@ -229,7 +227,6 @@ module.exports = {
   generalHistory,
   getHiringList,
   getVacancyTotal,
-  getRecordsNumber,
   commitChanges,
   updateVacancy,
   deleteOtherSkills,

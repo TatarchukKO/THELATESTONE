@@ -193,14 +193,8 @@ function report(span, filter, callback) {
 }
 
 function getHistory(skip, capacity, candId, callback) {
-  async.parallel(
-    [
-      call => connection.query(query.getHistory(skip, capacity, candId), call),
-      call => connection.query(query.getRecordsNumber(), call),
-    ],
-    callback);
+  connection.query(query.getHistory(skip, capacity, candId), callback);
 }
-
 
 module.exports = {
   get,

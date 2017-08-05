@@ -139,21 +139,21 @@ const getHistory = (req, callback) => {
   const capacity = req.query.capacity || defaultCapacity;
   const vacancyId = req.params.id;
   model.getHistory(skip, capacity, vacancyId, (err, res) => {
-    const number = res[1][0][0].total;
-    res = utils.toCamel(res[0][0]);
-    const result = res.map((item) => {
-      const changesArray = [];
+    let number = 0;
+    res = utils.toCamel(res);
+    const result = [];
+    res.map((item) => {
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
-          changesArray.push(`${key}`);
+          result.push({
+            user: `${item.firstName} ${item.secondName}`,
+            cahngeDate: new Date(item.changeDate),
+            change: utils.formChange(`${key}`),
+          });
+          number += 1;
         }
       });
-      const history = {
-        user: `${item.firstName} ${item.secondName}`,
-        cahngeDate: item.changeDate,
-        changes: changesArray,
-      };
-      return history;
+      return item;
     });
     result.unshift(number);
     callback(err, result);
