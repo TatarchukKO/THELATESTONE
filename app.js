@@ -52,7 +52,7 @@ app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(500).json(err);
+  res.status(err.status).json(err);
   next();
 });
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
