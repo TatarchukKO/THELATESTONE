@@ -1,7 +1,7 @@
 function getById(id) {
   return `SELECT t_f.id, u.first_name, u.second_name, v.name,
   i.date, s.skill_name, t_f.primary_skill_lvl, c.ru_first_name,
-  c.ru_second_name, c.eng_first_name, c.eng_second_name, g.change_date AS date
+  c.ru_second_name, c.eng_first_name, c.eng_second_name, t_f.other, g.change_date AS date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
@@ -15,7 +15,7 @@ function getById(id) {
 
 function getByCandidateId(id) {
   return `SELECT t_f.id, u.first_name, u.second_name,
-  i.date, v.name, s.skill_name, 
+  i.date, v.name, s.skill_name,
   g.change_date AS date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
@@ -36,9 +36,9 @@ function getSecondarySkillsByTsFeedbackId(id) {
 
 function insert(object) {
   return `INSERT INTO ts_feedback
-  (primary_skill_id, primary_skill_lvl, interview_id)
+  (primary_skill_id, primary_skill_lvl, interview_id, other)
   VALUES ('${object.primary_skill_id}', '${object.primary_skill_lvl}',
-  '${object.interview_id}')`;
+  '${object.interview_id}', '${object.other}')`;
 }
 
 function insertTsSecondarySkills(item, id) {
