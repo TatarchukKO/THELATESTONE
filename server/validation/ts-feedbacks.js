@@ -31,8 +31,6 @@ const insert = {
   body: {
     primarySkillId: Joi.number().integer().required(),
     primarySkillLvl: Joi.number().integer().required(),
-    candidateId: Joi.number().integer().required(),
-    vacancyId: Joi.number().integer().required(),
     interviewId: Joi.number().integer().required(),
     secondarySkills: Joi.array().required(),
   },

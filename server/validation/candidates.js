@@ -58,10 +58,7 @@ const insert = {
       .required(),
     expYear: Joi.date().required(),
     emails: Joi.array().items(Joi.string().email()).unique().required(),
-    secSkills: Joi.array().items(Joi.object().keys({
-      skillName: Joi.number().integer().greater(0).less(32),
-      lvl: Joi.number().integer().less(11).greater(0),
-    })).unique(),
+    secSkills: Joi.array().items(Joi.number().integer().less(32).greater(0)).unique(),
     otherSkills: Joi.array().items(Joi.number().integer().greater(0).less(7)).unique(),
     linkedin: Joi.string(),
     phone: Joi.string(),
@@ -102,10 +99,7 @@ const update = {
     englishLvl: Joi.number().integer().less(6).greater(0),
     expYear: Joi.date(),
     emails: Joi.array().items(Joi.string().email()),
-    secSkills: Joi.array().items(Joi.object().keys({
-      skillName: Joi.number().integer().greater(0).less(32),
-      lvl: Joi.number().integer().less(11).greater(0),
-    })).unique(),
+    secSkills: Joi.array().items(Joi.number().integer().less(32).greater(0)).unique(),
     otherSkills: Joi.array().items(Joi.number().integer().greater(0).less(7)).unique(),
     linkedin: Joi.string(),
     phone: Joi.string(),

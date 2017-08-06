@@ -34,15 +34,28 @@ app.use('/api/authentication/', authentication.router);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/api/', (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).end();
+  }
+  next();
+});
+
 app.get('/api/user', (req, res) => {
   const user = req.user;
-  delete user.id;
   delete user.login;
   res.status(200).send(utils.toCamel(user));
 });
 app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
+
+app.use('/api/', (req, res, next) => {
+  if (req.user.type === 'TECH') {
+    return res.status(403).end();
+  }
+  next();
+});
 
 app.use('/api/users', users);
 app.use('/api/meta-data/', metaData);
@@ -52,7 +65,7 @@ app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(500).json(err);
+  res.status(err.status).json(err);
   next();
 });
 process.on('uncaughtException', error => console.log(`Caught exception: ${error.stack}`));
