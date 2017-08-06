@@ -6,6 +6,9 @@ function getById(id, callback) {
     if (err) {
       throw err;
     }
+    if (!res) {
+      return callback();
+    }
     const result = utils.namesEditor.edit(utils.toCamel(res)[0]);
     callback(err, utils.clearFields(result));
   });
