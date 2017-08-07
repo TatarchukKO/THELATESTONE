@@ -97,21 +97,25 @@ function update(id, candidateCamel, user, callback) {
   const oSkills = candidate.other_skills || [];
   const item = candidate;
   const firstName = utils.translit(item.eng_first_name);
-  if (firstName !== item.eng_first_name) {
-    item.ru_first_name = item.eng_first_name;
-    item.ru_second_name = item.eng_second_name;
-    item.eng_first_name = firstName;
-    item.eng_second_name = utils.translit(item.eng_second_name);
+  let meta = {};
+  if (firstName) {
+    if (firstName !== item.eng_first_name) {
+      item.ru_first_name = item.eng_first_name;
+      item.ru_second_name = item.eng_second_name;
+      item.eng_first_name = firstName;
+      item.eng_second_name = utils.translit(item.eng_second_name);
+    }
+    meta = {
+      first: metaphone(item.eng_first_name),
+      second: metaphone(item.eng_second_name),
+      candidate_id: id,
+    };
   }
-  const meta = {
-    first: metaphone(item.eng_first_name),
-    second: metaphone(item.eng_second_name),
-    candidate_id: id,
-  };
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
   delete item.change_date;
+  console.log(item);
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
