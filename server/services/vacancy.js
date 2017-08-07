@@ -28,8 +28,8 @@ function getVacancy(id, callback) {
 
 function formConfig(req) {
   const config = {
-    skip: req.query.skip || 0,
-    capacity: req.query.capacity || defaultCapacity,
+    skip: Number(req.query.skip) || 0,
+    capacity: Number(req.query.capacity) || defaultCapacity,
     id: req.params.id,
   };
   return config;
@@ -132,8 +132,9 @@ function getHistory(req, callback) {
       });
       return item;
     });
-    result = result.splice(config.skip, config.capacity);
-    callback(err, result.unshift(number));
+    result = result.slice(config.skip, config.skip + config.capacity);
+    result.unshift(number);
+    callback(err, result);
   });
 }
 

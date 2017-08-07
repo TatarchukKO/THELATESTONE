@@ -89,7 +89,7 @@ function trieSearch(req, res) {
 function getHistory(req, res) {
   candidatesService.getHistory(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
