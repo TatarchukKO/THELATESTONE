@@ -87,6 +87,7 @@ const updateVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date(),
     expYear: Joi.date(),
+    description: Joi.string(),
   },
 };
 

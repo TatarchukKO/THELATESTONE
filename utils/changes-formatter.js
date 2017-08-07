@@ -1,63 +1,54 @@
 const formChange = (key) => {
-  if (key === 'name') {
-    return 'Name was changed';
-  }
-  if (key === 'requestDate') {
-    return 'Request date was changed';
-  }
-  if (key === 'startDate') {
-    return 'Start date was changed';
-  }
-  if (key === 'status') {
-    return 'Status was changed';
-  }
-  if (key === 'primarySkill') {
-    return 'Primary skill was changed';
-  }
-  if (key === 'otherSkills') {
-    return 'Other skills were changed';
-  }
-  if (key === 'secondarySkills') {
-    return 'Secondary skills were changed';
-  }
-  if (key === 'secSkills') {
-    return 'Secondary skills were changed';
-  }
-  if (key === 'city') {
-    return 'City was changed';
-  }
-  if (key === 'expYear') {
-    return 'Exp year was changed';
-  }
-  if (key === 'ruFirstName') {
-    return 'First name (russian) was changed';
-  }
-  if (key === 'ruSecondName') {
-    return 'Second name (rus) was changed';
-  }
-  if (key === 'engFirstName') {
-    return 'First name (eng) was changed';
-  }
-  if (key === 'engSecondName') {
-    return 'Second name (eng) was changed';
-  }
-  if (key === 'emails') {
-    return 'Emails were changed';
-  }
-  if (key === 'linkedin') {
-    return 'Linkedin was changed';
-  }
-  if (key === 'skype') {
-    return 'Skype was changed';
-  }
-  if (key === 'phone') {
-    return 'Phone was changed';
-  }
-  if (key === 'salaryWish') {
-    return 'Salary wish was changed';
-  }
-  if (key === 'english_lvl') {
-    return 'English lvl was changed';
+  switch (key) {
+    case 'name':
+      return 'Name was changed';
+    case 'requestDate':
+      return 'Request date was changed';
+    case 'startDate':
+      return 'Start date was changed';
+
+    case 'status' :
+      return 'Status was changed';
+    case 'primarySkill':
+      return 'Primary skill was changed';
+    case 'otherSkills':
+      return 'Other skills were changed';
+    case 'secondarySkills':
+      return 'Secondary skills were changed';
+    case 'secSkills':
+      return 'Secondary skills were changed';
+
+    case 'city':
+      return 'City was changed';
+    case 'expYear':
+      return 'Exp year was changed';
+    case 'description':
+      return 'Description was changed';
+
+    case 'ruFirstName':
+      return 'First name (russian) was changed';
+    case 'ruSecondName':
+      return 'Second name (rus) was changed';
+    case 'engFirstName':
+      return 'First name (eng) was changed';
+    case 'engSecondName':
+      return 'Second name (eng) was changed';
+
+    case 'emails':
+      return 'Emails were changed';
+    case 'linkedin':
+      return 'Linkedin was changed';
+    case 'skype':
+      return 'Skype was changed';
+
+    case 'phone':
+      return 'Phone was changed';
+    case 'salaryWish':
+      return 'Salary wish was changed';
+    case 'english_lvl':
+      return 'English lvl was changed';
+    default:
+      return 'Nothing';
   }
 };
 
