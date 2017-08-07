@@ -44,7 +44,7 @@ function clearSkills(obj) {
 
 function updateVacancy(id, req, user, callback) {
   req = utils.toSnake(req);
-  const config = {};
+  let config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
@@ -62,13 +62,7 @@ function updateVacancy(id, req, user, callback) {
   changes.vacancy_id = id;
   changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
-
-  if (req.start_date) {
-    config.start_date = utils.namesEditor.formatDate(new Date(req.start_date));
-  }
-  if (req.exp_year) {
-    config.exp_year = utils.namesEditor.formatDate(new Date(req.exp_year));
-  }
+  config = utils.dateFormatter.format(utils.toSnake(config));
 
   model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 }
