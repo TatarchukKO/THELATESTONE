@@ -18,6 +18,13 @@ function getVacancy(id, callback) {
     callback);
 }
 
+function updateVacancy(id, vacancy, call) {
+  if (Object.keys(vacancy).length !== 0) {
+    return connection.query(query.update(id), vacancy, call);
+  }
+  return call(null, null);
+}
+
 function updateSecondarySkills(secSkills, id, call) {
   if (secSkills) {
     connection.query(query.deleteSecondarySkills(id), (err) => {
@@ -50,42 +57,35 @@ function updateOtherSkills(otherSkills, id, call) {
   }
 }
 
-function updateVacancy(id, config, changes, secSkills, otherSkills, callback) {
-  console.log(config);
+function update(id, config, changes, secSkills, otherSkills, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
-    connection.query(query.updateVacancy(id), config, (error) => {
-      if (error) {
-        return connection.rollback(() => {
-          throw error;
-        });
-      }
-      async.parallel(
-        [
-          call => updateSecondarySkills(secSkills, id, call),
-          call => updateOtherSkills(otherSkills, id, call),
-          call => connection.query(query.commitChanges(), changes, (err, res) =>
-          connection.query(query.generalHistory(res.insertId), call)),
-        ],
-        (parError, result) => {
-          if (parError) {
+    async.parallel(
+      [
+        call => updateVacancy(id, config, call),
+        call => updateSecondarySkills(secSkills, id, call),
+        call => updateOtherSkills(otherSkills, id, call),
+        call => connection.query(query.commitChanges(), changes, (err, res) =>
+        connection.query(query.generalHistory(res.insertId), call)),
+      ],
+      (parError, result) => {
+        if (parError) {
+          return connection.rollback(() => {
+            throw parError;
+          });
+        }
+        connection.commit((commitError) => {
+          if (commitError) {
             return connection.rollback(() => {
-              throw parError;
+              throw commitError;
             });
           }
-          connection.commit((commitError) => {
-            if (commitError) {
-              return connection.rollback(() => {
-                throw commitError;
-              });
-            }
-            callback(error, result);
-            return console.log('Commited');
-          });
+          callback(parError, result);
+          return console.log('Update transaction commited');
         });
-    });
+      });
   });
 }
 
@@ -208,7 +208,7 @@ module.exports = {
   getAssigned,
   getHistory,
   getHiringList,
-  updateVacancy,
+  update,
   addVacancy,
   closeVacancy,
 };

@@ -61,7 +61,7 @@ const addVacancy = {
   },
 };
 
-const updateVacancy = {
+const update = {
   options: {
     allowUnknownBody: false,
     allowUnknownQuery: false,
@@ -168,7 +168,7 @@ module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
-  updateVacancy,
+  update,
   getCandidates,
   getAssigned,
   getHistory,

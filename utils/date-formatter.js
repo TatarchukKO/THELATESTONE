@@ -18,7 +18,7 @@ function format(object) {
     tmp.change_date = dateFormat(tmp.change_date, 'yyyy-mm-dd HH:MM:ss');
   }
   if (tmp.start_date) {
-    tmp.change_date = dateFormat(tmp.start_date, 'yyyy-mm-dd HH:MM:ss');
+    tmp.start_date = dateFormat(tmp.start_date, 'yyyy-mm-dd HH:MM:ss');
   }
   return tmp;
 }
