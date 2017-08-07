@@ -3,7 +3,7 @@ const utils = require('../../utils');
 
 const defaultCapacity = 10;
 
-const getVacancies = (body, callback) => {
+function getVacancies(body, callback) {
   body = utils.toSnake(body);
   const skip = body.skip || 0;
   const capacity = body.capacity || 0;
@@ -14,9 +14,9 @@ const getVacancies = (body, callback) => {
   model.getVacancies(skip, capacity, filter, (error, result) => {
     callback(error, utils.toCamel(result));
   });
-};
+}
 
-const getVacancy = (id, callback) => {
+function getVacancy(id, callback) {
   model.getVacancy(id, (error, result) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
@@ -24,16 +24,25 @@ const getVacancy = (id, callback) => {
     finalResult.other_skills = vacancyInfo[2];
     callback(error, utils.toCamel(finalResult));
   });
-};
+}
 
-const clearSkills = (obj) => {
+function formConfig(req) {
+  const config = {
+    skip: req.query.skip || 0,
+    capacity: req.query.capacity || defaultCapacity,
+    id: req.params.id,
+  };
+  return config;
+}
+
+function clearSkills(obj) {
   const copy = obj;
   delete copy.secondary_skills;
   delete copy.other_skills;
   return copy;
-};
+}
 
-const updateVacancy = (id, req, user, callback) => {
+function updateVacancy(id, req, user, callback) {
   req = utils.toSnake(req);
   const config = {};
   const changes = {};
@@ -62,9 +71,9 @@ const updateVacancy = (id, req, user, callback) => {
   }
 
   model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
-};
+}
 
-const addVacancy = (req, callback) => {
+function addVacancy(req, callback) {
   req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
@@ -84,35 +93,29 @@ const addVacancy = (req, callback) => {
   vacancy.description = req.description;
 
   model.addVacancy(vacancy, secSkills, otherSkills, callback);
-};
+}
 
-const getCandidates = (req, callback) => {
-  const skip = req.query.skip || 0;
-  const capacity = req.query.capacity || defaultCapacity;
-  const vacancyId = req.params.id;
-  model.getCandidates(skip, capacity, vacancyId, (err, res) =>
+function getCandidates(req, callback) {
+  const config = formConfig(req);
+  model.getCandidates(config.skip, config.capacity, config.id, (err, res) =>
       utils.namesEditor.formatVacancy(err, res, callback));
-};
+}
 
-const getAssigned = (req, callback) => {
-  const skip = req.query.skip || 0;
-  const capacity = req.query.capacity || defaultCapacity;
-  const vacancyId = req.params.id;
-  model.getAssigned(skip, capacity, vacancyId, (err, res) =>
+function getAssigned(req, callback) {
+  const config = formConfig(req);
+  model.getAssigned(config.skip, config.capacity, config.id, (err, res) =>
       utils.namesEditor.formatVacancy(err, res, callback));
-};
+}
 
-const closeVacancy = (req, callback) => {
+function closeVacancy(req, callback) {
   req = utils.toSnake(req);
   model.closeVacancy(req, callback);
-};
+}
 
 
-const getHistory = (req, callback) => {
-  const skip = req.query.skip || 0;
-  const capacity = req.query.capacity || defaultCapacity;
-  const vacancyId = req.params.id;
-  model.getHistory(vacancyId, (err, res) => {
+function getHistory(req, callback) {
+  const config = formConfig(req);
+  model.getHistory(config.id, (err, res) => {
     let number = 0;
     res = utils.toCamel(res);
     let result = [];
@@ -129,19 +132,16 @@ const getHistory = (req, callback) => {
       });
       return item;
     });
-    result = result.splice(skip, capacity);
-    result.unshift(number);
-    callback(err, result);
+    result = result.splice(config.skip, config.capacity);
+    callback(err, result.unshift(number));
   });
-};
+}
 
-const getHiringList = (req, callback) => {
-  const skip = req.query.skip || 0;
-  const capacity = req.query.capacity || defaultCapacity;
-  const vacancyId = req.params.id;
-  model.getHiringList(skip, capacity, vacancyId, (err, res) =>
+function getHiringList(req, callback) {
+  const config = formConfig(req);
+  model.getHiringList(config.skip, config.capacity, config.id, (err, res) =>
       utils.namesEditor.formatVacancy(err, res, callback));
-};
+}
 
 module.exports = {
   getVacancies,
