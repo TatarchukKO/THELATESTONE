@@ -1,6 +1,7 @@
 const async = require('async');
 
 const query = require('../queries/vacancy-queries');
+const utils = require('../../utils');
 const connection = require('./connection').connection;
 
 const getVacancies = (skip, capacity, filter, callback) => {
@@ -51,7 +52,9 @@ const updateOtherSkills = (otherSkills, id, call) => {
 
 const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
+    if (transError) {
+      throw transError;
+    }
     connection.query(query.updateVacancy(id), config, (error) => {
       if (error) {
         return connection.rollback(() => {
@@ -102,7 +105,9 @@ const insertSecSkills = (secSkills, id, call) => {
 
 const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
+    if (transError) {
+      throw transError;
+    }
     connection.query(query.addVacancy(vacancy), (error, res) => {
       if (error) {
         return connection.rollback(() => {
@@ -136,10 +141,6 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
 };
 
 const getCandidates = (skip, capacity, vacancyId, callback) => {
-  // connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
-  //   console.log(res);
-  //   connection.query(query.getCandidates(skip, vacancyId, res), callback);
-  // });
   connection.query(query.getCandidates(skip, capacity, vacancyId), callback);
 };
 
@@ -153,9 +154,12 @@ const changeOtherCandidatesStatus = (candidatesArray, call) => {
 };
 
 const closeVacancy = (body, callback) => {
+  body = utils.toCamel(body);
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
-    connection.query(query.updateVacancy(body.v_id), { status: 8 }, (error) => {
+    if (transError) {
+      throw transError;
+    }
+    connection.query(query.updateVacancy(body.vacancyId), { status: 8 }, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
@@ -188,8 +192,8 @@ const closeVacancy = (body, callback) => {
   });
 };
 
-const getHistory = (skip, capacity, vacancyId, callback) => {
-  connection.query(query.getHistory(skip, capacity, vacancyId), callback);
+const getHistory = (vacancyId, callback) => {
+  connection.query(query.getHistory(vacancyId), callback);
 };
 
 const getHiringList = (skip, capacity, vacancyId, callback) => {

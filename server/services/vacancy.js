@@ -138,11 +138,11 @@ const getHistory = (req, callback) => {
   const skip = req.query.skip || 0;
   const capacity = req.query.capacity || defaultCapacity;
   const vacancyId = req.params.id;
-  model.getHistory(skip, capacity, vacancyId, (err, res) => {
+  model.getHistory(vacancyId, (err, res) => {
     let number = 0;
     console.log(res);
     res = utils.toCamel(res);
-    const result = [];
+    let result = [];
     res.map((item) => {
       console.log(item);
       Object.keys(item).forEach((key) => {
@@ -157,6 +157,7 @@ const getHistory = (req, callback) => {
       });
       return item;
     });
+    result = result.splice(skip, capacity);
     result.unshift(number);
     callback(err, result);
   });
