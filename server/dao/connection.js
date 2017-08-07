@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'mysql5.gear.host',
-  user: 'pickbrainsdb',
-  password: 'Ko09GB6-o1!o',
+  host: 'localhost',
+  user: 'root',
+  password: 'jhjkj87',
   database: 'pickbrainsdb',
   timezone: 'utc',
 });
