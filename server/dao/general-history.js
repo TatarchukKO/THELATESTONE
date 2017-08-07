@@ -2,8 +2,7 @@ const async = require('async');
 const query = require('../queries/history-queries');
 const connection = require('./connection').connection;
 
-const getHistory = (skip, capacity, callback) => {
-  console.log(skip + ' ' + capacity);
+function getHistory(skip, capacity, callback) {
   async.parallel(
     [
       call => connection.query(query.getHistory(skip, capacity), call),
@@ -11,7 +10,7 @@ const getHistory = (skip, capacity, callback) => {
       call => connection.query(query.getRecordsNumber(), call),
     ],
     callback);
-};
+}
 
 module.exports = {
   getHistory,

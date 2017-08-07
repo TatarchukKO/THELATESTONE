@@ -1,9 +1,13 @@
 function getById(id) {
-  return `SELECT u.first_name, u.second_name, v.name,
+  return `SELECT
+  u.first_name, u.second_name,
+  v.name,
+  e_l.lvl, 
   h_f.change_reason, h_f.ready_to_work, h_f.ready_to_travel,
-  h_f.motivation, e_l.lvl, h_f.salary_wish, h_f.other,
+  h_f.motivation, h_f.salary_wish, h_f.other,
   c.ru_first_name, c.ru_second_name,
-  c.eng_first_name, c.eng_second_name, g.change_date AS date
+  c.eng_first_name, c.eng_second_name,
+  g.change_date AS date
   FROM hrm_feedback h_f
   LEFT JOIN interview i ON i.id = h_f.interview_id
   LEFT JOIN vacancy v ON v.id = i.vacancy_id
@@ -16,8 +20,11 @@ function getById(id) {
 }
 
 function getByCandidateId(id) {
-  return `SELECT h_f.id, u.first_name, u.second_name,
-  i.date, v.name,
+  return `SELECT
+  h_f.id,
+  u.first_name, u.second_name,
+  i.date, 
+  v.name,
   g.change_date AS date
   FROM hrm_feedback h_f
   LEFT JOIN interview i ON i.id = h_f.interview_id

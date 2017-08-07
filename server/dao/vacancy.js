@@ -1,13 +1,14 @@
 const async = require('async');
 
 const query = require('../queries/vacancy-queries');
+const utils = require('../../utils');
 const connection = require('./connection').connection;
 
-const getVacancies = (skip, capacity, filter, callback) => {
+function getVacancies(skip, capacity, filter, callback) {
   connection.query(query.getVacancies(skip, capacity, filter), callback);
-};
+}
 
-const getVacancy = (id, callback) => {
+function getVacancy(id, callback) {
   async.parallel(
     [
       call => connection.query(query.getVacancy(id), call),
@@ -15,9 +16,9 @@ const getVacancy = (id, callback) => {
       call => connection.query(query.getOtherSkills(id), call),
     ],
     callback);
-};
+}
 
-const updateSecondarySkills = (secSkills, id, call) => {
+function updateSecondarySkills(secSkills, id, call) {
   if (secSkills) {
     connection.query(query.deleteSecondarySkills(id), (err) => {
       if (err) {
@@ -31,9 +32,9 @@ const updateSecondarySkills = (secSkills, id, call) => {
         call);
     });
   }
-};
+}
 
-const updateOtherSkills = (otherSkills, id, call) => {
+function updateOtherSkills(otherSkills, id, call) {
   if (otherSkills) {
     connection.query(query.deleteOtherSkills(id), (err) => {
       if (err) {
@@ -47,11 +48,13 @@ const updateOtherSkills = (otherSkills, id, call) => {
         call);
     });
   }
-};
+}
 
-const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) => {
+function updateVacancy(id, config, changes, secSkills, otherSkills, callback) {
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
+    if (transError) {
+      throw transError;
+    }
     connection.query(query.updateVacancy(id), config, (error) => {
       if (error) {
         return connection.rollback(() => {
@@ -83,26 +86,28 @@ const updateVacancy = (id, config, changes, secSkills, otherSkills, callback) =>
         });
     });
   });
-};
+}
 
 
-const insertOtherSkills = (otherSkills, id, call) => {
+function insertOtherSkills(otherSkills, id, call) {
   if (otherSkills) {
     async.parallel(otherSkills.map(val => eCall =>
           connection.query(query.insertOtherSkill(id, val), eCall)), call);
   }
-};
+}
 
-const insertSecSkills = (secSkills, id, call) => {
+function insertSecSkills(secSkills, id, call) {
   if (secSkills) {
     async.parallel(secSkills.map(val => eCall =>
           connection.query(query.insertSecSkill(id, val), eCall)), call);
   }
-};
+}
 
-const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
+function addVacancy(vacancy, secSkills, otherSkills, callback) {
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
+    if (transError) {
+      throw transError;
+    }
     connection.query(query.addVacancy(vacancy), (error, res) => {
       if (error) {
         return connection.rollback(() => {
@@ -133,29 +138,28 @@ const addVacancy = (vacancy, secSkills, otherSkills, callback) => {
         });
     });
   });
-};
+}
 
-const getCandidates = (skip, capacity, vacancyId, callback) => {
-  // connection.query(query.getVacancyTotal(vacancyId), (err, res) => {
-  //   console.log(res);
-  //   connection.query(query.getCandidates(skip, vacancyId, res), callback);
-  // });
+function getCandidates(skip, capacity, vacancyId, callback) {
   connection.query(query.getCandidates(skip, capacity, vacancyId), callback);
-};
+}
 
-const getAssigned = (skip, capacity, vacancyId, callback) => {
+function getAssigned(skip, capacity, vacancyId, callback) {
   connection.query(query.getAssigned(skip, capacity, vacancyId), callback);
-};
+}
 
-const changeOtherCandidatesStatus = (candidatesArray, call) => {
+function changeOtherCandidatesStatus(candidatesArray, call) {
   async.parallel(candidatesArray.map(val => eCall =>
       connection.query(query.changeOtherCandidatesStatus(val), eCall)), call);
-};
+}
 
-const closeVacancy = (body, callback) => {
+function closeVacancy(body, callback) {
+  body = utils.toCamel(body);
   connection.beginTransaction((transError) => {
-    if (transError) throw transError;
-    connection.query(query.updateVacancy(body.v_id), { status: 8 }, (error) => {
+    if (transError) {
+      throw transError;
+    }
+    connection.query(query.updateVacancy(body.vacancyId), { status: 8 }, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
@@ -186,15 +190,15 @@ const closeVacancy = (body, callback) => {
         });
     });
   });
-};
+}
 
-const getHistory = (skip, capacity, vacancyId, callback) => {
-  connection.query(query.getHistory(skip, capacity, vacancyId), callback);
-};
+function getHistory(vacancyId, callback) {
+  connection.query(query.getHistory(vacancyId), callback);
+}
 
-const getHiringList = (skip, capacity, vacancyId, callback) => {
+function getHiringList(skip, capacity, vacancyId, callback) {
   connection.query(query.getHiringList(skip, capacity, vacancyId), callback);
-};
+}
 
 module.exports = {
   getVacancies,

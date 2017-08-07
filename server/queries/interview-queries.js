@@ -7,9 +7,13 @@ function insert(object) {
 }
 
 function getEmailNotificationData(id) {
-  return `SELECT u.first_name, u.second_name,
-  u.login, u.type, i.date, v.name, s.skill_name,
-  c.eng_first_name, c.eng_second_name
+  return `SELECT
+  u.first_name, u.second_name,
+  c.eng_first_name, c.eng_second_name,
+  u.login, u.type,
+  i.date,
+  v.name,
+  s.skill_name
   FROM interview i
   LEFT JOIN vacancy v ON v.id = i.vacancy_id
   LEFT JOIN skills s ON v.primary_skill = s.id
@@ -25,8 +29,10 @@ function insertEventToGeneralHistory(id) {
 }
 
 function getByUserId(id) {
-  return `SELECT c.ru_first_name, c.ru_second_name,
-  c.eng_first_name, c.eng_second_name, i.date, 
+  return `SELECT
+  i.date, 
+  c.ru_first_name, c.ru_second_name,
+  c.eng_first_name, c.eng_second_name
   FROM interview i
   JOIN candidate c ON i.candidate_id = c.id
   JOIN users u ON i.user_id = u.id
@@ -36,8 +42,11 @@ function getByUserId(id) {
 }
 
 function getByCandidateId(id) {
-  return `SELECT i.id, i.vacancy_id, v.name, u.type, u.first_name,
-  u.second_name, i.date, i.done, i.user_id
+  return `SELECT
+  v.name,
+  i.id, i.vacancy_id,
+  i.date, i.done, i.user_id,
+  u.type, u.first_name, u.second_name
   FROM interview i
   JOIN candidate c ON i.candidate_id = c.id
   JOIN vacancy v ON i.vacancy_id = v.id
@@ -48,7 +57,7 @@ function getByCandidateId(id) {
 
 function getUserId(id) {
   return `SELECT i.user_id
-  from interview i
+  FROM interview i
   WHERE
   ${id} = i.id`;
 }

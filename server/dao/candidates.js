@@ -192,8 +192,8 @@ function report(span, filter, callback) {
   connection.query(query.report(span, filter), callback);
 }
 
-function getHistory(skip, capacity, candId, callback) {
-  connection.query(query.getHistory(skip, capacity, candId), callback);
+function getHistory(id, callback) {
+  connection.query(query.getHistory(id), callback);
 }
 
 module.exports = {

@@ -1,3 +1,5 @@
+const toCamel = require('convert-keys').toCamel;
+
 function isEng(obj) {
   if (obj.engFirstName || obj.engSecondName) {
     return true;
@@ -56,6 +58,36 @@ function mapNames(obj) {
   }
 }
 
+
+function formatVacancy(error, result, callback) {
+  const res = result.map((value) => {
+    const tmp = {};
+    if (value.ru_first_name) {
+      tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
+    } else {
+      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
+    }
+    tmp.email = value.email;
+    tmp.status = value.status;
+    tmp.city = value.city;
+    tmp.contact_date = value.contact_date;
+    tmp.skill_name = value.skill_name;
+    tmp.id = value.id;
+    tmp.total = value.total;
+    tmp.ideal = value.ideal;
+    tmp.primary_skill_lvl = value.primary_skill_lvl;
+    if (value.date) {
+      tmp.date = value.date;
+    }
+    return tmp;
+  });
+  callback(error, toCamel(res));
+}
+
+function formatDate(date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} 
+  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
 module.exports = {
   isEng,
   isRu,
@@ -63,4 +95,6 @@ module.exports = {
   mapNames,
   edit,
   editArr,
+  formatVacancy,
+  formatDate,
 };

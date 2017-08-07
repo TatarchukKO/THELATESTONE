@@ -87,6 +87,7 @@ const updateVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date(),
     expYear: Joi.date(),
+    description: Joi.string(),
   },
 };
 
@@ -127,8 +128,8 @@ const closeVacancy = {
     allowUnknownParams: false,
   },
   body: {
-    v_id: Joi.number().integer().greater(0).required(),
-    c_id: Joi.number().integer().greater(0).required(),
+    vacancyId: Joi.number().integer().greater(0).required(),
+    candidateId: Joi.number().integer().greater(0).required(),
   },
 };
 
