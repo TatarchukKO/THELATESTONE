@@ -136,6 +136,13 @@ function updateMeta(meta, call) {
   return call(null, null);
 }
 
+function updateCandidate(id, candidate, call) {
+  if (Object.keys(candidate).length !== 0) {
+    return connection.query(query.update(id), candidate, call);
+  }
+  return call(null, null);
+}
+
 function update(id, candidate, emails, secSkills, oSkills, changes, meta, callback) {
   console.log(candidate);
   connection.beginTransaction((transError) => {
@@ -143,7 +150,7 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
       throw transError;
     }
     async.parallel([
-      call => connection.query(query.update(id), candidate, call),
+      call => updateCandidate(id, candidate, call),
       call => deleteRuName(candidate.ru_first_name, id, call),
       call => updateEmails(emails, id, call),
       call => updateSecSkill(secSkills, id, call),
