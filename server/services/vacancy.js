@@ -28,8 +28,8 @@ function getVacancy(id, callback) {
 
 function formConfig(req) {
   const config = {
-    skip: req.query.skip || 0,
-    capacity: req.query.capacity || defaultCapacity,
+    skip: Number(req.query.skip) || 0,
+    capacity: Number(req.query.capacity) || defaultCapacity,
     id: req.params.id,
   };
   return config;
@@ -44,7 +44,7 @@ function clearSkills(obj) {
 
 function updateVacancy(id, req, user, callback) {
   req = utils.toSnake(req);
-  const config = {};
+  let config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
@@ -62,13 +62,7 @@ function updateVacancy(id, req, user, callback) {
   changes.vacancy_id = id;
   changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
-
-  if (req.start_date) {
-    config.start_date = utils.namesEditor.formatDate(new Date(req.start_date));
-  }
-  if (req.exp_year) {
-    config.exp_year = utils.namesEditor.formatDate(new Date(req.exp_year));
-  }
+  config = utils.dateFormatter.format(utils.toSnake(config));
 
   model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
 }
@@ -132,8 +126,9 @@ function getHistory(req, callback) {
       });
       return item;
     });
-    result = result.splice(config.skip, config.capacity);
-    callback(err, result.unshift(number));
+    result = result.slice(config.skip, config.skip + config.capacity);
+    result.unshift(number);
+    callback(err, result);
   });
 }
 

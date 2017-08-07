@@ -45,8 +45,9 @@ const formChange = (key) => {
       return 'Phone was changed';
     case 'salaryWish':
       return 'Salary wish was changed';
-    case 'english_lvl':
+    case 'englishLvl':
       return 'English lvl was changed';
+
     default:
       return 'Nothing';
   }
