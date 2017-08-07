@@ -1,36 +1,36 @@
 function get(skip = 0, amount = 14, filter = {}) {
   const query = [];
   let sent = 'WHERE ';
-  let j = 0;
+  let index = 0;
   Object.keys(filter).forEach((item, i) => {
     if (i >= 1) {
       sent = ' AND ';
     }
     if (item === 'salary_wish') {
       if (filter[item][0]) {
-        query[i + j] = `${sent}candidate.${item} >= ${filter[item][0]}`;
+        query[i + index] = `${sent}candidate.${item} >= ${filter[item][0]}`;
         if (filter[item][1]) {
-          j += 1;
-          query[i + j] = ` AND candidate.${item} <= ${filter[item][1]}`;
+          index += 1;
+          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
         }
       }
       return;
     }
     if (item === 'exp_year') {
-      query[i + j] = `${sent}candidate.${item} <= "${filter[item]}"`;
+      query[i + index] = `${sent}candidate.${item} <= "${filter[item]}"`;
       return;
     }
-    query[i + j] = `${sent}candidate.${item} IN (`;
+    query[i + index] = `${sent}candidate.${item} IN (`;
     filter[item].forEach((val, l, arr) => {
-      j += 1;
+      index += 1;
       if (l !== arr.length - 1) {
-        query[i + j] = `"${val}",`;
+        query[i + index] = `"${val}",`;
         return;
       }
-      query[i + j] = `"${val}"`;
+      query[i + index] = `"${val}"`;
     });
-    j += 1;
-    query[i + j] = ')';
+    index += 1;
+    query[i + index] = ')';
   });
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
@@ -143,16 +143,8 @@ function generalHistory(id) {
     VALUES (${id});`;
 }
 
-function search(params, skip = 0, amount = 14, filter = {}) {
-  const query = [];
-  let index = 2;
-  query[0] = `metaphone.first in ("${params[0]}"`;
-  if (params[1]) {
-    query[1] = `,"${params[1]}") AND metaphone.second in ("${params[1]}", "${params[0]}")`;
-  } else {
-    query[1] = `) OR metaphone.second in ("${params[0]}")`;
-  }
-  Object.keys(filter).forEach((item, i) => {
+function mapFilter(query, index, filter) {
+  return Object.keys(filter).forEach((item, i) => {
     if (item === 'salary_wish') {
       if (filter[item][0]) {
         query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
@@ -179,6 +171,17 @@ function search(params, skip = 0, amount = 14, filter = {}) {
     index += 1;
     query[i + index] = ')';
   });
+}
+
+function search(params, skip = 0, amount = 14, filter = {}) {
+  const query = [];
+  query[0] = `metaphone.first in ("${params[0]}"`;
+  if (params[1]) {
+    query[1] = `,"${params[1]}") AND metaphone.second in ("${params[1]}", "${params[0]}")`;
+  } else {
+    query[1] = `) OR metaphone.second in ("${params[0]}")`;
+  }
+  mapFilter(query, 2, filter);
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
   skills.skill_name, candidate_emails.email, candidate_status.status
@@ -196,34 +199,7 @@ function search(params, skip = 0, amount = 14, filter = {}) {
 function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate_emails.email = "${params}"`;
-  let index = 1;
-  Object.keys(filter).forEach((item, i) => {
-    if (item === 'salary_wish') {
-      if (filter[item][0]) {
-        query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
-        if (filter[item][1]) {
-          index += 1;
-          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
-        }
-      }
-      return;
-    }
-    if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
-      return;
-    }
-    query[i + index] = ` AND candidate.${item} IN (`;
-    filter[item].forEach((val, l, arr) => {
-      index += 1;
-      if (l !== arr.length - 1) {
-        query[i + index] = `"${val}",`;
-        return;
-      }
-      query[i + index] = `"${val}"`;
-    });
-    index += 1;
-    query[i + index] = ')';
-  });
+  mapFilter(query, 1, filter);
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
   skills.skill_name, candidate_emails.email, candidate_status.status
@@ -240,34 +216,7 @@ function searchByEmail(params, skip = 0, amount = 14, filter = {}) {
 function searchBySkype(params, skip = 0, amount = 14, filter = {}) {
   const query = [];
   query[0] = `candidate.skype = "${params}"`;
-  let index = 1;
-  Object.keys(filter).forEach((item, i) => {
-    if (item === 'salary_wish') {
-      if (filter[item][0]) {
-        query[i + index] = ` AND candidate.${item} >= ${filter[item][0]}`;
-        if (filter[item][1]) {
-          index += 1;
-          query[i + index] = ` AND candidate.${item} <= ${filter[item][1]}`;
-        }
-      }
-      return;
-    }
-    if (item === 'exp_year') {
-      query[i + index] = ` AND candidate.${item} <= ${filter[item]}`;
-      return;
-    }
-    query[i + index] = ` AND candidate.${item} IN (`;
-    filter[item].forEach((val, l, arr) => {
-      index += 1;
-      if (l !== arr.length - 1) {
-        query[i + index] = `"${val}",`;
-        return;
-      }
-      query[i + index] = `"${val}"`;
-    });
-    index += 1;
-    query[i + index] = ')';
-  });
+  mapFilter(query, 1, filter);
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
   candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
   skills.skill_name, candidate_emails.email, candidate_status.status
