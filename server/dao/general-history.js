@@ -3,7 +3,6 @@ const query = require('../queries/history-queries');
 const connection = require('./connection').connection;
 
 const getHistory = (skip, capacity, callback) => {
-  console.log(skip + ' ' + capacity);
   async.parallel(
     [
       call => connection.query(query.getHistory(skip, capacity), call),

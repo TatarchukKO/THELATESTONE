@@ -201,11 +201,11 @@ function report(paramsCamel, callback) {
 function getHistory(req, callback) {
   const skip = req.query.skip || 0;
   const capacity = req.query.capacity || defaultCapacity;
-  const candId = req.params.id;
-  candidatesModel.getHistory(skip, capacity, candId, (err, res) => {
+  const id = req.params.id;
+  candidatesModel.getHistory(id, (err, res) => {
     let number = 0;
     res = utils.toCamel(res);
-    const result = [];
+    let result = [];
     res.map((item) => {
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
@@ -219,6 +219,7 @@ function getHistory(req, callback) {
       });
       return item;
     });
+    result = result.slice(skip, capacity);
     result.unshift(number);
     callback(err, result);
   });

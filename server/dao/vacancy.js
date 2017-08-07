@@ -188,8 +188,8 @@ const closeVacancy = (body, callback) => {
   });
 };
 
-const getHistory = (skip, capacity, vacancyId, callback) => {
-  connection.query(query.getHistory(skip, capacity, vacancyId), callback);
+const getHistory = (vacancyId, callback) => {
+  connection.query(query.getHistory(vacancyId), callback);
 };
 
 const getHiringList = (skip, capacity, vacancyId, callback) => {

@@ -200,14 +200,13 @@ const changeOtherCandidatesStatus = candidateId =>
   `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
     UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
 
-const getHistory = (skip, capacity, vacancyId) =>
+const getHistory = vacancyId =>
   `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
     primary_skill, other_skills, city, secondary_skills, exp_year
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
     WHERE vacancy_id = ${vacancyId}
-    ORDER BY change_date DESC
-    LIMIT ${skip}, ${capacity}`;
+    ORDER BY change_date DESC`;
 
 const getVacancyTotal = id =>
   `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
