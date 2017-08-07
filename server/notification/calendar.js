@@ -26,9 +26,9 @@ const staticEvent = {
 
 function setStaticEvent(event) {
   staticEvent.start.dateTime = event.date.toISOString();
-  staticEvent.start.timeZone = 'Europe/Minsk';
+  staticEvent.start.timeZone = 'Europe/London';
   staticEvent.end.dateTime = event.date.toISOString();
-  staticEvent.end.timeZone = 'Europe/Minsk';
+  staticEvent.end.timeZone = 'Europe/London';
 }
 
 function setCalendarId(id) {

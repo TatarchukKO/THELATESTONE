@@ -26,7 +26,7 @@ function editAndSendMail(obj) {
 function insertEventInGoogleCalendar(obj) {
   const camelRes = utils.toCamel(obj);
   const event = {};
-  event.date = new Date(camelRes[0].date);
+  event.date = camelRes[0].date; // new Date(camelRes[0].date);
   calendar.setCalendarId(camelRes[0].login);
   calendar.setStaticEvent(event);
   calendar.insertEventInGoogleCal();
