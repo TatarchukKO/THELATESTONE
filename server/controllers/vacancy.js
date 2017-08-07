@@ -21,13 +21,13 @@ function getVacancy(req, res) {
   });
 }
 
-function updateVacancy(req, res) {
-  services.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
+function update(req, res) {
+  services.update(req.params.id, req.body, req.user.id, (error) => {
     if (error) {
       res.sendStatus(500);
       throw error;
     }
-    return res.status(200).send(result);
+    return res.status(200).send();
   });
 }
 
@@ -97,7 +97,7 @@ module.exports = {
   getCandidates,
   getHistory,
   getHiringList,
-  updateVacancy,
+  update,
   addVacancy,
   getAssigned,
   closeVacancy,

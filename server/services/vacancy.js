@@ -42,7 +42,7 @@ function clearSkills(obj) {
   return copy;
 }
 
-function updateVacancy(id, req, user, callback) {
+function update(id, req, user, callback) {
   req = utils.toSnake(req);
   let config = {};
   const changes = {};
@@ -64,7 +64,7 @@ function updateVacancy(id, req, user, callback) {
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
   config = utils.dateFormatter.format(utils.toSnake(config));
 
-  model.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
+  model.update(id, config, changes, secSkills, otherSkills, callback);
 }
 
 function addVacancy(req, callback) {
@@ -146,6 +146,6 @@ module.exports = {
   getHiringList,
   getHistory,
   addVacancy,
-  updateVacancy,
+  update,
   closeVacancy,
 };

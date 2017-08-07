@@ -13,7 +13,7 @@ router.use((req, res, next) => {
 
 router.post('/', validate(validation.getVacancies), controller.getVacancies);
 router.get('/:id', validate(validation.getVacancy), controller.getVacancy);
-router.patch('/:id/update', validate(validation.updateVacancy), controller.updateVacancy);
+router.patch('/:id/update', validate(validation.update), controller.update);
 router.post('/new', validate(validation.addVacancy), controller.addVacancy);
 router.get('/:id/candidates', validate(validation.getCandidates), controller.getCandidates);
 router.get('/:id/assigned', validate(validation.getAssigned), controller.getAssigned);

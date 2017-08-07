@@ -7,7 +7,7 @@ function getById(id) {
   t_f.primary_skill_lvl, t_f.other, t_f.id,
   c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name,
-  g.change_date AS date
+  g.change_date AS creation_date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id

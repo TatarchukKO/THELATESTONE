@@ -79,7 +79,7 @@ function getOtherSkills(id) {
     WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
 }
 
-function updateVacancy(id) {
+function update(id) {
   return `UPDATE vacancy SET ? WHERE id = ${id}`;
 }
 
@@ -249,7 +249,7 @@ module.exports = {
   getHiringList,
   getVacancyTotal,
   commitChanges,
-  updateVacancy,
+  update,
   deleteOtherSkills,
   deleteSecondarySkills,
   insertOtherSkill,
