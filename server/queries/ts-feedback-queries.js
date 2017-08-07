@@ -1,7 +1,13 @@
 function getById(id) {
-  return `SELECT t_f.id, u.first_name, u.second_name, v.name,
-  i.date, s.skill_name, t_f.primary_skill_lvl, c.ru_first_name,
-  c.ru_second_name, c.eng_first_name, c.eng_second_name, t_f.other, g.change_date AS date
+  return `SELECT
+  u.first_name, u.second_name,
+  v.name,
+  i.date,
+  s.skill_name,
+  t_f.primary_skill_lvl, t_f.other, t_f.id,
+  c.ru_first_name, c.ru_second_name,
+  c.eng_first_name, c.eng_second_name,
+  g.change_date AS date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
   LEFT JOIN skills s ON t_f.primary_skill_id = s.id
@@ -29,7 +35,9 @@ function getByCandidateId(id) {
 }
 
 function getSecondarySkillsByTsFeedbackId(id) {
-  return `SELECT skills.skill_name, ts_secondary_skills.skill_lvl FROM ts_secondary_skills
+  return `SELECT skills.skill_name,
+  ts_secondary_skills.skill_lvl
+  FROM ts_secondary_skills
   INNER JOIN skills ON ts_secondary_skills.skill_id = skills.id
   WHERE ${id} = ts_secondary_skills.ts_feedback_id`;
 }
@@ -37,14 +45,16 @@ function getSecondarySkillsByTsFeedbackId(id) {
 function insert(object) {
   return `INSERT INTO ts_feedback
   (primary_skill_id, primary_skill_lvl, interview_id, other)
-  VALUES ('${object.primary_skill_id}', '${object.primary_skill_lvl}',
+  VALUES
+  ('${object.primary_skill_id}', '${object.primary_skill_lvl}',
   '${object.interview_id}', '${object.other}')`;
 }
 
 function insertTsSecondarySkills(item, id) {
   return `INSERT INTO ts_secondary_skills
   (ts_feedback_id, skill_lvl, skill_id)
-  VALUES ('${id}', '${item.skill_lvl}', '${item.skill_id}')`;
+  VALUES
+  ('${id}', '${item.skill_lvl}', '${item.skill_id}')`;
 }
 
 function updateInterviewStatus(object) {
@@ -54,7 +64,8 @@ function updateInterviewStatus(object) {
 }
 
 function insertEventToGeneralHistory(id) {
-  return `INSERT INTO general_history (ts_feedback_id)
+  return `INSERT INTO general_history
+  (ts_feedback_id)
   VALUES ('${id}')`;
 }
 

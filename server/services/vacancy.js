@@ -6,7 +6,7 @@ const defaultCapacity = 10;
 const getVacancies = (body, callback) => {
   body = utils.toSnake(body);
   const skip = body.skip || 0;
-  const capacity = body.capacity || 0;
+  const capacity = body.capacity || 10000000;
   const filter = body;
   delete filter.skip;
   delete filter.capacity;
