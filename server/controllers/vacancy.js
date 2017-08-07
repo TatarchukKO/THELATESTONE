@@ -1,6 +1,7 @@
+
 const services = require('../services/vacancy');
 
-const getVacancies = (req, res) => {
+function getVacancies(req, res) {
   services.getVacancies(req.body, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -8,9 +9,9 @@ const getVacancies = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const getVacancy = (req, res) => {
+function getVacancy(req, res) {
   services.getVacancy(req.params.id, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -18,9 +19,9 @@ const getVacancy = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const updateVacancy = (req, res) => {
+function updateVacancy(req, res) {
   services.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -28,9 +29,9 @@ const updateVacancy = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const addVacancy = (req, res) => {
+function addVacancy(req, res) {
   services.addVacancy(req.body, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -38,9 +39,9 @@ const addVacancy = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const getCandidates = (req, res) => {
+function getCandidates(req, res) {
   services.getCandidates(req, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -48,9 +49,9 @@ const getCandidates = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const getAssigned = (req, res) => {
+function getAssigned(req, res) {
   services.getAssigned(req, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -58,9 +59,9 @@ const getAssigned = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const closeVacancy = (req, res) => {
+function closeVacancy(req, res) {
   services.closeVacancy(req.body, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -68,9 +69,9 @@ const closeVacancy = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const getHistory = (req, res) => {
+function getHistory(req, res) {
   services.getHistory(req, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -78,9 +79,9 @@ const getHistory = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
-const getHiringList = (req, res) => {
+function getHiringList(req, res) {
   services.getHiringList(req, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -88,7 +89,7 @@ const getHiringList = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
 module.exports = {
   getVacancies,
