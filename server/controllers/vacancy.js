@@ -4,7 +4,7 @@ const services = require('../services/vacancy');
 function getVacancies(req, res) {
   services.getVacancies(req.body, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -14,7 +14,7 @@ function getVacancies(req, res) {
 function getVacancy(req, res) {
   services.getVacancy(req.params.id, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -24,7 +24,7 @@ function getVacancy(req, res) {
 function updateVacancy(req, res) {
   services.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -34,7 +34,7 @@ function updateVacancy(req, res) {
 function addVacancy(req, res) {
   services.addVacancy(req.body, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -44,7 +44,7 @@ function addVacancy(req, res) {
 function getCandidates(req, res) {
   services.getCandidates(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -54,7 +54,7 @@ function getCandidates(req, res) {
 function getAssigned(req, res) {
   services.getAssigned(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -64,7 +64,7 @@ function getAssigned(req, res) {
 function closeVacancy(req, res) {
   services.closeVacancy(req.body, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -74,7 +74,7 @@ function closeVacancy(req, res) {
 function getHistory(req, res) {
   services.getHistory(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -84,7 +84,7 @@ function getHistory(req, res) {
 function getHiringList(req, res) {
   services.getHiringList(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);

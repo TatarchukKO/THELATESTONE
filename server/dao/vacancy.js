@@ -51,6 +51,7 @@ function updateOtherSkills(otherSkills, id, call) {
 }
 
 function updateVacancy(id, config, changes, secSkills, otherSkills, callback) {
+  console.log(config);
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;

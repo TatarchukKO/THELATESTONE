@@ -165,7 +165,7 @@ function getCandidates(skip, capacity, vacancyId) {
     LIMIT ${skip}, ${capacity}`;
 }
 
-function getAssigned (skip, capacity, vacancyId) {
+function getAssigned(skip, capacity, vacancyId) {
   return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
     skills.skill_name, candidate_emails.email, candidate_status.status, result.date
