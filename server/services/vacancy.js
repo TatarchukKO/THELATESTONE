@@ -2,11 +2,12 @@ const model = require('../dao/vacancy');
 const utils = require('../../utils');
 
 const defaultCapacity = 10;
+const infinity = Number.MAX_SAFE_INTEGER;
 
 function getVacancies(body, callback) {
   body = utils.toSnake(body);
   const skip = body.skip || 0;
-  const capacity = body.capacity || 10000000;
+  const capacity = body.capacity || infinity;
   const filter = body;
   delete filter.skip;
   delete filter.capacity;
@@ -93,8 +94,7 @@ function addVacancy(req, user, callback) {
 
 function getCandidates(req, callback) {
   const config = formConfig(req);
-  model.getCandidates(config.skip, config.capacity, config.id, (err, res) =>
-      utils.namesEditor.formatVacancy(err, res, callback));
+  model.getCandidates(config.skip, config.capacity, config.id, callback);
 }
 
 function getAssigned(req, callback) {
