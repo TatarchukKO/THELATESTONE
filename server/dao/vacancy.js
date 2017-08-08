@@ -197,6 +197,7 @@ function getHistory(vacancyId, callback) {
   connection.query(query.getHistory(vacancyId), callback);
 }
 
+
 function getHiringList(skip, capacity, vacancyId, callback) {
   connection.query(query.getHiringList(skip, capacity, vacancyId), callback);
 }
