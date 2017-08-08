@@ -44,6 +44,9 @@ const getById = {
     allowUnknownQuery: false,
     allowUnknownParams: false,
   },
+  query: {
+    id: Joi.number().integer().required(),
+  },
 };
 
 const getUnclosedByUserId = {
