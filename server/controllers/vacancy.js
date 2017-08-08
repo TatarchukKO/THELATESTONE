@@ -32,12 +32,12 @@ function update(req, res) {
 }
 
 function addVacancy(req, res) {
-  services.addVacancy(req.body, (error, result) => {
+  services.addVacancy(req.body, req.user.id, (error) => {
     if (error) {
       res.sendStatus(500);
       throw error;
     }
-    return res.status(200).send(result);
+    return res.sendStatus(201);
   });
 }
 
