@@ -19,19 +19,19 @@ function editDoneFields(arr) {
 function editAndSendMail(obj) {
   const camelRes = utils.toCamel(obj);
   const resp = utils.namesEditor.editArr(camelRes);
-  const tz = resp[0].date.getTimezoneOffset();
+  // const tz = resp[0].date.getTimezoneOffset();
   utils.dateFormatter.format(resp);
-  resp[0].date = resp[0].date.getTime() + (tz * 60 * 1000);
-  resp[0].date = new Date(resp[0].date);
+  /* resp[0].date = resp[0].date.getTime() + (tz * 60 * 1000);
+  resp[0].date = new Date(resp[0].date);*/
   gmail.sendMail(resp[0]);
 }
 
 function insertEventInGoogleCalendar(obj) {
   const camelRes = utils.toCamel(obj);
-  const tz = camelRes[0].date.getTimezoneOffset();
+  // const tz = camelRes[0].date.getTimezoneOffset();
   const event = {};
-  camelRes[0].date = camelRes[0].date.getTime() + (tz * 60 * 1000);
-  camelRes[0].date = new Date(camelRes[0].date);
+  /* camelRes[0].date = camelRes[0].date.getTime() + (tz * 60 * 1000);
+  camelRes[0].date = new Date(camelRes[0].date);*/
   event.date = camelRes[0].date;
   calendar.setCalendarId(camelRes[0].login);
   calendar.setStaticEvent(event);

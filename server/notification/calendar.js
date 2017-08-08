@@ -19,7 +19,10 @@ const staticEvent = {
   reminders: {
     useDefault: false,
     overrides: [
-      { method: 'popup', minutes: 60 },
+      {
+        method: 'popup',
+        minutes: 60,
+      },
     ],
   },
 };
