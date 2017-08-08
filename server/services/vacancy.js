@@ -109,7 +109,7 @@ function closeVacancy(req, callback) {
 
 function getHistory(req, callback) {
   const config = formConfig(req);
-  model.getAdminHistory(config.id, (err, res) => {
+  model.getHistory(config.id, (err, res) => {
     let number = 0;
     res = utils.toCamel(res);
     let result = [];

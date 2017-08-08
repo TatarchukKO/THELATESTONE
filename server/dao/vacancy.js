@@ -193,10 +193,7 @@ function closeVacancy(body, callback) {
   });
 }
 
-function getAdminHistory(vacancyId, callback) {
-  connection.query(query.getHistory(vacancyId), callback);
-}
-function getHrmHistory(vacancyId, callback) {
+function getHistory(vacancyId, callback) {
   connection.query(query.getHistory(vacancyId), callback);
 }
 
@@ -210,8 +207,7 @@ module.exports = {
   getVacancy,
   getCandidates,
   getAssigned,
-  getAdminHistory,
-  getHrmHistory,
+  getHistory,
   getHiringList,
   update,
   addVacancy,
