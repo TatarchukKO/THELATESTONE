@@ -20,8 +20,12 @@ function getById(id) {
 }
 
 function getByCandidateId(id) {
-  return `SELECT t_f.id, u.first_name, u.second_name,
-  i.date, v.name, s.skill_name,
+  return `SELECT
+  t_f.id,
+  u.first_name, u.second_name,
+  i.date,
+  v.name,
+  s.skill_name,
   g.change_date AS creation_date
   FROM ts_feedback t_f
   LEFT JOIN interview i ON i.id = t_f.interview_id
@@ -35,7 +39,8 @@ function getByCandidateId(id) {
 }
 
 function getSecondarySkillsByTsFeedbackId(id) {
-  return `SELECT skills.skill_name,
+  return `SELECT
+  skills.skill_name,
   ts_secondary_skills.skill_lvl
   FROM ts_secondary_skills
   INNER JOIN skills ON ts_secondary_skills.skill_id = skills.id

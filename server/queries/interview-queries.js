@@ -30,7 +30,7 @@ function insertEventToGeneralHistory(id) {
 
 function getByUserId(id) {
   return `SELECT
-  i.date, 
+  i.id, i.date, 
   c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name
   FROM interview i
