@@ -222,7 +222,7 @@ function changeOtherCandidatesStatus(candidateId) {
 
 function getHistory(vacancyId) {
   return `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
-    primary_skill, other_skills, city, secondary_skills, exp_year
+    primary_skill, other_skills, city, secondary_skills, exp_year, english_lvl, linkedin, salary_wish, description
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
     WHERE vacancy_id = ${vacancyId}

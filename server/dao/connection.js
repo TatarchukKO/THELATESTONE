@@ -10,6 +10,7 @@ const connection = mysql.createConnection({
   user: 'root',
   password: 'jhjkj87',
   database: 'pickbrainsdb',
+  //timezone: 'utc',
 });
 
 function init(callback) {
