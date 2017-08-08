@@ -216,8 +216,7 @@ function getOtherCandidates(body) {
 }
 
 function changeOtherCandidatesStatus(candidateId) {
-  return `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
-    UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
+  return `UPDATE candidate SET status = 1 WHERE id = ${candidateId}`;
 }
 
 function getHistory(vacancyId) {
@@ -230,9 +229,9 @@ function getHistory(vacancyId) {
 }
 
 function getVacancyTotal(id) {
-  return `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
+  return `SELECT SUM (lvl)*10 AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
     FROM vacancy_secondary_skills
-    LEFT JOIN vacacncy ON vacancy.id = vacancy_id
+    LEFT JOIN vacancy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
 }
 

@@ -1,5 +1,4 @@
 const async = require('async');
-
 const query = require('../queries/vacancy-queries');
 const utils = require('../../utils');
 const connection = require('./connection').connection;
@@ -103,6 +102,7 @@ function insertSecSkills(secSkills, id, call) {
   }
 }
 
+
 function addVacancy(vacancy, secSkills, otherSkills, changes, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -152,8 +152,9 @@ function getAssigned(skip, capacity, vacancyId, callback) {
 }
 
 function changeOtherCandidatesStatus(candidatesArray, call) {
+  console.log(candidatesArray);
   async.parallel(candidatesArray.map(val => eCall =>
-      connection.query(query.changeOtherCandidatesStatus(val), eCall)), call);
+      connection.query(query.changeOtherCandidatesStatus(val.candidate_id), eCall)), call);
 }
 
 function closeVacancy(body, callback) {
@@ -162,7 +163,7 @@ function closeVacancy(body, callback) {
     if (transError) {
       throw transError;
     }
-    connection.query(query.updateVacancy(body.vacancyId), { status: 8 }, (error) => {
+    connection.query(query.update(body.vacancyId), { status: 8 }, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
@@ -171,9 +172,9 @@ function closeVacancy(body, callback) {
       async.parallel(
         [
           call => connection.query(query.changeCandidateStatus(body), call),
-          call => connection.query(query.changeInterviewStatus(body), call),
           call => connection.query(query.getOtherCandidates(body), (err, res) =>
           changeOtherCandidatesStatus(res, call)),
+          call => connection.query(query.changeInterviewStatus(body), call),
         ],
         (parError, result) => {
           if (parError) {
