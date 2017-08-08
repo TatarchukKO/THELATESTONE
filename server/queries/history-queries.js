@@ -67,7 +67,7 @@ function getAdminRecordsNumber() {
   return 'SELECT COUNT(*) AS total FROM general_history';
 }
 
-function getHrmHistory(skip, capacity, id) { 
+function getHrmHistory(skip, capacity, id) {
   return `SELECT * FROM (
       SELECT
           vacancy_change_id, candidate_change_id, hrm_feedback_id,

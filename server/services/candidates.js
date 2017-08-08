@@ -202,9 +202,10 @@ function getHistory(req, callback) {
   const id = req.params.id;
   candidatesModel.getHistory(id, (err, res) => {
     let number = 0;
-    res = utils.toCamel(res);
     let result = [];
+    res = utils.toCamel(res);
     res.map((item) => {
+      let isEmpty = true;
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
           result.push({
@@ -213,8 +214,17 @@ function getHistory(req, callback) {
             change: utils.formChange(`${key}`),
           });
           number += 1;
+          isEmpty = false;
         }
       });
+      if (isEmpty) {
+        result.push({
+          user: `${item.firstName} ${item.secondName}`,
+          cahngeDate: new Date(item.changeDate),
+          change: 'Candidate was added',
+        });
+        number += 1;
+      }
       return item;
     });
     result = result.slice(skip, skip + capacity);
