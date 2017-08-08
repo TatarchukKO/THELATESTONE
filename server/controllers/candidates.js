@@ -62,7 +62,6 @@ function search(req, res) {
 }
 
 function report(req, res) {
-  console.log(req.query);
   candidatesService.report(req.query, (error, result) => {
     if (error) {
       res.sendStatus(500);

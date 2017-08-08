@@ -150,7 +150,6 @@ function updateCandidate(id, candidate, call) {
 }
 
 function update(id, candidate, emails, secSkills, oSkills, changes, meta, callback) {
-  console.log(candidate);
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;

@@ -67,11 +67,13 @@ function update(id, req, user, callback) {
   model.update(id, config, changes, secSkills, otherSkills, callback);
 }
 
-function addVacancy(req, callback) {
+function addVacancy(req, user, callback) {
   req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
+  const changes = {};
+  changes.user_id = user;
 
   Object.keys(req).forEach((key) => {
     vacancy[`${key}`] = `${req[key]}`;
@@ -86,7 +88,7 @@ function addVacancy(req, callback) {
   vacancy.salary_wish = req.salary_wish || 0;
   vacancy.description = req.description;
 
-  model.addVacancy(vacancy, secSkills, otherSkills, callback);
+  model.addVacancy(vacancy, secSkills, otherSkills, changes, callback);
 }
 
 function getCandidates(req, callback) {
