@@ -3,7 +3,7 @@ const utils = require('../../utils');
 
 const defaultCapacity = 10;
 
-const formAction = (obj) => {
+function formAction(obj) {
   if (obj.vacancyChangeId) {
     return 'Vacancy was changed';
   }
@@ -20,16 +20,16 @@ const formAction = (obj) => {
     return 'Interview was assigned/closed';
   }
   return 'nothing';
-};
+}
 
-const getName = (obj) => {
+function getName(obj) {
   if (obj.ru_first_name) {
     return `${obj.ruFirstName} ${obj.ruSecondName}`;
   }
   return `${obj.engFirstName} ${obj.engSecondName}`;
-};
+}
 
-const formCandidateName = (obj, names) => {
+function formCandidateName(obj, names) {
   const id = obj.candidateChangeId;
   let result;
   names.forEach((item) => {
@@ -38,29 +38,45 @@ const formCandidateName = (obj, names) => {
     }
   }, this);
   return result;
-};
+}
 
+function formHistory(res) {
+  const result = {};
+  const names = utils.toCamel(res[1][0]);
+  let number = 0;
+  res = utils.toCamel(res[0][0]);
+  result.array = res.map((item) => {
+    const history = {
+      subject: `${item.firstName} ${item.secondName}`,
+      object: item.candidateChangeId ? formCandidateName(item, names) : item.name,
+      date: item.changeDate,
+      action: formAction(item),
+    };
+    number += 1;
+    return history;
+  });
+  result.number = number;
+  return result;
+}
 
-const getHistory = (req, callback) => {
+function getHistory(req, callback) {
   const skip = req.query.skip || 0;
   const capacity = req.query.capacity || defaultCapacity;
-  model.getHistory(skip, capacity, (error, res) => {
-    const number = res[2][0][0].total;
-    const names = utils.toCamel(res[1][0]);
-    res = utils.toCamel(res[0][0]);
-    const result = res.map((item) => {
-      const history = {
-        subject: `${item.firstName} ${item.secondName}`,
-        object: item.candidateChangeId ? formCandidateName(item, names) : item.name,
-        date: item.changeDate,
-        action: formAction(item),
-      };
-      return history;
+  if (req.user.type === 'admin') {
+    model.getAdminHistory(skip, capacity, (error, res) => {
+      const number = res[2][0][0].total;
+      const result = formHistory(res);
+      result.array.unshift(number);
+      callback(error, result.array);
     });
-    result.unshift(number);
-    callback(error, result);
-  });
-};
+  } else {
+    model.getHrmHistory(skip, capacity, req.user.id, (error, res) => {
+      const result = formHistory(res);
+      result.array.unshift(result.number);
+      callback(error, result.array);
+    });
+  }
+}
 
 module.exports = {
   getHistory,

@@ -4,7 +4,7 @@ const validate = require('express-validation');
 const validation = require('../validation/general-history');
 
 router.use((req, res, next) => {
-  if (req.user.type === 'admin') {
+  if (req.user.type !== 'TECH') {
     next();
   } else {
     res.status(403).send();

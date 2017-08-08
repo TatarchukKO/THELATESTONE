@@ -53,13 +53,6 @@ function insert(candidateCamel, user, callback) {
   const item = candidate;
   const firstName = utils.translit(item.eng_first_name);
   const changes = {};
-  Object.keys(candidate).forEach((key) => {
-    changes[`${key}`] = 1;
-  });
-  if (candidate.primary_skill_lvl) {
-    delete changes.primary_skill_lvl;
-    changes.primary_skill = 1;
-  }
   changes.user_id = user;
   if (firstName !== item.eng_first_name) {
     item.ru_first_name = item.eng_first_name;
