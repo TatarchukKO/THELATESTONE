@@ -30,8 +30,18 @@ function getByCandidateId(req, res) {
   });
 }
 
+function getUnclosedByUserId(req, res) {
+  interviewService.getUnclosedByUserId(req.user.id, (error, result) => {
+    if (error) {
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
+
 module.exports = {
   insert,
   getByUserId,
   getByCandidateId,
+  getUnclosedByUserId,
 };

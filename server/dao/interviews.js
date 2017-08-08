@@ -52,7 +52,6 @@ function insert(object, callback) {
 function getByUserId(id, callback) {
   connection.query(interviewQueries.getByUserId(id), callback);
 }
-
 function getByCandidateId(id, callback) {
   connection.query(interviewQueries.getByCandidateId(id), callback);
 }
@@ -65,10 +64,14 @@ function getUserId(id, callback) {
   connection.query(interviewQueries.getUserId(id), callback);
 }
 
+function getUnclosedByUserId(id, callback) {
+  connection.query(interviewQueries.getUnclosedByUserId(id), callback);
+}
 module.exports = {
   getUserId,
   insert,
   getByUserId,
   getByCandidateId,
+  getUnclosedByUserId,
   getEmailNotificationData,
 };

@@ -9,5 +9,5 @@ const router = express.Router();
 router.post('/new', validate(validation.insert), interviewController.insert);
 router.get('/user', validate(validation.getByUserId), interviewController.getByUserId);
 router.get('/candidate', validate(validation.getByCandidateId), interviewController.getByCandidateId);
-
+router.get('/unclosed/user', interviewController.getUnclosedByUserId);
 module.exports = router;

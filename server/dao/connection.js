@@ -8,9 +8,8 @@ const connection = mysql.createConnection({
   // timezone: 'utc',
   host: 'localhost',
   user: 'root',
-  password: 'qweasdzxc',
+  password: '123789',
   database: 'pickbrainsdb',
-  timezone: 'utc',
 });
 
 function init(callback) {
