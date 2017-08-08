@@ -17,7 +17,7 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
+function insert(candidate, emails, secSkills, oSkills, metaphone, changes, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
@@ -31,12 +31,19 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
       const id = res.insertId;
       const meta = metaphone;
       meta.candidate_id = id;
+      changes.candidate_id = id;
       async.parallel(
         Array.prototype.concat(
         call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
-        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
+        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call)),
+        call => connection.query(query.commitChanges(), changes, (errorChange, result) => {
+          if (errorChange) {
+            return call(errorChange);
+          }
+          return connection.query(query.generalHistory(result.insertId), call);
+        })),
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {

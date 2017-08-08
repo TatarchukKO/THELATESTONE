@@ -22,7 +22,7 @@ function getById(req, res) {
 }
 
 function insert(req, res) {
-  candidatesService.insert(req.body, (error) => {
+  candidatesService.insert(req.body, req.user.id, (error) => {
     if (error) {
       res.sendStatus(500);
       throw error;
