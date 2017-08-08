@@ -67,11 +67,13 @@ function update(id, req, user, callback) {
   model.update(id, config, changes, secSkills, otherSkills, callback);
 }
 
-function addVacancy(req, callback) {
+function addVacancy(req, user, callback) {
   req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
+  const changes = {};
+  changes.user_id = user;
 
   Object.keys(req).forEach((key) => {
     vacancy[`${key}`] = `${req[key]}`;
@@ -86,7 +88,7 @@ function addVacancy(req, callback) {
   vacancy.salary_wish = req.salary_wish || 0;
   vacancy.description = req.description;
 
-  model.addVacancy(vacancy, secSkills, otherSkills, callback);
+  model.addVacancy(vacancy, secSkills, otherSkills, changes, callback);
 }
 
 function getCandidates(req, callback) {
@@ -114,6 +116,7 @@ function getHistory(req, callback) {
     res = utils.toCamel(res);
     let result = [];
     res.map((item) => {
+      let isEmpty = true;
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
           result.push({
@@ -122,8 +125,17 @@ function getHistory(req, callback) {
             change: utils.formChange(`${key}`),
           });
           number += 1;
+          isEmpty = false;
         }
       });
+      if (isEmpty) {
+        result.push({
+          user: `${item.firstName} ${item.secondName}`,
+          cahngeDate: new Date(item.changeDate),
+          change: 'Vacancy was added',
+        });
+        number += 1;
+      }
       return item;
     });
     result = result.slice(config.skip, config.skip + config.capacity);

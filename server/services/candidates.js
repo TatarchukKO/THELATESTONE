@@ -53,13 +53,6 @@ function insert(candidateCamel, user, callback) {
   const item = candidate;
   const firstName = utils.translit(item.eng_first_name);
   const changes = {};
-  Object.keys(candidate).forEach((key) => {
-    changes[`${key}`] = 1;
-  });
-  if (candidate.primary_skill_lvl) {
-    delete changes.primary_skill_lvl;
-    changes.primary_skill = 1;
-  }
   changes.user_id = user;
   if (firstName !== item.eng_first_name) {
     item.ru_first_name = item.eng_first_name;
@@ -202,9 +195,10 @@ function getHistory(req, callback) {
   const id = req.params.id;
   candidatesModel.getHistory(id, (err, res) => {
     let number = 0;
-    res = utils.toCamel(res);
     let result = [];
+    res = utils.toCamel(res);
     res.map((item) => {
+      let isEmpty = true;
       Object.keys(item).forEach((key) => {
         if (item[`${key}`] === 1) {
           result.push({
@@ -213,8 +207,17 @@ function getHistory(req, callback) {
             change: utils.formChange(`${key}`),
           });
           number += 1;
+          isEmpty = false;
         }
       });
+      if (isEmpty) {
+        result.push({
+          user: `${item.firstName} ${item.secondName}`,
+          cahngeDate: new Date(item.changeDate),
+          change: 'Candidate was added',
+        });
+        number += 1;
+      }
       return item;
     });
     result = result.slice(skip, skip + capacity);
