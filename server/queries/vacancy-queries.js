@@ -1,6 +1,6 @@
 /** All Vacancies */
 
-const formQuery = (filter) => {
+function formQuery(filter) {
   const query = [];
   let sent = 'WHERE ';
   let j = 0;
@@ -36,10 +36,10 @@ const formQuery = (filter) => {
     });
     return query.join('');
   }
-};
+}
 
-const getVacancies = (skip, capacity, filter) => 
-  `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
+function getVacancies(skip, capacity, filter) {
+  return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
     skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
     request_date 
     FROM vacancy 
@@ -50,11 +50,10 @@ const getVacancies = (skip, capacity, filter) =>
     GROUP BY vacancy.id
     ORDER BY request_date DESC
     LIMIT ${skip}, ${capacity}`;
+}
 
-/** Single Vacancy */
-
-const getVacancy = id =>
-  `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
+function getVacancy(id) {
+  return `SELECT vacancy.id, vacancy.name, vacancy.request_date, vacancy.start_date,
     skills.skill_name,  vacancy.primary_skill_lvl, location.city, vacancy_status.status,
     vacancy.linkedin, vacancy.exp_year, english_lvl.lvl AS vacancy_english_lvl, 
     vacancy.description, vacancy.salary_wish
@@ -64,51 +63,63 @@ const getVacancy = id =>
     LEFT JOIN vacancy_status ON vacancy.status = vacancy_status.id 
     LEFT JOIN english_lvl ON english_lvl.id = vacancy.english_lvl
     WHERE vacancy.id = ${id}`;
+}
 
-const getSecondarySkills = id =>
-  `SELECT skills.skill_name, vacancy_secondary_skills.lvl
+function getSecondarySkills(id) {
+  return `SELECT skills.skill_name, vacancy_secondary_skills.lvl
     FROM vacancy_secondary_skills
     LEFT JOIN skills ON vacancy_secondary_skills.skill_id = skills.id
     WHERE  vacancy_secondary_skills.vacancy_id = ${id}`;
+}
 
-const getOtherSkills = id =>
-  `SELECT other_skills.skill, other_skills.id 
+function getOtherSkills(id) {
+  return `SELECT other_skills.skill, other_skills.id 
     FROM other_skills_has_vacancy
     LEFT JOIN other_skills ON other_skills_has_vacancy.other_skills_id = other_skills.id
     WHERE other_skills_has_vacancy.vacancy_id = ${id}`;
+}
 
-const updateVacancy = id =>
-  `UPDATE vacancy SET ? WHERE id = ${id}`;
+function update(id) {
+  return `UPDATE vacancy SET ? WHERE id = ${id}`;
+}
 
-const deleteSecondarySkills = id =>
-  `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
+function deleteSecondarySkills(id) {
+  return `DELETE FROM vacancy_secondary_skills WHERE vacancy_id = ${id}`;
+}
 
-const insertSecSkill = (id, skill) =>
-  `INSERT INTO vacancy_secondary_skills (vacancy_id, skill_id, lvl)
+function insertSecSkill(id, skill) {
+  return `INSERT INTO vacancy_secondary_skills (vacancy_id, skill_id, lvl)
     VALUES (${id}, ${skill.id}, ${skill.lvl})`;
+}
 
-const commitChanges = () => 'INSERT INTO vacancy_changes SET ?';
+function commitChanges() {
+  return 'INSERT INTO vacancy_changes SET ?';
+}
 
-const generalHistory = id =>
-  `INSERT INTO general_history (vacancy_change_id)
+function generalHistory(id) {
+  return `INSERT INTO general_history (vacancy_change_id)
     VALUES (${id})`;
+}
 
-const deleteOtherSkills = id =>
-  `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
+function deleteOtherSkills(id) {
+  return `DELETE FROM other_skills_has_vacancy WHERE vacancy_id = ${id}`;
+}
 
-const insertOtherSkill = (id, skillId) =>
-  `INSERT INTO other_skills_has_vacancy (vacancy_id, other_skills_id)
+function insertOtherSkill(id, skillId) {
+  return `INSERT INTO other_skills_has_vacancy (vacancy_id, other_skills_id)
     VALUES (${id}, ${skillId})`;
+}
 
-const addVacancy = vacancy =>
-  `INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, 
+function addVacancy(vacancy) {
+  return `INSERT INTO vacancy (name, request_date, start_date, primary_skill, primary_skill_lvl, city, 
     status, linkedin, exp_year, english_lvl, salary_wish , description)
     VALUES ('${vacancy.name}', '${vacancy.request_date}','${vacancy.start_date}', '${vacancy.primary_skill}',
     ${vacancy.primary_skill_lvl}, '${vacancy.city}', ${vacancy.status},'${vacancy.linkedin}', 
     '${vacancy.exp_year}', '${vacancy.english_lvl}', '${vacancy.salary_wish}', '${vacancy.description}')`;
+}
 
-const getCandidates = (skip, capacity, vacancyId) =>
-  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+function getCandidates(skip, capacity, vacancyId) {
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
     skills.skill_name, candidate_emails.email, candidate_status.status, result.total, result.primary_skill_lvl
     FROM
@@ -152,9 +163,10 @@ const getCandidates = (skip, capacity, vacancyId) =>
     GROUP BY candidate.id
     ORDER BY  total DESC, primary_skill_lvl DESC, eng_first_name
     LIMIT ${skip}, ${capacity}`;
+}
 
-const getAssigned = (skip, capacity, vacancyId) =>
-  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+function getAssigned(skip, capacity, vacancyId) {
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name, location.city, candidate.contact_date,
     skills.skill_name, candidate_emails.email, candidate_status.status, result.date
     FROM
@@ -171,9 +183,10 @@ const getAssigned = (skip, capacity, vacancyId) =>
     GROUP BY candidate.id
     ORDER BY date DESC
     LIMIT ${skip}, ${capacity}`;
+}
 
-const getHiringList = (skip, capacity, vacancyId) =>
-  `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
+function getHiringList(skip, capacity, vacancyId) {
+  return `SELECT candidate.id, candidate.ru_first_name, candidate.ru_second_name,
     candidate.eng_first_name, candidate.eng_second_name
     FROM
       (
@@ -186,35 +199,42 @@ const getHiringList = (skip, capacity, vacancyId) =>
     GROUP BY candidate.id
     ORDER BY date DESC
     LIMIT ${skip}, ${capacity}`;
+}
 
-const changeCandidateStatus = body =>
-  `UPDATE candidate SET status = 9 WHERE id = ${body.candidateId}`;
+function changeCandidateStatus(body) {
+  return `UPDATE candidate SET status = 9 WHERE id = ${body.candidateId}`;
+}
 
-const changeInterviewStatus = body =>
-  `UPDATE interview SET done = 1 WHERE vacancy_id = ${body.vacancyId}`;
+function changeInterviewStatus(body) {
+  return `UPDATE interview SET done = 1 WHERE vacancy_id = ${body.vacancyId}`;
+}
 
-const getOtherCandidates = body =>
-  `SELECT candidate_id
+function getOtherCandidates(body) {
+  return `SELECT candidate_id
     FROM interview
     WHERE vacancy_id = ${body.vacancyId} AND done = 0`;
+}
 
-const changeOtherCandidatesStatus = candidateId =>
-  `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
+function changeOtherCandidatesStatus(candidateId) {
+  return `UPDATE interview SET done = 1 WHERE vacancy_id = ${candidateId}
     UPDATE candidate SET status = 9 WHERE id = ${candidateId}`;
+}
 
-const getHistory = vacancyId =>
-  `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
+function getHistory(vacancyId) {
+  return `SELECT users.first_name, users.second_name, change_date, name, request_date, start_date, status,
     primary_skill, other_skills, city, secondary_skills, exp_year
     FROM vacancy_changes
     LEFT JOIN users ON users.id = vacancy_changes.user_id
     WHERE vacancy_id = ${vacancyId}
     ORDER BY change_date DESC`;
+}
 
-const getVacancyTotal = id =>
-  `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
+function getVacancyTotal(id) {
+  return `SELECT SUM (lvl) AS lvl_res, vacancy_id, vacancy.primary_skill_lvl
     FROM vacancy_secondary_skills
     LEFT JOIN vacacncy ON vacancy.id = vacancy_id
     WHERE vacancy_id =  ${id} `;
+}
 
 module.exports = {
   getVacancies,
@@ -229,7 +249,7 @@ module.exports = {
   getHiringList,
   getVacancyTotal,
   commitChanges,
-  updateVacancy,
+  update,
   deleteOtherSkills,
   deleteSecondarySkills,
   insertOtherSkill,

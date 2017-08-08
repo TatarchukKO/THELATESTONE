@@ -11,6 +11,6 @@ router.use((req, res, next) => {
   }
 });
 
-router.get('/',validate(validation.getHistory), controller.getHistory);
+router.get('/', validate(validation.getHistory), controller.getHistory);
 
 module.exports = router;

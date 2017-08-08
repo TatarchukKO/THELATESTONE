@@ -1,6 +1,6 @@
 const services = require('../services/general-history');
 
-const getHistory = (req, res) => {
+function getHistory(req, res) {
   services.getHistory(req, (error, result) => {
     if (error) {
       res.status(500).send();
@@ -8,7 +8,7 @@ const getHistory = (req, res) => {
     }
     return res.status(200).send(result);
   });
-};
+}
 
 
 module.exports = {

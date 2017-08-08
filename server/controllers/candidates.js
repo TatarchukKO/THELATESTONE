@@ -4,7 +4,7 @@ const trie = require('../services/trie-search');
 function get(req, res) {
   candidatesService.get(req.body, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -14,7 +14,7 @@ function get(req, res) {
 function getById(req, res) {
   candidatesService.getById(req.query.id, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -22,9 +22,9 @@ function getById(req, res) {
 }
 
 function insert(req, res) {
-  candidatesService.insert(req.body, (error) => {
+  candidatesService.insert(req.body, req.user.id, (error) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(201).send();
@@ -34,7 +34,7 @@ function insert(req, res) {
 function validate(req, res) {
   candidatesService.validate(req.query.email, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(result).send();
@@ -44,7 +44,7 @@ function validate(req, res) {
 function update(req, res) {
   candidatesService.update(req.query.id, req.body, req.user.id, (error) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send();
@@ -54,7 +54,7 @@ function update(req, res) {
 function search(req, res) {
   candidatesService.search(req.query, req.body, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);
@@ -65,7 +65,7 @@ function report(req, res) {
   console.log(req.query);
   candidatesService.report(req.query, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     res.setHeader('Content-Type', 'application/octet-stream');
@@ -81,7 +81,7 @@ function trieSearch(req, res) {
   }
   trie.search(params.join(' '), (error, answer) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     if (answer.length) {
@@ -94,7 +94,7 @@ function trieSearch(req, res) {
 function getHistory(req, res) {
   candidatesService.getHistory(req, (error, result) => {
     if (error) {
-      res.status(500).send();
+      res.sendStatus(500);
       throw error;
     }
     return res.status(200).send(result);

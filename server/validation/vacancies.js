@@ -57,11 +57,11 @@ const addVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date().required(),
     expYear: Joi.date().required(),
-    description: Joi.string().required(),
+    description: Joi.string(),
   },
 };
 
-const updateVacancy = {
+const update = {
   options: {
     allowUnknownBody: false,
     allowUnknownQuery: false,
@@ -168,7 +168,7 @@ module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
-  updateVacancy,
+  update,
   getCandidates,
   getAssigned,
   getHistory,

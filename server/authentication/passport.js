@@ -16,7 +16,7 @@ const options = {
   // database: 'pickbrainsdb',
   host: 'localhost',
   user: 'root',
-  password: '123789',
+  password: 'jhjkj87',
   database: 'pickbrainsdb',
   checkExpirationInterval: 900000,
   expiration: 86400000,

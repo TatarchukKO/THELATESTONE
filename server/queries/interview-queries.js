@@ -50,7 +50,7 @@ function getByCandidateId(id) {
   JOIN candidate c ON i.candidate_id = c.id
   JOIN vacancy v ON i.vacancy_id = v.id
   JOIN users u ON i.user_id = u.id
-  WHERE ${id} = i.candidate_id
+  WHERE ${id} = i.candidate_id AND done = 0
   ORDER BY i.date DESC`;
 }
 

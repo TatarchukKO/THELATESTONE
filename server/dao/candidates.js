@@ -17,9 +17,8 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
+function insert(candidate, emails, secSkills, oSkills, metaphone, changes, callback) {
   connection.beginTransaction((transError) => {
-    console.log(candidate);
     if (transError) {
       throw transError;
     }
@@ -32,12 +31,19 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
       const id = res.insertId;
       const meta = metaphone;
       meta.candidate_id = id;
+      changes.candidate_id = id;
       async.parallel(
         Array.prototype.concat(
         call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
-        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
+        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call)),
+        call => connection.query(query.commitChanges(), changes, (errorChange, result) => {
+          if (errorChange) {
+            return call(errorChange);
+          }
+          return connection.query(query.generalHistory(result.insertId), call);
+        })),
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {
@@ -136,13 +142,21 @@ function updateMeta(meta, call) {
   return call(null, null);
 }
 
+function updateCandidate(id, candidate, call) {
+  if (Object.keys(candidate).length !== 0) {
+    return connection.query(query.update(id), candidate, call);
+  }
+  return call(null, null);
+}
+
 function update(id, candidate, emails, secSkills, oSkills, changes, meta, callback) {
+  console.log(candidate);
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
     async.parallel([
-      call => connection.query(query.update(id), candidate, call),
+      call => updateCandidate(id, candidate, call),
       call => deleteRuName(candidate.ru_first_name, id, call),
       call => updateEmails(emails, id, call),
       call => updateSecSkill(secSkills, id, call),
