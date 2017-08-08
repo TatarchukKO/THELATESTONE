@@ -93,7 +93,22 @@ function getUnclosedByUserId(id, callback) {
   });
 }
 
+function getById(id, callback) {
+  interviewDao.getById(id, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    res = utils.toCamel(res);
+    utils.dateFormatter.format(res);
+    editDoneField(res);
+    utils.namesEditor.edit(res);
+    delete res.vacancyId;
+    callback(err, res);
+  });
+}
+
 module.exports = {
+  getById,
   getUserId,
   insert,
   getByUserId,

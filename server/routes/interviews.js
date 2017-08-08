@@ -10,4 +10,6 @@ router.post('/new', validate(validation.insert), interviewController.insert);
 router.get('/user', validate(validation.getByUserId), interviewController.getByUserId);
 router.get('/candidate', validate(validation.getByCandidateId), interviewController.getByCandidateId);
 router.get('/unclosed/user', interviewController.getUnclosedByUserId);
+router.get('/detailed-view', interviewController.getById);
+
 module.exports = router;
