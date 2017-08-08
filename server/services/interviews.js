@@ -2,7 +2,6 @@ const calendar = require('../notification/calendar.js');
 const interviewDao = require('../dao/interviews');
 const gmail = require('../notification/gmail');
 const utils = require('../../utils');
-const async = require('async');
 
 function editDoneField(obj) {
   if (obj.done) {
@@ -20,14 +19,18 @@ function editDoneFields(arr) {
 function editAndSendMail(obj) {
   const camelRes = utils.toCamel(obj);
   const resp = utils.namesEditor.editArr(camelRes);
+  const tz = resp[0].date.getTimezoneOffset();
   utils.dateFormatter.format(resp);
+  resp[0].date = resp[0].date.getTime() + (tz * 60 * 1000);
+  resp[0].date = new Date(resp[0].date);
+  console.log(resp[0].date);
   gmail.sendMail(resp[0]);
 }
 
 function insertEventInGoogleCalendar(obj) {
   const camelRes = utils.toCamel(obj);
   const event = {};
-  event.date = camelRes[0].date; // new Date(camelRes[0].date);
+  event.date = camelRes[0].date;
   calendar.setCalendarId(camelRes[0].login);
   calendar.setStaticEvent(event);
   calendar.insertEventInGoogleCal();

@@ -38,8 +38,26 @@ const insert = {
   },
 };
 
+const getById = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+};
+
+const getUnclosedByUserId = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+};
+
 module.exports = {
+  getUnclosedByUserId,
   getByUserId,
   getByCandidateId,
   insert,
+  getById,
 };
