@@ -23,6 +23,7 @@ function editAndSendMail(obj) {
   utils.dateFormatter.format(resp);
   gmail.sendMail(resp[0]);
 }
+
 function insertEventInGoogleCalendar(obj) {
   const camelRes = utils.toCamel(obj);
   const event = {};
@@ -80,9 +81,22 @@ function getUserId(id, callback) {
   });
 }
 
+function getUnclosedByUserId(id, callback) {
+  interviewDao.getUnclosedByUserId(id, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    let result = utils.toCamel(res);
+    result = utils.dateFormatter.formatArr(result);
+    result = editDoneFields(result);
+    callback(err, utils.namesEditor.editArr(result));
+  });
+}
+
 module.exports = {
   getUserId,
   insert,
   getByUserId,
   getByCandidateId,
+  getUnclosedByUserId,
 };

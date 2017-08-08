@@ -63,6 +63,9 @@ app.use('/api/vacancies/', vacancy);
 app.use('/api/history/', generalHistory);
 app.use('/api/candidate/hrm-feedbacks/', hrmFeedback);
 app.use('/api/candidates/', candidate);
+app.get('/', (req, res) => {
+  res.send('HELLOY');
+});
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(err.status).json(err);

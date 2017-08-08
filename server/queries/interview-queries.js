@@ -36,8 +36,7 @@ function getByUserId(id) {
   FROM interview i
   JOIN candidate c ON i.candidate_id = c.id
   JOIN users u ON i.user_id = u.id
-  WHERE 
-  ${id} = i.user_id
+  WHERE ${id} = i.user_id
   ORDER BY i.date DESC`;
 }
 
@@ -58,14 +57,31 @@ function getByCandidateId(id) {
 function getUserId(id) {
   return `SELECT i.user_id
   FROM interview i
+  WHERE ${id} = i.id`;
+}
+
+function getUnclosedByUserId(id) {
+  return `SELECT
+  i.date, 
+  c.ru_first_name, c.ru_second_name,
+  c.eng_first_name, c.eng_second_name,
+  v.name
+  FROM interview i
+  JOIN candidate c ON i.candidate_id = c.id
+  JOIN users u ON i.user_id = u.id
+  JOIN vacancy v ON v.id = i.vacancy_id
   WHERE
-  ${id} = i.id`;
+  ${id} = i.user_id
+  AND 
+  i.done = 0
+  ORDER BY i.date DESC`;
 }
 
 module.exports = {
   getUserId,
   insert,
   insertEventToGeneralHistory,
+  getUnclosedByUserId,
   getByUserId,
   getByCandidateId,
   getEmailNotificationData,
