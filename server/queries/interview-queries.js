@@ -62,7 +62,7 @@ function getUserId(id) {
 
 function getUnclosedByUserId(id) {
   return `SELECT
-  i.date, 
+  i.id, i.date, 
   c.ru_first_name, c.ru_second_name,
   c.eng_first_name, c.eng_second_name,
   v.name
@@ -77,7 +77,24 @@ function getUnclosedByUserId(id) {
   ORDER BY i.date DESC`;
 }
 
+function getById(id) {
+  return `SELECT
+  i.date, i.vacancy_id,
+  c.ru_first_name, c.ru_second_name,
+  c.eng_first_name, c.eng_second_name,
+  v.name, v.primary_skill_lvl,
+  s.skill_name
+  FROM interview i
+  JOIN candidate c ON i.candidate_id = c.id
+  JOIN users u ON i.user_id = u.id
+  JOIN vacancy v ON v.id = i.vacancy_id
+  JOIN skills s ON v.primary_skill = s.id
+  WHERE
+  ${id} = i.id`;
+}
+
 module.exports = {
+  getById,
   getUserId,
   insert,
   insertEventToGeneralHistory,

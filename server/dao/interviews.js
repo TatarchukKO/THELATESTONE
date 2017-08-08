@@ -2,6 +2,7 @@ const async = require('async');
 
 const connection = require('./connection').connection;
 const interviewQueries = require('../queries/interview-queries');
+const vacancyQueries = require('../queries/vacancy-queries');
 
 function insertInterview(object, cb) {
   connection.query(interviewQueries.insert(object), (err, res) => {
@@ -67,7 +68,40 @@ function getUserId(id, callback) {
 function getUnclosedByUserId(id, callback) {
   connection.query(interviewQueries.getUnclosedByUserId(id), callback);
 }
+
+function getVacancyInfo(id, cb) {
+  connection
+    .query(interviewQueries.getById(id), (err, res) => {
+      if (err) {
+        throw err;
+      }
+      cb(null, res[0]);
+    });
+}
+
+function getSecondarySkills(vInfo, cb) {
+  connection
+    .query(vacancyQueries.getSecondarySkills(vInfo.vacancy_id),
+    (err, res) => {
+      if (err) {
+        throw err;
+      }
+      vInfo.secondarySkills = res;
+      cb(null, vInfo);
+    });
+}
+
+function getById(id, callback) {
+  async.waterfall(
+    [
+      async.apply(getVacancyInfo, id),
+      getSecondarySkills,
+    ],
+    callback);
+}
+
 module.exports = {
+  getById,
   getUserId,
   insert,
   getByUserId,
