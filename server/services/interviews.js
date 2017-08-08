@@ -33,7 +33,6 @@ function insertEventInGoogleCalendar(obj) {
   camelRes[0].date = camelRes[0].date.getTime() + (tz * 60 * 1000);
   camelRes[0].date = new Date(camelRes[0].date);
   event.date = camelRes[0].date;
-  console.log(event.date);
   calendar.setCalendarId(camelRes[0].login);
   calendar.setStaticEvent(event);
   calendar.insertEventInGoogleCal();
@@ -41,7 +40,6 @@ function insertEventInGoogleCalendar(obj) {
 
 function insert(object, callback) {
   utils.dateFormatter.format(object);
-  console.log(object.date);
   interviewDao.insert(utils.toSnake(object), (error, result) => {
     if (error) {
       throw error;
@@ -74,7 +72,6 @@ function getByCandidateId(id, callback) {
     let result = utils.toCamel(res);
     result = utils.dateFormatter.formatArr(result);
     result = editDoneFields(result);
-    console.log(result);
     callback(err, utils.namesEditor.editArr(result));
   });
 }
