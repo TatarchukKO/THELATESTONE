@@ -162,7 +162,7 @@ function closeVacancy(body, callback) {
     if (transError) {
       throw transError;
     }
-    connection.query(query.updateVacancy(body.vacancyId), { status: 8 }, (error) => {
+    connection.query(query.update(body.vacancyId), { status: 8 }, (error) => {
       if (error) {
         return connection.rollback(() => {
           throw error;
