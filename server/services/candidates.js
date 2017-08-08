@@ -45,13 +45,22 @@ function getById(id, callback) {
   });
 }
 
-function insert(candidateCamel, callback) {
+function insert(candidateCamel, user, callback) {
   const candidate = utils.dateFormatter.format(utils.toSnake(candidateCamel));
   const emails = candidate.emails || [];
   const secSkills = candidate.sec_skills || [];
   const oSkills = candidate.other_skills || [];
   const item = candidate;
   const firstName = utils.translit(item.eng_first_name);
+  const changes = {};
+  Object.keys(candidate).forEach((key) => {
+    changes[`${key}`] = 1;
+  });
+  if (candidate.primary_skill_lvl) {
+    delete changes.primary_skill_lvl;
+    changes.primary_skill = 1;
+  }
+  changes.user_id = user;
   if (firstName !== item.eng_first_name) {
     item.ru_first_name = item.eng_first_name;
     item.ru_second_name = item.eng_second_name;
@@ -65,7 +74,7 @@ function insert(candidateCamel, callback) {
   delete item.emails;
   delete item.sec_skills;
   delete item.other_skills;
-  candidatesModel.insert(item, emails, secSkills, oSkills, meta, callback);
+  candidatesModel.insert(item, emails, secSkills, oSkills, meta, changes, callback);
 }
 
 function validate(email, callback) {
@@ -115,7 +124,6 @@ function update(id, candidateCamel, user, callback) {
   delete item.sec_skills;
   delete item.other_skills;
   delete item.change_date;
-  console.log(item);
   candidatesModel.update(id, item, emails, secSkills, oSkills, changes, meta, callback);
 }
 
@@ -157,27 +165,6 @@ function search(query, bodyCamel, callback) {
       callback(err, result);
     });
 }
-/*  if (query.candidate) {
-    let params = query.candidate.split(' ');
-    if (params.length > 2) {
-      params = params.slice(1, 3);
-    }
-    params = params.map(val => metaphone(utils.translit(val)));
-    return candidatesModel.search(params, skip, amount, filter, (err, res) =>
-      mapRes(err, res, callback));
-  }
-  if (query.email) {
-    const params = query.email.split(' ')[0];
-    return candidatesModel.searchByEmail(params, skip, amount, filter, (err, res) =>
-      mapRes(err, res, callback));
-  }
-  if (query.skype) {
-    const params = query.skype.split(' ')[0];
-    return candidatesModel.searchBySkype(params, skip, amount, filter, (err, res) =>
-      mapRes(err, res, callback));
-  }
-  return callback();
-}*/
 
 function report(paramsCamel, callback) {
   paramsCamel.expYear = paramsCamel.expYear ? new Date(+paramsCamel.expYear) : undefined;
@@ -213,7 +200,6 @@ function getHistory(req, callback) {
   const skip = Number(req.query.skip) || 0;
   const capacity = Number(req.query.capacity) || defaultCapacity;
   const id = req.params.id;
-  console.log(skip);
   candidatesModel.getHistory(id, (err, res) => {
     let number = 0;
     res = utils.toCamel(res);
