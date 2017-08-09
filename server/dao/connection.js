@@ -9,16 +9,21 @@ const connection = mysql.createConnection({
   user: 'root',
   password: 'qweasdzxc',
   database: 'pickbrainsdb',
+  //timezone: 'utc',
 });
 
-connection.connect((error) => {
-  if (error) {
-    console.log('Database connection error');
-    throw error;
-  }
-  console.log('Connected to database');
-});
+function init(callback) {
+  connection.connect((error) => {
+    if (error) {
+      console.log('Database connection error');
+    } else {
+      console.log('Connected to database');
+    }
+    callback(error);
+  });
+}
 
 module.exports = {
+  init,
   connection,
 };

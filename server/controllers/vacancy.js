@@ -1,53 +1,105 @@
-const vacancyServices = require('../services/vacancy.js');
 
-const getVacancies = (req, res) => {
-  vacancyServices.getVacancies(req.body, (error, result) => {
-    if (error) throw error;
+const services = require('../services/vacancy');
+
+function getVacancies(req, res) {
+  services.getVacancies(req.body, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
 
-const getVacancy = (req, res) => {
-  vacancyServices.getVacancy(req.params.id, (error, result) => {
-    if (error) throw error;
+function getVacancy(req, res) {
+  services.getVacancy(req.params.id, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
 
-const updateVacancy = (req, res) => {
-  vacancyServices.updateVacancy(req.params.id, req.body, req.user.id, (error, result) => {
-    if (error) throw error;
+function update(req, res) {
+  services.update(req.params.id, req.body, req.user.id, (error) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
+    return res.status(200).send();
+  });
+}
+
+function addVacancy(req, res) {
+  services.addVacancy(req.body, req.user.id, (error) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
+    return res.sendStatus(201);
+  });
+}
+
+function getCandidates(req, res) {
+  services.getCandidates(req, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
 
-const addVacancy = (req, res) => {
-  vacancyServices.addVacancy(req.body, (error, result) => {
-    if (error) throw error;
+function getAssigned(req, res) {
+  services.getAssigned(req, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
 
-const getCandidates = (req, res) => {
-  vacancyServices.getCandidates(req.query.skip, req.params.id, (error, result) => {
-    if (error) throw error;
+function closeVacancy(req, res) {
+  services.closeVacancy(req.body, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
 
-const getAssignedCandidates = (req, res) => {
-  vacancyServices.getAssignedCandidates(req.query.skip, req.params.id, (error, result) => {
-    if (error) throw error;
+function getHistory(req, res) {
+  services.getHistory(req, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
     return res.status(200).send(result);
   });
-};
+}
+
+function getHiringList(req, res) {
+  services.getHiringList(req, (error, result) => {
+    if (error) {
+      res.sendStatus(500);
+      throw error;
+    }
+    return res.status(200).send(result);
+  });
+}
 
 module.exports = {
   getVacancies,
   getVacancy,
   getCandidates,
-  updateVacancy,
+  getHistory,
+  getHiringList,
+  update,
   addVacancy,
-  getAssignedCandidates,
+  getAssigned,
+  closeVacancy,
 };
 

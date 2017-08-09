@@ -1,5 +1,4 @@
 const tsFeedbackDao = require('../dao/ts-feedbacks.js');
-const convertKeys = require('./convert-keys.js');
 const utils = require('../../utils.js');
 
 function getById(id, callback) {
@@ -7,21 +6,26 @@ function getById(id, callback) {
     if (err) {
       throw err;
     }
-    const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    if (!res) {
+      return callback();
+    }
+    const result = utils.toCamel(res);
+    callback(err, utils.namesEditor.editArr(result)[0]);
   });
 }
+
 function getByCandidateId(id, callback) {
   tsFeedbackDao.getByCandidateId(id, (err, res) => {
     if (err) {
       throw err;
     }
-    const result = convertKeys.toCamel(res);
-    callback(err, utils.editNames(result));
+    const result = utils.namesEditor.editArr(utils.toCamel(res));
+    callback(err, utils.clearFields(result));
   });
 }
+
 function insert(object, callback) {
-  tsFeedbackDao.insert(convertKeys.toSnake(object), callback);
+  tsFeedbackDao.insert(utils.toSnake(object), callback);
 }
 
 module.exports = {

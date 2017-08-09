@@ -1,7 +1,19 @@
-const notificationDao = require('../dao/notification.js');
-const utils = require('../../utils.js');
+const notificationDao = require('../dao/notification');
+const utils = require('../../utils');
 const dateFormat = require('dateformat');
-const convertKeys = require('./convert-keys');
+
+function editDoneField(obj) {
+  if (obj.done) {
+    obj.done = 'Closed';
+  } else {
+    obj.done = 'Open';
+  }
+  return obj;
+}
+
+function editDoneFields(arr) {
+  return arr.map(item => editDoneField(item));
+}
 
 function getUpcomingInterviews(id, callback) {
   const currentTime = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
@@ -12,10 +24,10 @@ function getUpcomingInterviews(id, callback) {
     if (err) {
       throw err;
     }
-    let result = utils.formatDates(res);
-    result = convertKeys.toCamel(result);
-    result = utils.editDoneFields(result);
-    callback(err, utils.editNames(result));
+    let result = utils.dateFormatter.formatArr(res);
+    result = utils.toCamel(result);
+    result = editDoneFields(result);
+    callback(err, utils.namesEditor.editArr(result));
   });
 }
 

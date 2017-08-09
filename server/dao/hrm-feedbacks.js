@@ -1,10 +1,11 @@
 const async = require('async');
-const connection = require('./connection.js').connection;
-const hrmFeedbackQueries = require('../queries/hrm-feedback-queries.js');
+
+const connection = require('./connection').connection;
+const hrmFeedbackQueries = require('../queries/hrm-feedback-queries');
 
 function insertFeedback(object, cb) {
   connection
-    .query(hrmFeedbackQueries.insert(object),
+    .query(hrmFeedbackQueries.insert(), object,
     (err, res) => {
       if (err) {
         throw err;
@@ -23,6 +24,7 @@ function insertEventToGeneralHistory(id, date, cb) {
       cb(null);
     });
 }
+
 function insertFeedbackAndHistory(object, cb) {
   async
     .waterfall([
@@ -36,6 +38,7 @@ function insertFeedbackAndHistory(object, cb) {
       cb(null);
     });
 }
+
 function updateInterviewStatus(object, cb) {
   connection
     .query(hrmFeedbackQueries.updateInterviewStatus(object),

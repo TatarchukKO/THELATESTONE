@@ -4,8 +4,8 @@ const query = require('../queries/candidate-queries');
 const connection = require('./connection').connection;
 const ts = require('../services/trie-search');
 
-function get(limit, filter, callback) {
-  connection.query(query.get(limit, filter), callback);
+function get(skip, amount, filter, callback) {
+  connection.query(query.get(skip, amount, filter), callback);
 }
 
 function getById(id, callback) {
@@ -17,9 +17,8 @@ function getById(id, callback) {
   ], callback);
 }
 
-function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
+function insert(candidate, emails, secSkills, oSkills, metaphone, changes, callback) {
   connection.beginTransaction((transError) => {
-    console.log(candidate);
     if (transError) {
       throw transError;
     }
@@ -32,12 +31,19 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
       const id = res.insertId;
       const meta = metaphone;
       meta.candidate_id = id;
+      changes.candidate_id = id;
       async.parallel(
         Array.prototype.concat(
         call => connection.query(query.insertMeta(), meta, call),
         emails.map(val => call => connection.query(query.insertEmails(id, val), call)),
         secSkills.map(val => call => connection.query(query.insertSecSkills(id, val), call)),
-        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call))),
+        oSkills.map(val => call => connection.query(query.insertOtherSkills(id, val), call)),
+        call => connection.query(query.commitChanges(), changes, (errorChange, result) => {
+          if (errorChange) {
+            return call(errorChange);
+          }
+          return connection.query(query.generalHistory(result.insertId), call);
+        })),
         (parError, result) => {
           if (parError) {
             return connection.rollback(() => {
@@ -50,16 +56,21 @@ function insert(candidate, emails, secSkills, oSkills, metaphone, callback) {
                 throw commitError;
               });
             }
+            callback(error, result);
+            console.log('Insert transaction has been commited');
             return ts.insert({
               id,
               name: `${candidate.eng_first_name} ${candidate.eng_second_name}`,
             });
           });
-          callback(error, result);
-          return console.log('Insert transaction has been commited');
         });
     });
   });
+}
+
+function validate(email, callback) {
+  connection.query(`SELECT * FROM candidate_emails
+    WHERE email = "${email}"`, callback);
 }
 
 function deleteRuName(name, id, call) {
@@ -131,13 +142,20 @@ function updateMeta(meta, call) {
   return call(null, null);
 }
 
+function updateCandidate(id, candidate, call) {
+  if (Object.keys(candidate).length !== 0) {
+    return connection.query(query.update(id), candidate, call);
+  }
+  return call(null, null);
+}
+
 function update(id, candidate, emails, secSkills, oSkills, changes, meta, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
       throw transError;
     }
     async.parallel([
-      call => connection.query(query.update(id), candidate, call),
+      call => updateCandidate(id, candidate, call),
       call => deleteRuName(candidate.ru_first_name, id, call),
       call => updateEmails(emails, id, call),
       call => updateSecSkill(secSkills, id, call),
@@ -157,6 +175,8 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
               throw commitError;
             });
           }
+          callback(error, result);
+          console.log('Update transaction has been commited');
           if (candidate.eng_first_name) {
             return ts.insert({
               id,
@@ -164,31 +184,40 @@ function update(id, candidate, emails, secSkills, oSkills, changes, meta, callba
             });
           }
         });
-        callback(error, result);
-        return console.log('Update transaction has been commited');
       });
     return undefined;
   });
 }
 
-function search(params, skip, filter, callback) {
-  return connection.query(query.search(params, skip, filter), callback);
+function search(params, skip, amount, filter, callback) {
+  return connection.query(query.search(params, skip, amount, filter), callback);
 }
 
-function searchByEmail(params, skip, filter, callback) {
-  return connection.query(query.searchByEmail(params, skip, filter), callback);
+function searchByEmail(params, skip, amount, filter, callback) {
+  return connection.query(query.searchByEmail(params, skip, amount, filter), callback);
 }
 
-function searchBySkype(params, skip, filter, callback) {
-  return connection.query(query.searchBySkype(params, skip, filter), callback);
+function searchBySkype(params, skip, amount, filter, callback) {
+  return connection.query(query.searchBySkype(params, skip, amount, filter), callback);
+}
+
+function report(span, filter, callback) {
+  connection.query(query.report(span, filter), callback);
+}
+
+function getHistory(id, callback) {
+  connection.query(query.getHistory(id), callback);
 }
 
 module.exports = {
   get,
   getById,
+  getHistory,
   insert,
+  validate,
   update,
   search,
   searchByEmail,
   searchBySkype,
+  report,
 };

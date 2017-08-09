@@ -1,39 +1,51 @@
-const vacancyModel = require('../dao/vacancy.js');
-const convKeys = require('./convert-keys');
+const model = require('../dao/vacancy');
+const utils = require('../../utils');
 
-const getVacancies = (body, callback) => {
-  body = convKeys.toSnake(body);
-  const limit = (body.limit < 0) ? 0 : (body.limit || 0);
+const defaultCapacity = 10;
+const infinity = Number.MAX_SAFE_INTEGER;
+
+function getVacancies(body, callback) {
+  body = utils.toSnake(body);
+  const skip = body.skip || 0;
+  const capacity = body.capacity || infinity;
   const filter = body;
-  delete filter.limit;
-  vacancyModel.getVacancies(limit, filter, (error, result) => {
-    callback(error, convKeys.toCamel(result));
+  delete filter.skip;
+  delete filter.capacity;
+  utils.clearFields(filter);
+  model.getVacancies(skip, capacity, filter, (error, result) => {
+    callback(error, utils.toCamel(result));
   });
-};
+}
 
-const getVacancy = (id, callback) => {
-  vacancyModel.getVacancy(id, (error, result) => {
+function getVacancy(id, callback) {
+  model.getVacancy(id, (error, result) => {
     const vacancyInfo = result.map(field => field[0]);
     const finalResult = vacancyInfo[0][0];
     finalResult.secondary_skills = vacancyInfo[1].map(fied => fied);
     finalResult.other_skills = vacancyInfo[2];
-    callback(error, convKeys.toCamel(finalResult));
+    callback(error, utils.toCamel(finalResult));
   });
-};
+}
 
-const formatDate = date =>
-  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+function formConfig(req) {
+  const config = {
+    skip: Number(req.query.skip) || 0,
+    capacity: Number(req.query.capacity) || defaultCapacity,
+    id: req.params.id,
+  };
+  return config;
+}
 
-const clearSkills = (obj) => {
+function clearSkills(obj) {
   const copy = obj;
   delete copy.secondary_skills;
   delete copy.other_skills;
   return copy;
-};
+}
 
-const updateVacancy = (id, req, user, callback) => {
-  req = convKeys.toSnake(req);
-  const config = {};
+function update(id, req, user, callback) {
+  req = utils.toSnake(req);
+  let config = {};
   const changes = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
@@ -44,77 +56,109 @@ const updateVacancy = (id, req, user, callback) => {
   });
   clearSkills(config);
   clearSkills(changes);
-
-  delete changes.primary_skill_lvl;
+  if (req.primary_skill_lvl) {
+    delete changes.primary_skill_lvl;
+    changes.primary_skill = 1;
+  }
   changes.vacancy_id = id;
   changes.user_id = user;
   changes.secondary_skills = req.secondary_skills ? 1 : 0;
-  changes.change_date = formatDate(new Date());
+  config = utils.dateFormatter.format(utils.toSnake(config));
 
-  vacancyModel.updateVacancy(id, config, changes, secSkills, otherSkills, callback);
-};
+  model.update(id, config, changes, secSkills, otherSkills, callback);
+}
 
-const addVacancy = (req, callback) => {
-  req = convKeys.toSnake(req);
+function addVacancy(req, user, callback) {
+  req = utils.toSnake(req);
   const vacancy = {};
   const secSkills = req.secondary_skills || [];
   const otherSkills = req.other_skills || [];
+  const changes = {};
+  changes.user_id = user;
 
   Object.keys(req).forEach((key) => {
     vacancy[`${key}`] = `${req[key]}`;
   });
   clearSkills(vacancy);
 
-  vacancy.request_date = formatDate(new Date());
-  vacancy.start_date = formatDate(new Date(req.start_date));
-  vacancy.exp_year = formatDate(new Date(req.exp_year));
+  vacancy.request_date = utils.namesEditor.formatDate(new Date());
+  vacancy.start_date = utils.namesEditor.formatDate(new Date(req.start_date));
+  vacancy.exp_year = utils.namesEditor.formatDate(new Date(req.exp_year));
   vacancy.linkedin = req.linkedin || 0;
   vacancy.english_lvl = req.english_lvl || 0;
   vacancy.salary_wish = req.salary_wish || 0;
   vacancy.description = req.description;
 
-  vacancyModel.addVacancy(vacancy, secSkills, otherSkills, callback);
-};
+  model.addVacancy(vacancy, secSkills, otherSkills, changes, callback);
+}
 
-const mapRes = (error, result, callback) => {
-  const res = result.map((value) => {
-    const tmp = {};
-    if (value.ru_first_name) {
-      tmp.name = `${value.ru_first_name} ${value.ru_second_name}`;
-    } else {
-      tmp.name = `${value.eng_first_name} ${value.eng_second_name}`;
-    }
-    tmp.email = value.email;
-    tmp.status = value.status;
-    tmp.city = value.city;
-    tmp.contact_date = value.contact_date;
-    tmp.skill_name = value.skill_name;
-    tmp.id = value.id;
-    tmp.total = value.total;
-    tmp.primary_skill_lvl = value.primary_skill_lvl;
-    if (value.date) {
-      tmp.date = value.date;
-    }
-    return tmp;
+function getCandidates(req, callback) {
+  const config = formConfig(req);
+  model.getCandidates(config.skip, config.capacity, config.id, (err, res) =>
+      utils.namesEditor.formatVacancy(err, res, callback));
+}
+
+function getAssigned(req, callback) {
+  const config = formConfig(req);
+  model.getAssigned(config.skip, config.capacity, config.id, (err, res) =>
+      utils.namesEditor.formatVacancy(err, res, callback));
+}
+
+function closeVacancy(req, callback) {
+  req = utils.toSnake(req);
+  model.closeVacancy(req, callback);
+}
+
+
+function getHistory(req, callback) {
+  const config = formConfig(req);
+  model.getHistory(config.id, (err, res) => {
+    let number = 0;
+    res = utils.toCamel(res);
+    let result = [];
+    res.map((item) => {
+      let isEmpty = true;
+      Object.keys(item).forEach((key) => {
+        if (item[`${key}`] === 1) {
+          result.push({
+            user: `${item.firstName} ${item.secondName}`,
+            cahngeDate: new Date(item.changeDate),
+            change: utils.formChange(`${key}`),
+          });
+          number += 1;
+          isEmpty = false;
+        }
+      });
+      if (isEmpty) {
+        result.push({
+          user: `${item.firstName} ${item.secondName}`,
+          cahngeDate: new Date(item.changeDate),
+          change: 'Vacancy was added',
+        });
+        number += 1;
+      }
+      return item;
+    });
+    result = result.slice(config.skip, config.skip + config.capacity);
+    result.unshift(number);
+    callback(err, result);
   });
-  callback(error, convKeys.toCamel(res));
-};
+}
 
-const getCandidates = (skip, vacancyId, callback) => {
-  skip = skip || 0;
-  vacancyModel.getCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
-};
-
-const getAssignedCandidates = (skip, vacancyId, callback) => {
-  skip = skip || 0;
-  vacancyModel.getAssignedCandidates(skip, vacancyId, (err, res) => mapRes(err, res, callback));
-};
+function getHiringList(req, callback) {
+  const config = formConfig(req);
+  model.getHiringList(config.skip, config.capacity, config.id, (err, res) =>
+      utils.namesEditor.formatVacancy(err, res, callback));
+}
 
 module.exports = {
   getVacancies,
   getVacancy,
-  addVacancy,
-  updateVacancy,
   getCandidates,
-  getAssignedCandidates,
+  getAssigned,
+  getHiringList,
+  getHistory,
+  addVacancy,
+  update,
+  closeVacancy,
 };

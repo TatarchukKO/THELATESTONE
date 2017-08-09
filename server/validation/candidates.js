@@ -8,6 +8,7 @@ const get = {
   },
   body: {
     skip: Joi.number().integer().greater(-1),
+    amount: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
@@ -73,6 +74,17 @@ const insert = {
   },
 };
 
+const validateEmail = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  query: {
+    email: Joi.string(),
+  },
+};
+
 const update = {
   options: {
     allowUnknownBody: false,
@@ -113,12 +125,11 @@ const search = {
     allowUnknownParams: false,
   },
   query: {
-    candidate: Joi.string(),
-    email: Joi.string().email(),
-    skype: Joi.string(),
+    q: Joi.string(),
   },
   body: {
     skip: Joi.number().integer().greater(-1),
+    amount: Joi.number().integer().greater(-1),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)),
     salaryWish: Joi.array().items(Joi.number().integer()),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)),
@@ -128,11 +139,43 @@ const search = {
   },
 };
 
+const report = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  body: {
+    span: Joi.array().items(Joi.date()),
+    city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
+    salaryWish: Joi.array().items(Joi.number().integer()),
+    primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
+    status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
+    englishLvl: Joi.array().items(Joi.number().integer().less(6).greater(0)).unique(),
+    expYear: Joi.date(),
+  },
+};
+
+
+const getHistory = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+};
+
 module.exports = {
   get,
   getById,
+  getHistory,
   trieSearch,
   insert,
+  validateEmail,
   update,
   search,
+  report,
 };

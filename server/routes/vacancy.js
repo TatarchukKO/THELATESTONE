@@ -1,7 +1,7 @@
-const vacancyController = require('../controllers/vacancy.js');
+const controller = require('../controllers/vacancy');
 const router = require('express').Router();
 const validate = require('express-validation');
-const validation = require('../validation/vacancies.js');
+const validation = require('../validation/vacancies');
 
 router.use((req, res, next) => {
   if (req.user.type === 'TECH') {
@@ -11,11 +11,15 @@ router.use((req, res, next) => {
   }
 });
 
-router.post('/', validate(validation.getVacancies), vacancyController.getVacancies);
-router.get('/:id', validate(validation.getVacancy), vacancyController.getVacancy);
-router.patch('/:id', validate(validation.updateVacancy), vacancyController.updateVacancy);
-router.post('/new', validate(validation.addVacancy), vacancyController.addVacancy);
-router.get('/:id/candidates/', validate(validation.getCandidates), vacancyController.getCandidates);
-router.get('/:id/assigned', vacancyController.getAssignedCandidates);
+router.post('/', validate(validation.getVacancies), controller.getVacancies);
+router.get('/:id', validate(validation.getVacancy), controller.getVacancy);
+router.patch('/:id/update', validate(validation.update), controller.update);
+router.post('/new', validate(validation.addVacancy), controller.addVacancy);
+router.get('/:id/candidates', validate(validation.getCandidates), controller.getCandidates);
+router.get('/:id/assigned', validate(validation.getAssigned), controller.getAssigned);
+router.patch('/close', validate(validation.closeVacancy), controller.closeVacancy);
+router.get('/:id/history', validate(validation.getHistory), controller.getHistory);
+router.get('/:id/hiring', validate(validation.getHiringList), controller.getHiringList);
+
 
 module.exports = router;

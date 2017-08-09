@@ -15,7 +15,7 @@ const getByCandidateId = {
     allowUnknownParams: false,
   },
   query: {
-    candidateid: Joi.number().integer().required(),
+    id: Joi.number().integer().required(),
   },
 };
 
@@ -38,8 +38,29 @@ const insert = {
   },
 };
 
+const getById = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  query: {
+    id: Joi.number().integer().required(),
+  },
+};
+
+const getUnclosedByUserId = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+};
+
 module.exports = {
+  getUnclosedByUserId,
   getByUserId,
   getByCandidateId,
   insert,
+  getById,
 };

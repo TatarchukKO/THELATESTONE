@@ -1,6 +1,7 @@
 const async = require('async');
-const connection = require('./connection.js').connection;
-const tsFeedbackQueries = require('../queries/ts-feedback-queries.js');
+
+const connection = require('./connection').connection;
+const tsFeedbackQueries = require('../queries/ts-feedback-queries');
 
 function uniteResults(feedbacks, otherSkills) {
   return feedbacks.map((item) => {
@@ -9,6 +10,7 @@ function uniteResults(feedbacks, otherSkills) {
     return cItem;
   });
 }
+
 function insertFeedback(object, cb) {
   connection.query(tsFeedbackQueries.insert(object), (err, res) => {
     if (err) {
@@ -17,6 +19,7 @@ function insertFeedback(object, cb) {
     cb(null, object, res.insertId);
   });
 }
+
 function insertSecondarySkills(object, id, cb) {
   async.parallel(object.secondary_skills.map(
     item => callback =>
@@ -30,6 +33,7 @@ function insertSecondarySkills(object, id, cb) {
       cb(null, id);
     });
 }
+
 function insertEventToGeneralHistory(id, cb) {
   connection.query(tsFeedbackQueries.insertEventToGeneralHistory(id), (err) => {
     if (err) {
@@ -38,6 +42,7 @@ function insertEventToGeneralHistory(id, cb) {
     cb(null);
   });
 }
+
 function updateInterviewStatus(object, cb) {
   connection
     .query(tsFeedbackQueries.updateInterviewStatus(object),
@@ -62,7 +67,8 @@ function getById(id, callback) {
       }
       async
         .parallel(result
-          .map(item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
+          .map(item => cb =>
+            connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), cb)),
         (err, res) => {
           if (err) {
             return connection.rollback(() => {
@@ -81,6 +87,7 @@ function getById(id, callback) {
     });
   });
 }
+
 function getByCandidateId(id, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {
@@ -92,30 +99,6 @@ function getByCandidateId(id, callback) {
           throw error;
         });
       }
-      /* async.parallel(result.map(
-        item => cb => connection.query(tsFeedbackQueries.getSecondarySkillsByTsFeedbackId(item.id), (e, r) => {
-          if (e) {
-            return connection.rollback(() => {
-              throw e;
-            });
-          }
-          cb(e, r);
-        })),
-        (err, res) => {
-          if (err) {
-            return connection.rollback(() => {
-              throw err;
-            });
-          }
-          connection.commit((commitError) => {
-            if (commitError) {
-              return connection.rollback(() => {
-                throw commitError;
-              });
-            }
-          });
-          callback(err, uniteResults(result, res));
-        });*/
       connection.commit((commitError) => {
         if (commitError) {
           return connection.rollback(() => {
@@ -127,6 +110,7 @@ function getByCandidateId(id, callback) {
     });
   });
 }
+
 function insert(object, callback) {
   connection.beginTransaction((transError) => {
     if (transError) {

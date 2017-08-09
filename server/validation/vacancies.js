@@ -7,7 +7,8 @@ const getVacancies = {
     allowUnknownParams: false,
   },
   body: {
-    limit: Joi.number().integer().greater(-1),
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
     city: Joi.array().items(Joi.number().integer().less(15).greater(0)).unique(),
     primarySkill: Joi.array().items(Joi.number().integer().less(21).greater(0)).unique(),
     status: Joi.array().items(Joi.number().integer().less(10).greater(0)).unique(),
@@ -56,12 +57,11 @@ const addVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date().required(),
     expYear: Joi.date().required(),
-    description: Joi.string().required(),
+    description: Joi.string(),
   },
 };
 
-
-const updateVacancy = {
+const update = {
   options: {
     allowUnknownBody: false,
     allowUnknownQuery: false,
@@ -87,9 +87,9 @@ const updateVacancy = {
     salaryWish: Joi.number().integer(),
     startDate: Joi.date(),
     expYear: Joi.date(),
+    description: Joi.string(),
   },
 };
-
 
 const getCandidates = {
   options: {
@@ -100,12 +100,78 @@ const getCandidates = {
   params: {
     id: Joi.number().integer().greater(0).required(),
   },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
+};
+
+const getAssigned = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
+};
+
+const closeVacancy = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  body: {
+    vacancyId: Joi.number().integer().greater(0).required(),
+    candidateId: Joi.number().integer().greater(0).required(),
+  },
+};
+
+
+const getHistory = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
+};
+
+const getHiringList = {
+  options: {
+    allowUnknownBody: false,
+    allowUnknownQuery: false,
+    allowUnknownParams: false,
+  },
+  params: {
+    id: Joi.number().integer().greater(0).required(),
+  },
+  query: {
+    skip: Joi.number().integer().greater(-1),
+    capacity: Joi.number().integer().greater(0),
+  },
 };
 
 module.exports = {
   getVacancies,
   getVacancy,
   addVacancy,
-  updateVacancy,
+  update,
   getCandidates,
+  getAssigned,
+  getHistory,
+  getHiringList,
+  closeVacancy,
 };

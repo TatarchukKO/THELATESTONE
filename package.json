@@ -1,6 +1,10 @@
 {
   "name": "pick_brains",
   "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
@@ -27,12 +31,13 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "redis": "^2.7.1",
-    "translitit-cyrillic-russian-to-latin": "^0.1.1",
+    "translitit-engine": "^0.1.1",
     "trie-search": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "3.19.0",
     "eslint-config-airbnb-base": "11.2.0",
-    "eslint-plugin-import": "2.2.0"
+    "eslint-plugin-import": "2.2.0",
+    "loadtest": "*"
   }
 }
