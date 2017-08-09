@@ -94,7 +94,8 @@ function addVacancy(req, user, callback) {
 
 function getCandidates(req, callback) {
   const config = formConfig(req);
-  model.getCandidates(config.skip, config.capacity, config.id, callback);
+  model.getCandidates(config.skip, config.capacity, config.id, (err, res) =>
+      utils.namesEditor.formatVacancy(err, res, callback));
 }
 
 function getAssigned(req, callback) {
