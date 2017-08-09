@@ -48,13 +48,13 @@ app.get('/api/user', (req, res) => {
 app.use('/api/interviews/', interview);
 app.use('/api/notification/', notification);
 app.use('/api/candidate/ts-feedbacks/', tsFeedback);
-app.use((req, res, next) => {
-  if (req.user.type === 'TECH') {
-    res.status(403).send();
-  } else {
-    next();
-  }
-});
+// app.use((req, res, next) => {
+//   if (req.user.type === 'TECH') {
+//     res.status(403).send();
+//   } else {
+//     next();
+//   }
+// });
 
 app.use('/api/users', users);
 app.use('/api/meta-data/', metaData);
